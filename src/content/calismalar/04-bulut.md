@@ -7,5 +7,5 @@ neYaptik: Servislerin kullanılmadıkları saatlerde uykuya geçtiği, istek gel
 sonuc: Aylık altyapı maliyeti düştü.
 teknolojiler: [Railway, Servis yapılandırması]
 sira: 4
-onayBekliyor: true
+onayBekliyor: false
 ---

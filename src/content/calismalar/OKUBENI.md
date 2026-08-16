@@ -2,22 +2,22 @@
 
 Bu dosya siteye çıkmaz. Astro içerik şemasının dışında tutuluyor.
 
-Dört vaka da `onayBekliyor: true` durumunda. Bu alan `false` yapılmadan
-içerik onaylanmış sayılmaz.
+Dört vaka da onaylandı (`onayBekliyor: false`). Onay 16 Ağustos 2026'da
+verildi. Derleme artık uyarı basmıyor.
 
-## Neden onay gerekiyor
+## Onayın anlamı
 
 Metinler, projelerin bilinen kapsamından yazıldı. Müşteri adı, marka adı ve
-canlı bağlantı hiçbirinde yok, yalnızca sektör yazılı. Ama şu iki şeyi
-yalnızca siz doğrulayabilirsiniz:
+canlı bağlantı hiçbirinde yok, yalnızca sektör yazılı. Onay şu iki şeyi
+kapsıyor:
 
-1. Anlatılan işin gerçekten yaptığınız iş olduğu
+1. Anlatılan işin gerçekten yapılan iş olduğu
 2. Müşterinin bu düzeyde anlatıma itiraz etmeyeceği
 
-## Doğrulanacak tek rakam
+## Sitedeki tek somut rakam
 
 - `02-sigortacilik.md` içindeki **1413 kontrol kuralı** sayısı.
-  Bu sayı doğru değilse düzeltin veya cümleden çıkarın.
+  Sonradan yanlış olduğu anlaşılırsa düzeltin veya cümleden çıkarın.
 
 Başka hiçbir dosyada sayı yok. Yazılan ilk taslakta bulunan
 "30 dakikadan 5 dakikaya" ifadesi doğrulanamadığı için kaldırıldı.

@@ -7,5 +7,5 @@ neYaptik: Kuralları koddan ayırıp veritabanında tanımlanan bir yapıya taş
 sonuc: Yeni kural eklemek artık kod değişikliği gerektirmiyor.
 teknolojiler: [Oracle, PL/SQL, Metadata mimarisi, Veri kalitesi]
 sira: 2
-onayBekliyor: true
+onayBekliyor: false
 ---

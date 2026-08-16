@@ -6,5 +6,5 @@ problem: Uygulamanın ekranları birbirinden bağımsız büyümüştü. Aynı b
 neYaptik: Renk, tipografi ve aralık değerlerini tek bir kaynağa topladık. Ekranlar bu kaynaktan besleniyor, bir değeri değiştirmek uygulamanın tamamını güncelliyor. Türkçe arayüz dilini ve VoiceOver desteğini bu yapının içine kurduk.
 teknolojiler: [Swift, SwiftUI, Tasarım sistemi, VoiceOver]
 sira: 3
-onayBekliyor: true
+onayBekliyor: false
 ---
