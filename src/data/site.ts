@@ -31,7 +31,7 @@ export const sirket: SirketBilgisi = {
 
   // Formun altında ve footer'da görünür. Form gönderimi başarısız olduğunda
   // kullanıcıya yazması söylenen adres de budur.
-  eposta: 'DEGISTIR: merhaba@ornek.com',
+  eposta: 'merhaba@montilabs.com',
 
   // Boş bırakılırsa telefon satırı hiç gösterilmez.
   telefon: '',
