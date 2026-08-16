@@ -1,0 +1,38 @@
+---
+import Temel from '../layouts/Temel.astro'
+import { icerik } from '../data/icerik'
+import { yol } from '../lib/yol'
+
+const b = icerik.bulunamadi
+---
+
+<Temel baslik="Sayfa bulunamadı" aciklama={b.metin}>
+  <section class="bulunamadi">
+    <div class="kabuk bulunamadi-ic">
+      <p class="uste">404</p>
+      <h1>{b.baslik}</h1>
+      <p class="bulunamadi-metin">{b.metin}</p>
+      <a class="dugme dugme-birincil" href={yol('/')}>{b.buton}</a>
+    </div>
+  </section>
+</Temel>
+
+<style>
+  .bulunamadi {
+    padding-block: clamp(4rem, 2rem + 8vw, 9rem);
+  }
+
+  .bulunamadi-ic {
+    max-width: 46ch;
+  }
+
+  .bulunamadi h1 {
+    font-size: var(--ml-text-3xl);
+  }
+
+  .bulunamadi-metin {
+    margin-block: var(--ml-space-4) var(--ml-space-8);
+    font-size: var(--ml-text-lg);
+    color: var(--ml-text-body);
+  }
+</style>

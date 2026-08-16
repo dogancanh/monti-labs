@@ -1,0 +1,22 @@
+# derleme çıktısı
+dist/
+.astro/
+
+# bağımlılıklar
+node_modules/
+
+# ortam değişkenleri
+.env
+.env.production
+.env.local
+
+# işletim sistemi
+.DS_Store
+
+# günlükler
+*.log
+npm-debug.log*
+
+# yerel arac onbellekleri
+.impeccable/
+.claude/

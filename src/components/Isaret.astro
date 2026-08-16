@@ -1,0 +1,36 @@
+---
+/* Monti Labs işareti.
+   Kaynak: monti-labs-brand/assets/logo/monti-mark.svg
+   fill="currentColor" olduğu için rengi CSS'ten `color` ile verilir.
+   Oran, açı ve kütle yerleşimi değiştirilemez. */
+
+interface Props {
+  /** Yükseklik. Marka kuralı: ekranda en az 24px. */
+  yukseklik?: string
+  class?: string
+}
+
+const { yukseklik = '28px', class: sinif } = Astro.props
+---
+
+<svg
+  class={sinif}
+  viewBox="0 0 891 546"
+  role="img"
+  aria-label="Monti Labs"
+  style={`height:${yukseklik}`}
+  focusable="false"
+>
+  <title>Monti Labs</title>
+  <g fill="currentColor">
+    <path d="M0 0 L451 428 L451 546 L348 546 L170 377 L170 546 L0 546 Z" />
+    <path d="M460 140 L891 546 L642 546 L460 373 Z" />
+  </g>
+</svg>
+
+<style>
+  svg {
+    width: auto;
+    flex: none;
+  }
+</style>

@@ -1,0 +1,110 @@
+---
+import Temel from './Temel.astro'
+import type { YasalMetin } from '../data/legal/tip'
+
+interface Props {
+  metin: YasalMetin
+}
+
+const { metin } = Astro.props
+---
+
+<Temel baslik={metin.baslik} aciklama={metin.ozet}>
+  <article class="yasal">
+    <div class="kabuk yasal-ic">
+      <header class="yasal-basi">
+        <h1>{metin.baslik}</h1>
+        <p class="yasal-ozet">{metin.ozet}</p>
+        <p class="kunye yasal-tarih">Son güncelleme: {metin.guncellenmeTarihi}</p>
+      </header>
+
+      {
+        metin.hukukiIncelemeGerekli && (
+          <aside class="uyari" role="note">
+            <p class="kunye uyari-baslik">Taslak metin</p>
+            <p>
+              Bu sayfa yayına hazır değildir. Metin hukuki inceleme almadan ve köşeli
+              parantez içindeki alanlar doldurulmadan canlıya alınmamalıdır.
+            </p>
+          </aside>
+        )
+      }
+
+      {
+        metin.bolumler.map((bolum) => (
+          <section class="yasal-bolum">
+            <h2>{bolum.baslik}</h2>
+            {bolum.paragraflar.map((p) => (
+              <p>{p}</p>
+            ))}
+          </section>
+        ))
+      }
+    </div>
+  </article>
+</Temel>
+
+<style>
+  .yasal {
+    padding-block: var(--ml-space-16) var(--ml-section-y);
+  }
+
+  .yasal-ic {
+    max-width: 76ch;
+  }
+
+  .yasal-basi {
+    padding-block-end: var(--ml-space-8);
+    border-block-end: 1px solid var(--ml-border-strong);
+  }
+
+  .yasal-basi h1 {
+    font-size: var(--ml-text-3xl);
+  }
+
+  .yasal-ozet {
+    margin-block-start: var(--ml-space-4);
+    font-size: var(--ml-text-lg);
+    color: var(--ml-text-body);
+  }
+
+  .yasal-tarih {
+    margin-block-start: var(--ml-space-4);
+  }
+
+  /* Uyarı, bölüm başlıklarıyla aynı dili kullanır: üstten çekilen çizgi
+     ve mono künye. Krem zemin onu gövde metninden zaten ayırıyor. */
+  .uyari {
+    margin-block-start: var(--ml-space-8);
+    padding: var(--ml-space-4) var(--ml-space-6) var(--ml-space-6);
+    background-color: var(--ml-cream-base);
+    border-block-start: 2px solid var(--ml-warning);
+    font-size: var(--ml-text-sm);
+  }
+
+  .uyari-baslik {
+    color: var(--ml-warning);
+    font-weight: var(--ml-weight-medium);
+    margin-block-end: var(--ml-space-2);
+  }
+
+  .yasal-bolum {
+    margin-block-start: var(--ml-space-12);
+  }
+
+  .yasal-bolum h2 {
+    font-size: var(--ml-text-xl);
+    margin-block-end: var(--ml-space-4);
+  }
+
+  /* Veri dosyalarındaki paragraflar liste satırlarını \n ile ayırıyor. */
+  .yasal-bolum p {
+    white-space: pre-line;
+    margin-block-end: var(--ml-space-4);
+    color: var(--ml-text-body);
+  }
+
+  .yasal-bolum p:last-child {
+    margin-block-end: 0;
+  }
+</style>

@@ -1,0 +1,203 @@
+---
+import Temel from '../layouts/Temel.astro'
+import BolumBasi from '../components/BolumBasi.astro'
+import KalemListesi from '../components/KalemListesi.astro'
+import SurecSeridi from '../components/SurecSeridi.astro'
+import Yaklasim from '../components/Yaklasim.astro'
+import Calismalar from '../components/Calismalar.astro'
+import IletisimFormu from '../components/IletisimFormu.astro'
+import { icerik } from '../data/icerik'
+
+const c = icerik
+---
+
+<Temel>
+  {/* 1 — Hero ------------------------------------------------ */}
+  <section class="giris">
+    <div class="kabuk giris-ic">
+      <div class="giris-metin">
+        <h1>{c.hero.baslik}</h1>
+        <p class="giris-alt">{c.hero.altMetin}</p>
+        <div class="giris-eylemler">
+          <a class="dugme dugme-birincil" href={c.hero.birincilEylem.hedef}>
+            {c.hero.birincilEylem.etiket}
+          </a>
+          <a class="dugme dugme-ikincil" href={c.hero.ikincilEylem.hedef}>
+            {c.hero.ikincilEylem.etiket}
+          </a>
+        </div>
+      </div>
+
+      <div class="giris-serit">
+        <SurecSeridi />
+      </div>
+    </div>
+  </section>
+
+  {/* 2 — Yaklaşım -------------------------------------------- */}
+  <section class="bolum" id="yaklasim">
+    <div class="kabuk">
+      <BolumBasi
+        kunye={c.yaklasim.kunye}
+        baslik={c.yaklasim.baslik}
+        altMetin={c.yaklasim.altMetin}
+      />
+      <Yaklasim />
+    </div>
+  </section>
+
+  {/* 3 — Ne geliştiriyoruz ----------------------------------- */}
+  <section class="bolum" id="hizmetler">
+    <div class="kabuk">
+      <BolumBasi
+        kunye={c.hizmetler.kunye}
+        baslik={c.hizmetler.baslik}
+        altMetin={c.hizmetler.altMetin}
+      />
+      <KalemListesi kalemler={c.hizmetler.kalemler} sutun={3} />
+    </div>
+  </section>
+
+  {/* 4 — Çalışmalar ------------------------------------------ */}
+  <section class="bolum ml-muted" id="calismalar">
+    <div class="kabuk">
+      <BolumBasi
+        kunye={c.calismalar.kunye}
+        baslik={c.calismalar.baslik}
+        altMetin={c.calismalar.altMetin}
+      />
+      <Calismalar />
+    </div>
+  </section>
+
+  {/* 5 — Ürünler --------------------------------------------- */}
+  <section class="bolum ml-muted urunler" id="urunler">
+    <div class="kabuk">
+      <BolumBasi kunye={c.urunler.kunye} baslik={c.urunler.baslik} />
+      <p class="urunler-metin">{c.urunler.henuzYok}</p>
+    </div>
+  </section>
+
+  {/* 6 — Prensipler ------------------------------------------ */}
+  <section class="bolum" id="prensipler">
+    <div class="kabuk">
+      <BolumBasi kunye={c.prensipler.kunye} baslik={c.prensipler.baslik} />
+      <KalemListesi kalemler={c.prensipler.kalemler} sutun={3} />
+    </div>
+  </section>
+
+  {/* 7 — Farkımız -------------------------------------------- */}
+  <section class="bolum" id="neden">
+    <div class="kabuk">
+      <BolumBasi kunye={c.neden.kunye} baslik={c.neden.baslik} />
+      <KalemListesi kalemler={c.neden.kalemler} sutun={2} vurgu="cumle" />
+    </div>
+  </section>
+
+  {/* 8 — Kimler için ----------------------------------------- */}
+  <section class="bolum" id="kimler">
+    <div class="kabuk">
+      <BolumBasi kunye={c.kimlerIcin.kunye} baslik={c.kimlerIcin.baslik} />
+      <KalemListesi kalemler={c.kimlerIcin.kalemler} sutun={3} />
+    </div>
+  </section>
+
+  {/* 9 — Kapanış ve form ------------------------------------- */}
+  <section class="bolum ml-inverse kapanis" id="iletisim">
+    <div class="kabuk kapanis-ic">
+      <div class="kapanis-metin">
+        <p class="uste">{c.iletisim.kunye}</p>
+        <h2>{c.iletisim.kapanisBaslik}</h2>
+        <p class="kapanis-alt">{c.iletisim.kapanisMetin}</p>
+      </div>
+
+      <div class="kapanis-form">
+        <h3 class="form-baslik">{c.iletisim.formBaslik}</h3>
+        <IletisimFormu />
+      </div>
+    </div>
+  </section>
+</Temel>
+
+<style>
+  /* ---------- Hero ---------- */
+  .giris {
+    padding-block: clamp(3rem, 1.5rem + 5vw, 6rem) var(--ml-section-y);
+  }
+
+  .giris-ic {
+    display: grid;
+    gap: var(--ml-space-12);
+    align-items: start;
+  }
+
+  .giris-metin h1 {
+    max-width: 16ch;
+  }
+
+  .giris-alt {
+    margin-block-start: var(--ml-space-6);
+    font-size: var(--ml-text-lg);
+    color: var(--ml-text-body);
+    max-width: 46ch;
+  }
+
+  .giris-eylemler {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ml-space-4);
+    margin-block-start: var(--ml-space-8);
+  }
+
+  @media (min-width: 980px) {
+    .giris-ic {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: var(--ml-space-16);
+      align-items: center;
+    }
+
+    .giris-metin h1 {
+      max-width: 14ch;
+    }
+  }
+
+  /* ---------- Ürünler ---------- */
+  .urunler-metin {
+    max-width: var(--ml-measure);
+    font-size: var(--ml-text-lg);
+    color: var(--ml-text-body);
+  }
+
+  /* ---------- Kapanış ---------- */
+  .kapanis-ic {
+    display: grid;
+    gap: var(--ml-space-12);
+  }
+
+  .kapanis-metin h2 {
+    max-width: 16ch;
+  }
+
+  .kapanis-alt {
+    margin-block-start: var(--ml-space-6);
+    font-size: var(--ml-text-lg);
+    color: var(--ml-cream-base);
+    max-width: 42ch;
+  }
+
+  .form-baslik {
+    font-size: var(--ml-text-xl);
+    color: var(--ml-cream-base);
+    margin-block-end: var(--ml-space-6);
+    padding-block-end: var(--ml-space-4);
+    border-block-end: 1px solid rgb(255 244 214 / 0.25);
+  }
+
+  @media (min-width: 980px) {
+    .kapanis-ic {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: var(--ml-space-16);
+      align-items: center;
+    }
+  }
+</style>

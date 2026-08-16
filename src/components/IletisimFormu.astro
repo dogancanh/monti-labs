@@ -1,0 +1,464 @@
+---
+/* İletişim formu.
+
+   GitHub Pages statik sunum yaptığı için sunucu tarafı doğrulama
+   burada çalışmıyor. Doğrulama istemcide yapılır, gönderim üçüncü
+   taraf bir servise gider. Sunucu tarafı uç nokta silinmedi;
+   sunucu/iletisim-uc-noktasi.ts dosyasında duruyor ve site bir Node
+   ortamına taşındığında olduğu gibi kullanılabilir.
+
+   Etiketler gerçek <label> öğeleridir; placeholder etiket yerine
+   geçmez (marka paketi 03-marka-sesi.md). */
+
+import { icerik } from '../data/icerik'
+import { sirket, FORM_SERVISI } from '../data/site'
+import { yol } from '../lib/yol'
+
+const i = icerik.iletisim
+const epostaBelli = !sirket.eposta.startsWith('DEGISTIR')
+const formHazir = FORM_SERVISI.anahtar.length > 0
+
+const altMetin = i.formAltMetin.replace('{sure}', sirket.formDonusSuresi)
+const basari = i.basariMesaji.replace('{sure}', sirket.formDonusSuresi)
+const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'bize')
+---
+
+{
+  !formHazir && (
+    <div class="baglanmadi" role="note">
+      <p class="kunye baglanmadi-baslik">Form henüz bağlı değil</p>
+      <p>
+        Gönderim servisi tanımlanmadığı için form devre dışı. Bağlamak için
+        <code>src/data/site.ts</code> içindeki <code>FORM_SERVISI.anahtar</code> alanını
+        doldurun. Bu not yalnızca alan boşken görünür.
+      </p>
+    </div>
+  )
+}
+
+<form
+  class="form"
+  id="iletisim-formu"
+  method="post"
+  action={FORM_SERVISI.adres}
+  novalidate
+  data-hazir={formHazir ? 'evet' : 'hayir'}
+  data-adres={FORM_SERVISI.adres}
+  data-anahtar={FORM_SERVISI.anahtar}
+  data-basari={basari}
+  data-hata={hata}
+  data-gonderiliyor={i.gonderiliyor}
+  data-gonder={i.gonderButonu}
+>
+  <div class="form-izgara">
+    <div class="alan">
+      <label for="adSoyad">{i.alanlar.adSoyad}</label>
+      <input
+        type="text"
+        id="adSoyad"
+        name="adSoyad"
+        autocomplete="name"
+        required
+        maxlength="100"
+      />
+      <p class="alan-hata" id="hata-adSoyad" hidden></p>
+    </div>
+
+    <div class="alan">
+      <label for="eposta">{i.alanlar.eposta}</label>
+      <input
+        type="email"
+        id="eposta"
+        name="eposta"
+        autocomplete="email"
+        required
+        maxlength="200"
+      />
+      <p class="alan-hata" id="hata-eposta" hidden></p>
+    </div>
+
+    <div class="alan">
+      <label for="sirket">
+        {i.alanlar.sirket}
+        <span class="alan-opsiyonel">{i.opsiyonelEtiketi}</span>
+      </label>
+      <input
+        type="text"
+        id="sirket"
+        name="sirket"
+        autocomplete="organization"
+        maxlength="120"
+      />
+      <p class="alan-hata" id="hata-sirket" hidden></p>
+    </div>
+
+    <div class="alan">
+      <label for="telefon">
+        {i.alanlar.telefon}
+        <span class="alan-opsiyonel">{i.opsiyonelEtiketi}</span>
+      </label>
+      <input type="tel" id="telefon" name="telefon" autocomplete="tel" maxlength="30" />
+      <p class="alan-hata" id="hata-telefon" hidden></p>
+    </div>
+
+    <div class="alan alan-genis">
+      <label for="mesaj">{i.alanlar.mesaj}</label>
+      <textarea
+        id="mesaj"
+        name="mesaj"
+        rows="5"
+        required
+        minlength="20"
+        maxlength="4000"
+        aria-describedby="yardim-mesaj"></textarea>
+      <p class="alan-yardim" id="yardim-mesaj">{i.mesajYardim}</p>
+      <p class="alan-hata" id="hata-mesaj" hidden></p>
+    </div>
+  </div>
+
+  {/* Bal küpü. İnsan görmez, ekran okuyucu okumaz, klavye uğramaz. */}
+  <div class="kupe" aria-hidden="true">
+    <label for="botcheck">Web siteniz</label>
+    <input type="checkbox" id="botcheck" name="botcheck" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="onay">
+    <input type="checkbox" id="kvkkOnay" name="kvkkOnay" required />
+    <label for="kvkkOnay">
+      {i.kvkkOnayOncesi}<a href={yol('/kvkk')}>{i.kvkkOnayBaglantiEtiketi}</a>{i.kvkkOnaySonrasi}
+    </label>
+  </div>
+  <p class="alan-hata onay-hata" id="hata-kvkkOnay" hidden></p>
+
+  <div class="form-alt">
+    <button
+      type="submit"
+      class="dugme dugme-birincil"
+      data-gonder-dugmesi
+      disabled={!formHazir}
+    >
+      {i.gonderButonu}
+    </button>
+    <p class="form-not">{altMetin}</p>
+  </div>
+
+  <p class="durum" role="status" aria-live="polite" data-durum hidden></p>
+
+  {
+    epostaBelli && (
+      <p class="form-alternatif">
+        Form yerine doğrudan yazmayı tercih ederseniz:{' '}
+        <a href={`mailto:${sirket.eposta}`}>{sirket.eposta}</a>
+      </p>
+    )
+  }
+</form>
+
+<style>
+  .form {
+    display: grid;
+    gap: var(--ml-space-6);
+  }
+
+  .baglanmadi {
+    margin-block-end: var(--ml-space-6);
+    padding: var(--ml-space-4) var(--ml-space-6) var(--ml-space-5);
+    background-color: var(--ml-cobalt-800);
+    border-block-start: 2px solid var(--ml-cream-base);
+    font-size: var(--ml-text-sm);
+    color: var(--ml-cream-base);
+  }
+
+  .baglanmadi-baslik {
+    color: var(--ml-cream-base);
+    margin-block-end: var(--ml-space-2);
+  }
+
+  .baglanmadi code {
+    font-family: var(--ml-font-mono);
+    font-size: 0.92em;
+    background-color: rgb(255 244 214 / 0.15);
+    padding: 0.1em 0.35em;
+  }
+
+  .form-izgara {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .alan-opsiyonel {
+    font-family: var(--ml-font-mono);
+    font-size: var(--ml-text-xs);
+    font-weight: var(--ml-weight-regular);
+    letter-spacing: var(--ml-tracking-wide);
+    color: var(--ml-cobalt-200);
+    margin-inline-start: var(--ml-space-2);
+    text-transform: lowercase;
+  }
+
+  .form :global(.alan label) {
+    color: var(--ml-cream-base);
+  }
+
+  .form :global(.alan input),
+  .form :global(.alan textarea) {
+    border-color: transparent;
+  }
+
+  .form :global(.alan input[aria-invalid='true']),
+  .form :global(.alan textarea[aria-invalid='true']) {
+    border-color: var(--ml-cream-base);
+    border-width: 2px;
+  }
+
+  /* Bal küpü: erişilebilirlik ağacından ve görünümden çıkarılır. */
+  .kupe {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .onay {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--ml-space-3);
+    align-items: start;
+  }
+
+  .onay input {
+    inline-size: 20px;
+    block-size: 20px;
+    margin-block-start: 0.2rem;
+    accent-color: var(--ml-cream-base);
+  }
+
+  .onay label {
+    font-size: var(--ml-text-sm);
+    line-height: var(--ml-leading-normal);
+    color: var(--ml-cream-base);
+  }
+
+  .onay label a {
+    color: var(--ml-cream-base);
+  }
+
+  .onay-hata {
+    margin-block-start: calc(var(--ml-space-4) * -1);
+  }
+
+  .form-alt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ml-space-4) var(--ml-space-6);
+  }
+
+  .form-not {
+    font-size: var(--ml-text-sm);
+    color: var(--ml-cobalt-200);
+  }
+
+  /* Durum kutusu tam çerçeveyle ayrılır. Sayfanın geri kalanı saç teli
+     çizgilerle kuruluyor, tek kenara kalın vurgu koymak o dile aykırı. */
+  .durum {
+    padding: var(--ml-space-4);
+    background-color: var(--ml-cobalt-800);
+    border: 1px solid rgb(255 244 214 / 0.45);
+    font-size: var(--ml-text-sm);
+    color: var(--ml-cream-base);
+  }
+
+  .durum[data-tur='basari'] {
+    border-color: var(--ml-cream-base);
+    font-weight: var(--ml-weight-medium);
+  }
+
+  .form-alternatif {
+    font-size: var(--ml-text-sm);
+    color: var(--ml-cobalt-200);
+  }
+
+  .form-alternatif a {
+    color: var(--ml-cream-base);
+  }
+
+  button[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  @media (min-width: 640px) {
+    .form-izgara {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--ml-space-6);
+    }
+
+    .alan-genis {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('iletisim-formu') as HTMLFormElement | null
+
+  if (form && form.dataset.hazir === 'evet') {
+    const dugme = form.querySelector<HTMLButtonElement>('[data-gonder-dugmesi]')!
+    const durum = form.querySelector<HTMLParagraphElement>('[data-durum]')!
+    const alanlar = ['adSoyad', 'eposta', 'sirket', 'telefon', 'mesaj', 'kvkkOnay']
+
+    /* Bazı alanların kalıcı yardım metni var (mesaj alanı gibi).
+       Hata eklenirken o bağlantı korunmalı, hata temizlenirken de geri
+       gelmeli. Bu yüzden başlangıçtaki aria-describedby değeri saklanır. */
+    const temelAciklama = new Map<string, string>()
+    for (const ad of alanlar) {
+      const girdi = form.elements.namedItem(ad)
+      if (girdi instanceof HTMLElement) {
+        temelAciklama.set(ad, girdi.getAttribute('aria-describedby') ?? '')
+      }
+    }
+
+    const aciklamayiYaz = (girdi: HTMLElement, ad: string, hataVar: boolean): void => {
+      const temel = temelAciklama.get(ad) ?? ''
+      const deger = [temel, hataVar ? `hata-${ad}` : ''].filter(Boolean).join(' ')
+      if (deger) girdi.setAttribute('aria-describedby', deger)
+      else girdi.removeAttribute('aria-describedby')
+    }
+
+    const hatalariTemizle = (): void => {
+      for (const ad of alanlar) {
+        const kutu = document.getElementById(`hata-${ad}`)
+        if (kutu) {
+          kutu.textContent = ''
+          kutu.hidden = true
+        }
+        const girdi = form.elements.namedItem(ad)
+        if (girdi instanceof HTMLElement) {
+          girdi.removeAttribute('aria-invalid')
+          aciklamayiYaz(girdi, ad, false)
+        }
+      }
+      durum.hidden = true
+      durum.textContent = ''
+      durum.removeAttribute('data-tur')
+    }
+
+    const hatalariGoster = (hatalar: Record<string, string>): void => {
+      let ilkOdak: HTMLElement | null = null
+
+      for (const [ad, mesaj] of Object.entries(hatalar)) {
+        if (ad === 'genel') {
+          durum.textContent = mesaj
+          durum.hidden = false
+          continue
+        }
+        const kutu = document.getElementById(`hata-${ad}`)
+        if (kutu) {
+          kutu.textContent = mesaj
+          kutu.hidden = false
+        }
+        const girdi = form.elements.namedItem(ad)
+        if (girdi instanceof HTMLElement) {
+          girdi.setAttribute('aria-invalid', 'true')
+          aciklamayiYaz(girdi, ad, true)
+          if (!ilkOdak) ilkOdak = girdi
+        }
+      }
+
+      if (ilkOdak) ilkOdak.focus()
+    }
+
+    /* Doğrulama kuralları sunucu sürümüyle aynı tutuldu.
+       Statik barındırmada bu kontroller güvenlik sınırı değildir,
+       istenmeyen gönderimi asıl eleyen servisin kendi filtresidir.
+       Buradaki iş kullanıcıya anında ve anlaşılır geri bildirim vermek. */
+    const dogrula = (v: Record<string, string>, onay: boolean) => {
+      const h: Record<string, string> = {}
+
+      if (!v.adSoyad) h.adSoyad = 'Ad soyad alanı boş. Size nasıl hitap edeceğimizi yazın.'
+      else if (v.adSoyad.length < 2 || v.adSoyad.length > 100)
+        h.adSoyad = 'Ad soyad 2 ile 100 karakter arasında olmalı.'
+
+      if (!v.eposta) h.eposta = 'E-posta alanı boş. Dönüş yapabilmemiz için gerekli.'
+      else if (v.eposta.length > 200)
+        h.eposta = 'E-posta adresi çok uzun. En fazla 200 karakter olabilir.'
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.eposta))
+        h.eposta = 'E-posta adresi geçerli görünmüyor. Adresi kontrol edip tekrar deneyin.'
+
+      if (v.sirket.length > 120) h.sirket = 'Şirket adı en fazla 120 karakter olabilir.'
+      if (v.telefon.length > 30) h.telefon = 'Telefon numarası en fazla 30 karakter olabilir.'
+
+      if (!v.mesaj) h.mesaj = 'Mesaj alanı boş. Şu an işin nasıl yürüdüğünü kısaca yazın.'
+      else if (v.mesaj.length < 20) h.mesaj = 'Mesaj çok kısa. En az 20 karakter yazın.'
+      else if (v.mesaj.length > 4000)
+        h.mesaj = 'Mesaj çok uzun. En fazla 4000 karakter yazabilirsiniz.'
+
+      if (!onay) h.kvkkOnay = 'Devam etmek için aydınlatma metnini onaylamanız gerekiyor.'
+
+      return h
+    }
+
+    form.addEventListener('submit', async (olay) => {
+      olay.preventDefault()
+      if (dugme.disabled) return
+      hatalariTemizle()
+
+      const veri = new FormData(form)
+      const al = (ad: string) => String(veri.get(ad) ?? '').trim()
+      const alanDegerleri = {
+        adSoyad: al('adSoyad'),
+        eposta: al('eposta'),
+        sirket: al('sirket'),
+        telefon: al('telefon'),
+        mesaj: al('mesaj'),
+      }
+      const onay = veri.get('kvkkOnay') === 'on'
+
+      const hatalar = dogrula(alanDegerleri, onay)
+      if (Object.keys(hatalar).length > 0) {
+        hatalariGoster(hatalar)
+        return
+      }
+
+      dugme.disabled = true
+      dugme.textContent = form.dataset.gonderiliyor ?? 'Gönderiliyor'
+
+      try {
+        const yanit = await fetch(form.dataset.adres!, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            access_key: form.dataset.anahtar,
+            subject: `Yeni iletişim formu: ${alanDegerleri.adSoyad}`,
+            from_name: 'Monti Labs sitesi',
+            name: alanDegerleri.adSoyad,
+            email: alanDegerleri.eposta,
+            replyto: alanDegerleri.eposta,
+            sirket: alanDegerleri.sirket || '-',
+            telefon: alanDegerleri.telefon || '-',
+            message: alanDegerleri.mesaj,
+            botcheck: veri.get('botcheck') ? 'true' : '',
+          }),
+        })
+        const sonuc = (await yanit.json()) as { success?: boolean; message?: string }
+
+        if (yanit.ok && sonuc.success) {
+          form.reset()
+          durum.textContent = form.dataset.basari ?? ''
+          durum.dataset.tur = 'basari'
+          durum.hidden = false
+        } else {
+          hatalariGoster({ genel: form.dataset.hata ?? '' })
+        }
+      } catch {
+        hatalariGoster({ genel: form.dataset.hata ?? '' })
+      } finally {
+        dugme.disabled = false
+        dugme.textContent = form.dataset.gonder ?? 'Gönder'
+      }
+    })
+  }
+</script>

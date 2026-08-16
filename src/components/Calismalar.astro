@@ -1,0 +1,192 @@
+---
+/* Vaka çalışmaları.
+
+   Marka paketi bu bölümü sitenin en önemli parçası sayıyor.
+   Müşteri adı paylaşılmadığı için sektör yazılır ve kartların
+   üstünde gizlilik notu durur.
+
+   `sonuc` alanı olmayan vakalarda sonuç satırı hiç basılmaz.
+   Ölçülmemiş bir sonucu doldurmak marka sesine aykırıdır. */
+
+import { getCollection } from 'astro:content'
+import { icerik } from '../data/icerik'
+
+const c = icerik.calismalar
+
+const kayitlar = (await getCollection('calismalar')).sort(
+  (a, b) => a.data.sira - b.data.sira,
+)
+
+/* onayBekliyor alanı kendi başına bir şey yapmaz. Derleme sırasında
+   uyarı basılır ki onaylanmamış içerik sessizce yayına gitmesin.
+   Kartlar yine gösterilir: bölüm boş kalırsa site iş görmez, asıl
+   olan onayın atlanmadığının görünür olmasıdır. */
+const onaysiz = kayitlar.filter((k) => k.data.onayBekliyor)
+if (onaysiz.length > 0) {
+  console.warn(
+    `\n[monti] ${onaysiz.length} vaka çalışması onay bekliyor ve sitede görünüyor:\n` +
+      onaysiz.map((k) => `  - ${k.id} (${k.data.baslik})`).join('\n') +
+      `\n  Onayladıktan sonra ilgili dosyada onayBekliyor: false yapın.` +
+      `\n  Ayrıntı: src/content/calismalar/OKUBENI.md\n`,
+  )
+}
+
+const turAdlari: Record<string, string> = {
+  uygulama: 'Uygulama',
+  'b2b-urun': 'B2B ürün',
+  'web-sitesi': 'Web sitesi',
+  otomasyon: 'Otomasyon',
+  entegrasyon: 'Entegrasyon',
+}
+---
+
+<p class="gizlilik">{c.gizlilikNotu}</p>
+
+<ul class="kartlar">
+  {
+    kayitlar.map((kayit) => {
+      const v = kayit.data
+      return (
+        <li class="kart">
+          <div class="kart-ust">
+            <span class="kunye kart-sektor">{v.sektor}</span>
+            <span class="kunye kart-tur">{turAdlari[v.tur] ?? v.tur}</span>
+          </div>
+
+          <h3 class="kart-baslik">{v.baslik}</h3>
+
+          <dl class="kart-govde">
+            <dt class="kunye">{c.alanlar.problem}</dt>
+            <dd>{v.problem}</dd>
+
+            <dt class="kunye">{c.alanlar.neYaptik}</dt>
+            <dd>{v.neYaptik}</dd>
+
+            {v.sonuc && (
+              <Fragment>
+                <dt class="kunye kart-sonuc-etiket">{c.alanlar.sonuc}</dt>
+                <dd class="kart-sonuc">{v.sonuc}</dd>
+              </Fragment>
+            )}
+          </dl>
+
+          {v.teknolojiler.length > 0 && (
+            <ul class="etiket-seridi kart-etiketler">
+              {v.teknolojiler.map((t) => (
+                <li class="etiket">{t}</li>
+              ))}
+            </ul>
+          )}
+        </li>
+      )
+    })
+  }
+</ul>
+
+<style>
+  /* Bu not da bölüm dilini izler: üstten çizgi, sol vurgu yok. */
+  .gizlilik {
+    font-size: var(--ml-text-sm);
+    color: var(--ml-text-muted);
+    max-width: 58ch;
+    margin-block-end: var(--ml-space-8);
+    padding-block-start: var(--ml-space-4);
+    border-block-start: 1px solid var(--ml-cobalt-200);
+  }
+
+  .kartlar {
+    display: grid;
+    gap: var(--ml-space-6);
+  }
+
+  .kart {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ml-space-4);
+    background-color: var(--ml-white);
+    border: 1px solid var(--ml-ink-100);
+    padding: var(--ml-space-6);
+  }
+
+  .kart-ust {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--ml-space-2) var(--ml-space-3);
+  }
+
+  .kart-sektor {
+    color: var(--ml-cobalt-600);
+    font-weight: var(--ml-weight-medium);
+  }
+
+  .kart-tur {
+    color: var(--ml-ink-500);
+  }
+
+  /* Ayraç metin değil, çizgidir. ink-300 yalnızca dekoratif öğede
+     kullanılabilir; metin rengi olarak kontrastı yetmiyor. */
+  .kart-tur::before {
+    content: '';
+    display: inline-block;
+    width: 1px;
+    height: 0.85em;
+    margin-inline-end: var(--ml-space-3);
+    background-color: var(--ml-ink-300);
+    vertical-align: -0.08em;
+  }
+
+  .kart-baslik {
+    font-size: var(--ml-text-xl);
+    text-wrap: balance;
+  }
+
+  .kart-govde {
+    display: grid;
+    gap: var(--ml-space-2);
+    margin: 0;
+    flex: 1;
+  }
+
+  .kart-govde dt {
+    color: var(--ml-ink-500);
+    margin-block-start: var(--ml-space-2);
+  }
+
+  .kart-govde dt:first-of-type {
+    margin-block-start: 0;
+  }
+
+  .kart-govde dd {
+    margin: 0;
+    color: var(--ml-text-body);
+    font-size: var(--ml-text-sm);
+    line-height: var(--ml-leading-relaxed);
+  }
+
+  .kart-sonuc-etiket {
+    color: var(--ml-cobalt-600) !important;
+  }
+
+  .kart-sonuc {
+    color: var(--ml-ink-900) !important;
+    font-weight: var(--ml-weight-medium);
+  }
+
+  .kart-etiketler {
+    margin-block-start: var(--ml-space-2);
+    padding-block-start: var(--ml-space-4);
+    border-block-start: 1px solid var(--ml-ink-100);
+  }
+
+  @media (min-width: 820px) {
+    .kartlar {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--ml-space-6);
+    }
+
+    .kart {
+      padding: var(--ml-space-8);
+    }
+  }
+</style>

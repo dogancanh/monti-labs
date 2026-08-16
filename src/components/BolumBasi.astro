@@ -1,0 +1,22 @@
+---
+/* Bölüm başlığı.
+   Üstte kobalt bir saç teli çizgi, altında künye ve başlık.
+   Künyenin önündeki kama logonun kütlelerinden türetilmiştir. */
+
+interface Props {
+  kunye: string
+  baslik: string
+  altMetin?: string
+  /** Başlığın etiketi. Sayfada tek h1 olduğu için varsayılan h2. */
+  seviye?: 'h2' | 'h3'
+}
+
+const { kunye, baslik, altMetin, seviye = 'h2' } = Astro.props
+const Baslik = seviye
+---
+
+<header class="bolum-basi">
+  <p class="uste">{kunye}</p>
+  <Baslik>{baslik}</Baslik>
+  {altMetin && <p class="bolum-alt">{altMetin}</p>}
+</header>

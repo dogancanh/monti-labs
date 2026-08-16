@@ -1,0 +1,388 @@
+---
+import '../styles/tokens.css'
+import '../styles/global.css'
+
+/* Fontlar self-host edilir. Türkçe için hem latin hem latin-ext gerekir:
+   ı (U+0131) latin altkümesinde, İ ğ Ğ ş Ş (U+0130, U+011E-011F, U+015E-015F)
+   latin-ext altkümesindedir. İkisi de yüklenmezse Türkçe metin bozulur. */
+import '@fontsource-variable/outfit'
+import '@fontsource/ibm-plex-sans/latin-400.css'
+import '@fontsource/ibm-plex-sans/latin-ext-400.css'
+import '@fontsource/ibm-plex-sans/latin-500.css'
+import '@fontsource/ibm-plex-sans/latin-ext-500.css'
+import '@fontsource/ibm-plex-sans/latin-600.css'
+import '@fontsource/ibm-plex-sans/latin-ext-600.css'
+import '@fontsource/ibm-plex-mono/latin-400.css'
+import '@fontsource/ibm-plex-mono/latin-ext-400.css'
+import '@fontsource/ibm-plex-mono/latin-500.css'
+import '@fontsource/ibm-plex-mono/latin-ext-500.css'
+
+/* İlk boyamada gereken iki font dosyası önceden yüklenir. */
+import outfitLatin from '@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2?url'
+import plexSansLatin from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2?url'
+
+import Isaret from '../components/Isaret.astro'
+import { sirket, gezinti, yasalSayfalar, meta, ARAMA_MOTORLARINA_ACIK } from '../data/site'
+import { icerik } from '../data/icerik'
+import { yol, tamAdres } from '../lib/yol'
+
+interface Props {
+  baslik?: string
+  aciklama?: string
+  /** Sayfaya özel gövde sınıfı (örneğin 404). */
+  govdeSinifi?: string
+}
+
+const { baslik, aciklama, govdeSinifi } = Astro.props
+
+const sayfaBasligi = baslik ? `${baslik} · ${sirket.ad}` : meta.baslik
+const sayfaAciklamasi = aciklama ?? meta.aciklama
+
+/* Astro.url.pathname derleme sırasında taban yolunu zaten içerir. */
+const kanonik = new URL(Astro.url.pathname, Astro.site ?? 'https://dogancanh.github.io')
+const ogGorsel = tamAdres('/og.png', Astro.site)
+const anaAdres = tamAdres('/', Astro.site)
+const yil = new Date().getFullYear()
+
+const kurulusVerisi = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: sirket.ad,
+  url: anaAdres,
+  logo: tamAdres('/favicon.svg', Astro.site),
+  description: meta.aciklama,
+}
+
+const siteVerisi = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: sirket.ad,
+  url: anaAdres,
+  inLanguage: 'tr-TR',
+}
+---
+
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{sayfaBasligi}</title>
+    <meta name="description" content={sayfaAciklamasi} />
+    <link rel="canonical" href={kanonik.toString()} />
+
+    {
+      /* İçerik taslak olduğu sürece arama motorlarına kapalı.
+         Açmak için src/data/site.ts içindeki ARAMA_MOTORLARINA_ACIK
+         değerini true yapmak yeterli, robots.txt de ona bakıyor. */
+      !ARAMA_MOTORLARINA_ACIK && <meta name="robots" content="noindex, nofollow" />
+    }
+
+    <link rel="preload" href={outfitLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={plexSansLatin} as="font" type="font/woff2" crossorigin />
+
+    <link rel="icon" href={yol('/favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={yol('/apple-touch-icon.png')} />
+    <link rel="manifest" href={yol('/site.webmanifest')} />
+    <meta name="theme-color" content="#263BAA" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={sirket.ad} />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:title" content={baslik ? sayfaBasligi : meta.ogBaslik} />
+    <meta property="og:description" content={aciklama ?? meta.ogAciklama} />
+    <meta property="og:url" content={kanonik.toString()} />
+    <meta property="og:image" content={ogGorsel} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={baslik ? sayfaBasligi : meta.ogBaslik} />
+    <meta name="twitter:description" content={aciklama ?? meta.ogAciklama} />
+    <meta name="twitter:image" content={ogGorsel} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(kurulusVerisi)} is:inline />
+    <script type="application/ld+json" set:html={JSON.stringify(siteVerisi)} is:inline />
+  </head>
+
+  <body class={govdeSinifi}>
+    <a class="atla" href="#ana">İçeriğe geç</a>
+
+    <header class="ust">
+      <div class="kabuk ust-ic">
+        <a class="ust-logo" href={yol('/')} aria-label={`${sirket.ad} ana sayfa`}>
+          <picture>
+            <source srcset={yol('/logo-yatay.avif')} type="image/avif" />
+            <source srcset={yol('/logo-yatay.webp')} type="image/webp" />
+            <img
+              src={yol('/logo-yatay.png')}
+              alt="Monti Labs"
+              width="177"
+              height="26"
+              decoding="async"
+            />
+          </picture>
+        </a>
+
+        <nav class="ust-gezinti" aria-label="Ana gezinti">
+          {gezinti.map((oge) => <a href={yol(`/${oge.hedef}`)}>{oge.etiket}</a>)}
+        </nav>
+
+        <a class="dugme dugme-birincil ust-eylem" href={yol('/#iletisim')}>
+          Projenizi anlatın
+        </a>
+      </div>
+    </header>
+
+    <main id="ana">
+      <slot />
+    </main>
+
+    <footer class="dip">
+      <div class="kabuk">
+        <div class="dip-ust">
+          <div class="dip-marka">
+            <Isaret yukseklik="30px" />
+            <p class="dip-tanim">{icerik.footer.kisaTanim}</p>
+          </div>
+
+          <div class="dip-gruplar">
+            {
+              icerik.footer.gruplar.map((grup) => (
+                <div class="dip-grup">
+                  <h2 class="kunye">{grup.baslik}</h2>
+                  <ul>
+                    {grup.baglantilar.map((b) => (
+                      <li>
+                        <a href={yol(b.hedef)}>{b.etiket}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))
+            }
+            <div class="dip-grup">
+              <h2 class="kunye">Yasal</h2>
+              <ul>
+                {yasalSayfalar.map((s) => (
+                  <li>
+                    <a href={yol(s.hedef)}>{s.etiket}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="dip-alt">
+          <p class="dip-telif">{icerik.footer.telifSablonu.replace('{yil}', String(yil))}</p>
+          <ul class="dip-iletisim">
+            {
+              !sirket.eposta.startsWith('DEGISTIR') && (
+                <li>
+                  <a href={`mailto:${sirket.eposta}`}>{sirket.eposta}</a>
+                </li>
+              )
+            }
+            {
+              sirket.telefon && (
+                <li>
+                  <a href={`tel:${sirket.telefon.replace(/\s/g, '')}`}>{sirket.telefon}</a>
+                </li>
+              )
+            }
+            {
+              sirket.linkedin && (
+                <li>
+                  <a href={sirket.linkedin} rel="me noopener">
+                    LinkedIn
+                  </a>
+                </li>
+              )
+            }
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  /* ---------- Üst çubuk ---------- */
+  .ust {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background-color: var(--ml-paper);
+    border-block-end: 1px solid transparent;
+    transition: border-color var(--ml-duration-normal) var(--ml-ease-standard);
+  }
+
+  .ust[data-kaydi='evet'] {
+    border-block-end-color: var(--ml-ink-100);
+  }
+
+  .ust-ic {
+    display: flex;
+    align-items: center;
+    gap: var(--ml-space-6);
+    min-height: 72px;
+  }
+
+  /* Resmî yatay kilit kullanılır. Kelime markası hiçbir yerde
+     başka bir fontla yeniden dizilmez (02-gorsel-kimlik.md).
+     Kaynak PNG vektöre çevrildiğinde burası SVG ile değiştirilebilir. */
+  .ust-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    margin-inline-end: auto;
+  }
+
+  .ust-logo img {
+    height: 24px;
+    width: auto;
+  }
+
+  @media (min-width: 560px) {
+    .ust-logo img {
+      height: 26px;
+    }
+  }
+
+  .ust-gezinti {
+    display: none;
+    gap: var(--ml-space-6);
+  }
+
+  .ust-gezinti a {
+    color: var(--ml-text-body);
+    text-decoration: none;
+    font-size: var(--ml-text-sm);
+    font-weight: var(--ml-weight-medium);
+    padding-block: var(--ml-space-2);
+    border-block-end: 2px solid transparent;
+  }
+
+  .ust-gezinti a:hover {
+    color: var(--ml-cobalt-600);
+    border-block-end-color: var(--ml-cobalt-600);
+  }
+
+  .ust-eylem {
+    display: none;
+    min-height: 42px;
+    padding-inline: var(--ml-space-6);
+    font-size: var(--ml-text-sm);
+  }
+
+  @media (min-width: 900px) {
+    .ust-gezinti,
+    .ust-eylem {
+      display: flex;
+    }
+  }
+
+  /* ---------- Alt bilgi ---------- */
+  .dip {
+    background-color: var(--ml-ink-900);
+    color: var(--ml-cream-base);
+    padding-block: var(--ml-space-16) var(--ml-space-8);
+  }
+
+  .dip-ust {
+    display: grid;
+    gap: var(--ml-space-12);
+    padding-block-end: var(--ml-space-12);
+    border-block-end: 1px solid rgb(255 244 214 / 0.18);
+  }
+
+  .dip-marka {
+    color: var(--ml-cream-base);
+    display: flex;
+    flex-direction: column;
+    gap: var(--ml-space-4);
+  }
+
+  .dip-tanim {
+    max-width: 42ch;
+    color: rgb(255 244 214 / 0.78);
+    font-size: var(--ml-text-sm);
+    line-height: var(--ml-leading-relaxed);
+  }
+
+  .dip-gruplar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--ml-space-8);
+  }
+
+  .dip-grup .kunye {
+    color: rgb(255 244 214 / 0.6);
+    font-size: var(--ml-text-xs);
+    font-weight: var(--ml-weight-medium);
+    margin-block-end: var(--ml-space-4);
+  }
+
+  .dip-grup ul {
+    display: grid;
+    gap: var(--ml-space-3);
+  }
+
+  .dip-grup a,
+  .dip-iletisim a {
+    color: var(--ml-cream-base);
+    font-size: var(--ml-text-sm);
+    text-decoration: none;
+  }
+
+  .dip-grup a:hover,
+  .dip-iletisim a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+  }
+
+  .dip-alt {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ml-space-4) var(--ml-space-8);
+    justify-content: space-between;
+    align-items: center;
+    padding-block-start: var(--ml-space-8);
+  }
+
+  /* Marka adı büyük harfe çevrilmez, o yüzden .kunye kullanılmaz. */
+  .dip-telif {
+    font-family: var(--ml-font-mono);
+    font-size: var(--ml-text-xs);
+    letter-spacing: var(--ml-tracking-wide);
+    color: rgb(255 244 214 / 0.6);
+  }
+
+  .dip-iletisim {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ml-space-6);
+  }
+
+  @media (min-width: 860px) {
+    .dip-ust {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+      gap: var(--ml-space-16);
+    }
+  }
+</style>
+
+<script is:inline>
+  // Üst çubuğun alt kenarlığı yalnızca sayfa kaydırıldığında görünür.
+  ;(function () {
+    var ust = document.querySelector('.ust')
+    if (!ust) return
+    var guncelle = function () {
+      ust.dataset.kaydi = window.scrollY > 8 ? 'evet' : 'hayir'
+    }
+    guncelle()
+    window.addEventListener('scroll', guncelle, { passive: true })
+  })()
+</script>

@@ -1,0 +1,73 @@
+name: GitHub Pages yayını
+
+# main dalına her gönderimde site derlenir ve yayınlanır.
+# Elle çalıştırmak için Actions sekmesindeki "Run workflow" düğmesi kullanılır.
+#
+# Not: bu iş akışı hiçbir kullanıcı girdisi (issue, PR, yorum başlığı vb.)
+# kullanmaz. Değişken olarak yalnızca actions/configure-pages çıktıları
+# okunur, o da GitHub tarafından üretilir.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Pages'e yazma izni. GITHUB_TOKEN dışında gizli anahtar gerekmez.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Aynı anda tek yayın çalışsın. Devam eden yayın iptal edilmez ki
+# yarım kalmış bir site yayında kalmasın.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  derle:
+    name: Derle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Depoyu al
+        uses: actions/checkout@v4
+
+      - name: Node kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Bağımlılıkları yükle
+        run: npm ci
+
+      # Adres ve taban yolu buradan geliyor, bu yüzden derlemeden ÖNCE çalışır.
+      # Depo adı değişirse taban yolu kendiliğinden güncellenir.
+      - name: Pages yapılandırması
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Tip denetimi
+        run: npm run check
+
+      - name: Derle
+        run: npm run build
+        env:
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      - name: Çıktıyı yükle
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  yayinla:
+    name: Yayınla
+    needs: derle
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.yayin.outputs.page_url }}
+    steps:
+      - name: Pages'e gönder
+        id: yayin
+        uses: actions/deploy-pages@v4
