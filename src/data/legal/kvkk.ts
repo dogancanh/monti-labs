@@ -18,7 +18,7 @@ export const kvkk: YasalMetin = {
       baslik: 'Veri sorumlusunun kimliği',
       paragraflar: [
         'Kişisel verileriniz, 6698 sayılı Kişisel Verilerin Korunması Kanunu uyarınca veri sorumlusu sıfatıyla aşağıda bilgileri yer alan şirket tarafından işlenmektedir.',
-        'Unvan: [RESMİ UNVAN]\nAdres: [ADRES]\nE-posta: [E-POSTA]\nTelefon: [TELEFON]\nVergi dairesi ve numarası: [VERGİ DAİRESİ / NO]\nMERSİS numarası: [MERSİS NO]',
+        'Unvan: [RESMİ UNVAN]\nAdres: [ADRES]\nE-posta: merhaba@montilabs.com\nTelefon: [TELEFON]\nVergi dairesi ve numarası: [VERGİ DAİRESİ / NO]\nMERSİS numarası: [MERSİS NO]',
       ],
     },
     {
@@ -26,8 +26,8 @@ export const kvkk: YasalMetin = {
       paragraflar: [
         'İletişim formu aracılığıyla yalnızca sizin yazdığınız veriler işlenir:',
         'Kimlik: ad soyad\nİletişim: e-posta adresi, telefon numarası (isteğe bağlı)\nMüşteri işlem: şirket adı (isteğe bağlı), mesaj içeriği',
-        'Form gönderimi sırasında, kötüye kullanımı önlemek amacıyla IP adresiniz sunucu belleğinde on beş dakikayı aşmayacak şekilde geçici olarak tutulur. Bu kayıt diske yazılmaz ve arşivlenmez.',
-        'Sitede çerez, tarayıcı depolaması ve analitik aracı kullanılmadığı için ziyaretiniz sırasında bunların dışında veri toplanmaz.',
+        'Formu gönderdiğinizde mesaj, tarayıcınızdan doğrudan gönderim sağlayıcımız Web3Forms\'a iletilir ve oradan bize e-posta olarak ulaşır. Bu iletim sırasında IP adresiniz sağlayıcı tarafından görülür; sağlayıcının bu veriyi işleme ve saklama koşulları kendi gizlilik politikasına tabidir.',
+        'Sitenin kendisi bir sunucu uygulaması çalıştırmaz. Sitede çerez, tarayıcı depolaması ve analitik aracı kullanılmadığı için ziyaretiniz sırasında bunların dışında veri toplanmaz.',
       ],
     },
     {
@@ -56,7 +56,7 @@ export const kvkk: YasalMetin = {
       baslik: 'Aktarım',
       paragraflar: [
         'Kişisel verileriniz, hizmetin sunulabilmesi için zorunlu olan aşağıdaki hizmet sağlayıcılar dışında üçüncü kişilere aktarılmaz:',
-        'Siteyi barındıran altyapı sağlayıcısı: [BARINDIRMA SAĞLAYICISI]\nForm mesajını ileten e-posta sağlayıcısı: [GÖNDERİM SAĞLAYICISI]',
+        'Siteyi barındıran altyapı sağlayıcısı: GitHub Pages (GitHub, Inc.)\nForm mesajını ileten e-posta sağlayıcısı: Web3Forms',
         'Bunun dışında verileriniz yalnızca kanunen yetkili kamu kurum ve kuruluşlarına, mevzuatın öngördüğü ölçüde aktarılabilir. Verileriniz satılmaz ve kiralanmaz.',
       ],
     },
@@ -78,7 +78,7 @@ export const kvkk: YasalMetin = {
       baslik: 'Başvuru yolu',
       paragraflar: [
         'Haklarınıza ilişkin taleplerinizi, Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ\'de belirtilen usullere uygun olarak iletebilirsiniz.',
-        'E-posta: [E-POSTA]\nPosta: [ADRES]',
+        'E-posta: merhaba@montilabs.com\nPosta: [ADRES]',
         'Başvurunuz, talebin niteliğine göre en kısa sürede ve en geç otuz gün içinde sonuçlandırılır. İşlemin ayrıca bir maliyet gerektirmesi hâlinde Kurulca belirlenen tarifedeki ücret alınabilir.',
       ],
     },

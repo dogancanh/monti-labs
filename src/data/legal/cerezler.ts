@@ -45,15 +45,15 @@ export const cerezler: YasalMetin = {
       baslik: 'İletişim formu ve IP adresi',
       paragraflar: [
         'İletişim formu çerez kullanmadan çalışır. Formu doldurup göndermediğiniz sürece hiçbir veri bize ulaşmaz.',
-        'Formu gönderdiğinizde, kötüye kullanımı önlemek amacıyla IP adresiniz sunucunun belleğinde geçici olarak tutulur. Bu, aynı adresten kısa sürede çok sayıda mesaj gönderilmesini engellemek içindir. Kayıt on beş dakika sonra silinir, diske yazılmaz ve kalıcı olarak saklanmaz.',
-        'Bu bir çerez değildir, ancak şeffaflık açısından burada belirtilmiştir. Kişisel verilerin işlenmesine dair ayrıntı için KVKK Aydınlatma Metni ve Gizlilik Politikası sayfalarına bakabilirsiniz.',
+        'Formu gönderdiğinizde mesaj, tarayıcınızdan doğrudan gönderim sağlayıcımız Web3Forms\'a iletilir. Bu iletim sırasında IP adresiniz sağlayıcı tarafından görülür ve sağlayıcının kendi politikası uyarınca işlenir. Sağlayıcı bu işlem için tarayıcınıza çerez yazabilir.',
+        'Kişisel verilerin işlenmesine dair ayrıntı için KVKK Aydınlatma Metni ve Gizlilik Politikası sayfalarına bakabilirsiniz.',
       ],
     },
     {
       baslik: 'Sunucu kayıtları',
       paragraflar: [
         'Siteyi barındıran altyapı, tüm web sunucularında olduğu gibi teknik erişim kayıtları tutabilir. Bu kayıtlar IP adresi, istek zamanı ve talep edilen adresi içerir; güvenlik ve hata takibi dışında bir amaçla kullanılmaz.',
-        'Barındırma sağlayıcısı ve saklama süresi için: [BARINDIRMA SAĞLAYICISI], [SAKLAMA SÜRESİ].',
+        'Barındırma sağlayıcısı ve saklama süresi için: GitHub Pages (GitHub, Inc.), [SAKLAMA SÜRESİ].',
       ],
     },
     {
@@ -74,7 +74,7 @@ export const cerezler: YasalMetin = {
       baslik: 'İletişim',
       paragraflar: [
         'Bu politika hakkında sorunuz varsa bize yazabilirsiniz.',
-        'E-posta: [E-POSTA]\nAdres: [ADRES]',
+        'E-posta: merhaba@montilabs.com\nAdres: [ADRES]',
       ],
     },
   ],

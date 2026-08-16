@@ -4,7 +4,7 @@
 // Bu metin sitenin GERÇEK davranışını anlatır:
 //   - Statik sayfalar, analitik yok, çerez yok, tarayıcı depolaması yok.
 //   - Toplanan tek veri iletişim formuna yazdıklarınızdır.
-//   - Form gönderiminde IP adresi hız sınırı için bellekte geçici tutulur.
+//   - Kendi sunucumuz yok. Form dogrudan tarayicidan Web3Forms'a gider.
 // Siteye analitik, çerez veya yeni bir veri toplama noktası eklenirse
 // BU DOSYA GÜNCELLENMELİDİR.
 
@@ -20,7 +20,7 @@ export const gizlilik: YasalMetin = {
     {
       baslik: 'Kapsam',
       paragraflar: [
-        'Bu politika [ALAN ADI] adresindeki web sitesi için geçerlidir. Sitenin sahibi ve veri sorumlusu [RESMİ UNVAN] şirketidir.',
+        'Bu politika dogancanh.github.io/monti-labs adresindeki web sitesi için geçerlidir. Sitenin sahibi ve veri sorumlusu [RESMİ UNVAN] şirketidir.',
         'Kişisel verilerin işlenmesine dair 6698 sayılı Kanun kapsamındaki aydınlatma yükümlülüğü ayrı bir metinde ele alınmıştır. KVKK Aydınlatma Metni sayfasına bakabilirsiniz.',
       ],
     },
@@ -43,8 +43,9 @@ export const gizlilik: YasalMetin = {
     {
       baslik: 'IP adresi ve sunucu kayıtları',
       paragraflar: [
-        'Formu gönderdiğinizde IP adresiniz, kötüye kullanımı önlemek için sunucunun belleğinde geçici olarak tutulur. Amaç, aynı adresten kısa sürede çok sayıda mesaj gönderilmesini engellemektir. Kayıt on beş dakika içinde silinir ve diske yazılmaz.',
-        'Ayrıca siteyi barındıran altyapı, tüm web sunucularında olduğu gibi teknik erişim kayıtları tutabilir. Barındırma sağlayıcısı: [BARINDIRMA SAĞLAYICISI]. Bu kayıtların saklama süresi sağlayıcının politikasına tabidir.',
+        'Site statik dosyalardan oluşur ve kendi sunucu uygulamasını çalıştırmaz. Bizim tuttuğumuz bir erişim kaydı yoktur.',
+        'Formu gönderdiğinizde mesaj tarayıcınızdan doğrudan Web3Forms\'a gider. Bu iletim sırasında IP adresiniz sağlayıcı tarafından görülür ve sağlayıcının kendi politikası uyarınca işlenir.',
+        'Ayrıca siteyi barındıran altyapı, tüm web sunucularında olduğu gibi teknik erişim kayıtları tutabilir. Barındırma sağlayıcısı: GitHub Pages (GitHub, Inc.). Bu kayıtların saklama süresi sağlayıcının politikasına tabidir.',
       ],
     },
     {
@@ -58,7 +59,7 @@ export const gizlilik: YasalMetin = {
       baslik: 'Kimlerle paylaşılıyor',
       paragraflar: [
         'Mesajınızın bize ulaşabilmesi için iki hizmet sağlayıcı devrededir:',
-        'Siteyi barındıran altyapı sağlayıcısı: [BARINDIRMA SAĞLAYICISI]\nForm mesajını ileten e-posta sağlayıcısı: [GÖNDERİM SAĞLAYICISI]',
+        'Siteyi barındıran altyapı sağlayıcısı: GitHub Pages (GitHub, Inc.)\nForm mesajını ileten e-posta sağlayıcısı: Web3Forms',
         'Bunun dışında verileriniz üçüncü taraflarla paylaşılmaz, satılmaz ve kiralanmaz. Yasal zorunluluk veya yetkili merci talebi halinde mevzuatın gerektirdiği ölçüde paylaşım yapılabilir.',
       ],
     },
@@ -66,7 +67,7 @@ export const gizlilik: YasalMetin = {
       baslik: 'Ne kadar saklıyoruz',
       paragraflar: [
         'İletişim formundan gelen mesajlar [SAKLAMA SÜRESİ] süreyle saklanır, sonrasında silinir.',
-        'Daha erken silinmesini isterseniz [E-POSTA] adresine yazmanız yeterlidir.',
+        'Daha erken silinmesini isterseniz merhaba@montilabs.com adresine yazmanız yeterlidir.',
       ],
     },
     {
@@ -81,7 +82,7 @@ export const gizlilik: YasalMetin = {
       baslik: 'Haklarınız',
       paragraflar: [
         'Kişisel verilerinize ilişkin haklarınız 6698 sayılı Kanun\'un 11. maddesinde düzenlenmiştir. Hakların tam listesi ve başvuru yolu KVKK Aydınlatma Metni sayfasında yer alır.',
-        'Başvurularınızı [E-POSTA] adresine iletebilirsiniz.',
+        'Başvurularınızı merhaba@montilabs.com adresine iletebilirsiniz.',
       ],
     },
     {
@@ -100,7 +101,7 @@ export const gizlilik: YasalMetin = {
       baslik: 'İletişim',
       paragraflar: [
         'Bu politika hakkında sorunuz varsa bize yazabilirsiniz.',
-        'E-posta: [E-POSTA]\nAdres: [ADRES]',
+        'E-posta: merhaba@montilabs.com\nAdres: [ADRES]',
       ],
     },
   ],

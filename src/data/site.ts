@@ -84,8 +84,17 @@ export const ARAMA_MOTORLARINA_ACIK = false
 export const FORM_SERVISI = {
   /** Gönderim adresi. Web3Forms için değiştirmeye gerek yok. */
   adres: 'https://api.web3forms.com/submit',
-  /** Erişim anahtarınız. Boşken form devre dışıdır. */
-  anahtar: '',
+  /**
+   * Erişim anahtarı. Boşken form devre dışıdır.
+   *
+   * Web3Forms bu anahtarı açıkça genel (public) anahtar olarak tanımlıyor
+   * ve istemci kodunda kullanılmak üzere veriyor. Depoda durması bir
+   * güvenlik sorunu değildir; anahtar yalnızca formun hangi hesaba
+   * ulaşacağını belirler, hesaba erişim vermez.
+   */
+  anahtar: '2d21b093-5c36-4c73-b208-bdddf766f2b8',
+  /** Yasal metinlerde veri işleyen olarak geçen ad. */
+  saglayiciAdi: 'Web3Forms',
 }
 
 export const gezinti = [
