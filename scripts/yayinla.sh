@@ -33,6 +33,26 @@ if [[ -n "$(git status --porcelain)" ]]; then
   echo
 fi
 
+# Discord webhook adresi depoda tutulmaz, derleme sırasında dışarıdan verilir.
+# Dosya yoksa bildirim sessizce devre dışı kalır, form yine çalışır.
+KANCA_DOSYASI="$HOME/.monti/discord-webhooks.json"
+if [[ -f "$KANCA_DOSYASI" ]]; then
+  PUBLIC_DISCORD_WEBHOOK="$(node -e "
+    try {
+      const j = require('$KANCA_DOSYASI');
+      process.stdout.write(j['gelen-talepler'] || '');
+    } catch { process.stdout.write(''); }
+  ")"
+  export PUBLIC_DISCORD_WEBHOOK
+  if [[ -n "$PUBLIC_DISCORD_WEBHOOK" ]]; then
+    echo "==> Discord bildirimi etkin (adres yerel dosyadan okundu)"
+  else
+    echo "==> Discord bildirimi kapalı (dosyada adres yok)"
+  fi
+else
+  echo "==> Discord bildirimi kapalı ($KANCA_DOSYASI yok)"
+fi
+
 echo "==> Tip denetimi"
 npm run check
 
