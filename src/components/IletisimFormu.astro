@@ -1,14 +1,13 @@
 ---
 /* İletişim formu.
 
-   GitHub Pages statik sunum yaptığı için sunucu tarafı doğrulama
-   burada çalışmıyor. Doğrulama istemcide yapılır, gönderim üçüncü
-   taraf bir servise gider. Sunucu tarafı uç nokta silinmedi;
-   sunucu/iletisim-uc-noktasi.ts dosyasında duruyor ve site bir Node
-   ortamına taşındığında olduğu gibi kullanılabilir.
+   Dört alan. Enterprise satın alma formu gibi görünmüyor.
+   Kutu yerine alt çizgi: sayfanın editoryal diline uyuyor.
 
-   Etiketler gerçek <label> öğeleridir; placeholder etiket yerine
-   geçmez (marka paketi 03-marka-sesi.md). */
+   GitHub Pages statik sunum yaptığı için doğrulama istemcide yapılır,
+   gönderim üçüncü taraf servise gider. Sunucu tarafı uç nokta
+   sunucu/iletisim-uc-noktasi.ts dosyasında duruyor ve site bir Node
+   ortamına taşındığında olduğu gibi kullanılabilir. */
 
 import { icerik } from '../data/icerik'
 import { sirket, FORM_SERVISI, DISCORD_BILDIRIM } from '../data/site'
@@ -25,14 +24,10 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
 
 {
   !formHazir && (
-    <div class="baglanmadi" role="note">
-      <p class="kunye baglanmadi-baslik">Form henüz bağlı değil</p>
-      <p>
-        Gönderim servisi tanımlanmadığı için form devre dışı. Bağlamak için
-        <code>src/data/site.ts</code> içindeki <code>FORM_SERVISI.anahtar</code> alanını
-        doldurun. Bu not yalnızca alan boşken görünür.
-      </p>
-    </div>
+    <p class="baglanmadi kunye" role="note">
+      Form gönderim servisi tanımlı değil. Bağlamak için src/data/site.ts içindeki
+      FORM_SERVISI.anahtar alanını doldurun.
+    </p>
   )
 }
 
@@ -51,55 +46,26 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
   data-gonderiliyor={i.gonderiliyor}
   data-gonder={i.gonderButonu}
 >
-  <div class="form-izgara">
+  <div class="izgara">
     <div class="alan">
       <label for="adSoyad">{i.alanlar.adSoyad}</label>
-      <input
-        type="text"
-        id="adSoyad"
-        name="adSoyad"
-        autocomplete="name"
-        required
-        maxlength="100"
-      />
+      <input type="text" id="adSoyad" name="adSoyad" autocomplete="name" required maxlength="100" />
       <p class="alan-hata" id="hata-adSoyad" hidden></p>
     </div>
 
     <div class="alan">
       <label for="eposta">{i.alanlar.eposta}</label>
-      <input
-        type="email"
-        id="eposta"
-        name="eposta"
-        autocomplete="email"
-        required
-        maxlength="200"
-      />
+      <input type="email" id="eposta" name="eposta" autocomplete="email" required maxlength="200" />
       <p class="alan-hata" id="hata-eposta" hidden></p>
     </div>
 
-    <div class="alan">
+    <div class="alan alan-genis">
       <label for="sirket">
         {i.alanlar.sirket}
-        <span class="alan-opsiyonel">{i.opsiyonelEtiketi}</span>
+        <span class="opsiyonel">{i.opsiyonelEtiketi}</span>
       </label>
-      <input
-        type="text"
-        id="sirket"
-        name="sirket"
-        autocomplete="organization"
-        maxlength="120"
-      />
+      <input type="text" id="sirket" name="sirket" autocomplete="organization" maxlength="120" />
       <p class="alan-hata" id="hata-sirket" hidden></p>
-    </div>
-
-    <div class="alan">
-      <label for="telefon">
-        {i.alanlar.telefon}
-        <span class="alan-opsiyonel">{i.opsiyonelEtiketi}</span>
-      </label>
-      <input type="tel" id="telefon" name="telefon" autocomplete="tel" maxlength="30" />
-      <p class="alan-hata" id="hata-telefon" hidden></p>
     </div>
 
     <div class="alan alan-genis">
@@ -107,7 +73,7 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
       <textarea
         id="mesaj"
         name="mesaj"
-        rows="5"
+        rows="4"
         required
         minlength="20"
         maxlength="4000"
@@ -131,24 +97,20 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
   </div>
   <p class="alan-hata onay-hata" id="hata-kvkkOnay" hidden></p>
 
-  <div class="form-alt">
-    <button
-      type="submit"
-      class="dugme dugme-birincil"
-      data-gonder-dugmesi
-      disabled={!formHazir}
-    >
-      {i.gonderButonu}
+  <div class="alt">
+    <button type="submit" class="gonder" data-gonder-dugmesi disabled={!formHazir}>
+      <span>{i.gonderButonu}</span>
+      <span class="ok" aria-hidden="true">→</span>
     </button>
-    <p class="form-not">{altMetin}</p>
+    <p class="not">{altMetin}</p>
   </div>
 
   <p class="durum" role="status" aria-live="polite" data-durum hidden></p>
 
   {
     epostaBelli && (
-      <p class="form-alternatif">
-        Form yerine doğrudan yazmayı tercih ederseniz:{' '}
+      <p class="alternatif">
+        {i.alternatifOnce}
         <a href={`mailto:${sirket.eposta}`}>{sirket.eposta}</a>
       </p>
     )
@@ -158,36 +120,25 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
 <style>
   .form {
     display: grid;
-    gap: var(--ml-space-6);
+    gap: var(--ml-space-8);
   }
 
   .baglanmadi {
     margin-block-end: var(--ml-space-6);
-    padding: var(--ml-space-4) var(--ml-space-6) var(--ml-space-5);
-    background-color: var(--ml-cobalt-800);
-    border-block-start: 2px solid var(--ml-cream-base);
-    font-size: var(--ml-text-sm);
+    padding-block-end: var(--ml-space-4);
+    border-block-end: 1px solid var(--ml-border);
     color: var(--ml-cream-base);
+    text-transform: none;
+    letter-spacing: 0.02em;
+    line-height: var(--ml-leading-relaxed);
   }
 
-  .baglanmadi-baslik {
-    color: var(--ml-cream-base);
-    margin-block-end: var(--ml-space-2);
-  }
-
-  .baglanmadi code {
-    font-family: var(--ml-font-mono);
-    font-size: 0.92em;
-    background-color: rgb(255 244 214 / 0.15);
-    padding: 0.1em 0.35em;
-  }
-
-  .form-izgara {
+  .izgara {
     display: grid;
-    gap: 1.25rem;
+    gap: var(--ml-space-6);
   }
 
-  .alan-opsiyonel {
+  .opsiyonel {
     font-family: var(--ml-font-mono);
     font-size: var(--ml-text-xs);
     font-weight: var(--ml-weight-regular);
@@ -203,16 +154,27 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
 
   .form :global(.alan input),
   .form :global(.alan textarea) {
-    border-color: transparent;
+    color: var(--ml-cream-base);
+    border-block-end-color: rgb(255 244 214 / 0.35);
+  }
+
+  .form :global(.alan input:hover),
+  .form :global(.alan textarea:hover),
+  .form :global(.alan input:focus),
+  .form :global(.alan textarea:focus) {
+    border-block-end-color: var(--ml-cream-base);
   }
 
   .form :global(.alan input[aria-invalid='true']),
   .form :global(.alan textarea[aria-invalid='true']) {
-    border-color: var(--ml-cream-base);
-    border-width: 2px;
+    border-block-end-color: var(--ml-cream-base);
+    border-block-end-width: 2px;
   }
 
-  /* Bal küpü: erişilebilirlik ağacından ve görünümden çıkarılır. */
+  .form :global(.alan-yardim) {
+    color: var(--ml-cobalt-200);
+  }
+
   .kupe {
     position: absolute;
     width: 1px;
@@ -232,14 +194,14 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
   .onay input {
     inline-size: 20px;
     block-size: 20px;
-    margin-block-start: 0.2rem;
+    margin-block-start: 0.15rem;
     accent-color: var(--ml-cream-base);
   }
 
   .onay label {
     font-size: var(--ml-text-sm);
     line-height: var(--ml-leading-normal);
-    color: var(--ml-cream-base);
+    color: rgb(255 244 214 / 0.82);
   }
 
   .onay label a {
@@ -247,27 +209,59 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
   }
 
   .onay-hata {
-    margin-block-start: calc(var(--ml-space-4) * -1);
+    margin-block-start: calc(var(--ml-space-6) * -1);
   }
 
-  .form-alt {
+  .alt {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--ml-space-4) var(--ml-space-6);
+    gap: var(--ml-space-4) var(--ml-space-8);
   }
 
-  .form-not {
+  /* Dolu kutu yerine altı çizili büyük çağrı. */
+  .gonder {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    background: transparent;
+    border: 0;
+    border-block-end: 2px solid var(--ml-cream-base);
+    padding: var(--ml-space-2) 0;
+    font-family: var(--ml-font-body);
+    font-size: var(--ml-text-lg);
+    font-weight: var(--ml-weight-semibold);
+    color: var(--ml-cream-base);
+    cursor: pointer;
+    transition: opacity var(--ml-duration-fast) var(--ml-ease-standard);
+  }
+
+  .gonder .ok {
+    display: inline-block;
+    transition: transform var(--ml-duration-normal) var(--ml-ease-standard);
+  }
+
+  .gonder:hover .ok {
+    transform: translateX(0.35em);
+  }
+
+  .gonder:active {
+    transform: translateY(1px);
+  }
+
+  .gonder[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .not {
     font-size: var(--ml-text-sm);
     color: var(--ml-cobalt-200);
   }
 
-  /* Durum kutusu tam çerçeveyle ayrılır. Sayfanın geri kalanı saç teli
-     çizgilerle kuruluyor, tek kenara kalın vurgu koymak o dile aykırı. */
   .durum {
     padding: var(--ml-space-4);
-    background-color: var(--ml-cobalt-800);
-    border: 1px solid rgb(255 244 214 / 0.45);
+    border: 1px solid rgb(255 244 214 / 0.4);
     font-size: var(--ml-text-sm);
     color: var(--ml-cream-base);
   }
@@ -277,24 +271,19 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
     font-weight: var(--ml-weight-medium);
   }
 
-  .form-alternatif {
+  .alternatif {
     font-size: var(--ml-text-sm);
     color: var(--ml-cobalt-200);
   }
 
-  .form-alternatif a {
+  .alternatif a {
     color: var(--ml-cream-base);
   }
 
-  button[disabled] {
-    opacity: 0.55;
-    cursor: not-allowed;
-  }
-
-  @media (min-width: 640px) {
-    .form-izgara {
+  @media (min-width: 620px) {
+    .izgara {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--ml-space-6);
+      gap: var(--ml-space-8);
     }
 
     .alan-genis {
@@ -309,11 +298,10 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
   if (form && form.dataset.hazir === 'evet') {
     const dugme = form.querySelector<HTMLButtonElement>('[data-gonder-dugmesi]')!
     const durum = form.querySelector<HTMLParagraphElement>('[data-durum]')!
-    const alanlar = ['adSoyad', 'eposta', 'sirket', 'telefon', 'mesaj', 'kvkkOnay']
+    const alanlar = ['adSoyad', 'eposta', 'sirket', 'mesaj', 'kvkkOnay']
 
-    /* Bazı alanların kalıcı yardım metni var (mesaj alanı gibi).
-       Hata eklenirken o bağlantı korunmalı, hata temizlenirken de geri
-       gelmeli. Bu yüzden başlangıçtaki aria-describedby değeri saklanır. */
+    /* Mesaj alanının kalıcı yardım metni var. Hata eklenirken o bağlantı
+       korunmalı, hata temizlenirken geri gelmeli. */
     const temelAciklama = new Map<string, string>()
     for (const ad of alanlar) {
       const girdi = form.elements.namedItem(ad)
@@ -349,7 +337,6 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
 
     const hatalariGoster = (hatalar: Record<string, string>): void => {
       let ilkOdak: HTMLElement | null = null
-
       for (const [ad, mesaj] of Object.entries(hatalar)) {
         if (ad === 'genel') {
           durum.textContent = mesaj
@@ -368,12 +355,10 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
           if (!ilkOdak) ilkOdak = girdi
         }
       }
-
       if (ilkOdak) ilkOdak.focus()
     }
 
-    /* Doğrulama kuralları sunucu sürümüyle aynı tutuldu.
-       Statik barındırmada bu kontroller güvenlik sınırı değildir,
+    /* Statik barındırmada bu kontroller güvenlik sınırı değildir;
        istenmeyen gönderimi asıl eleyen servisin kendi filtresidir.
        Buradaki iş kullanıcıya anında ve anlaşılır geri bildirim vermek. */
     const dogrula = (v: Record<string, string>, onay: boolean) => {
@@ -390,12 +375,11 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
         h.eposta = 'E-posta adresi geçerli görünmüyor. Adresi kontrol edip tekrar deneyin.'
 
       if (v.sirket.length > 120) h.sirket = 'Şirket adı en fazla 120 karakter olabilir.'
-      if (v.telefon.length > 30) h.telefon = 'Telefon numarası en fazla 30 karakter olabilir.'
 
-      if (!v.mesaj) h.mesaj = 'Mesaj alanı boş. Şu an işin nasıl yürüdüğünü kısaca yazın.'
-      else if (v.mesaj.length < 20) h.mesaj = 'Mesaj çok kısa. En az 20 karakter yazın.'
+      if (!v.mesaj) h.mesaj = 'Bu alan boş. Şu an işin nasıl yürüdüğünü kısaca yazın.'
+      else if (v.mesaj.length < 20) h.mesaj = 'Biraz daha yazın. En az 20 karakter gerekiyor.'
       else if (v.mesaj.length > 4000)
-        h.mesaj = 'Mesaj çok uzun. En fazla 4000 karakter yazabilirsiniz.'
+        h.mesaj = 'Çok uzun. En fazla 4000 karakter yazabilirsiniz.'
 
       if (!onay) h.kvkkOnay = 'Devam etmek için aydınlatma metnini onaylamanız gerekiyor.'
 
@@ -409,23 +393,23 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
 
       const veri = new FormData(form)
       const al = (ad: string) => String(veri.get(ad) ?? '').trim()
-      const alanDegerleri = {
+      const degerler = {
         adSoyad: al('adSoyad'),
         eposta: al('eposta'),
         sirket: al('sirket'),
-        telefon: al('telefon'),
         mesaj: al('mesaj'),
       }
       const onay = veri.get('kvkkOnay') === 'on'
 
-      const hatalar = dogrula(alanDegerleri, onay)
+      const hatalar = dogrula(degerler, onay)
       if (Object.keys(hatalar).length > 0) {
         hatalariGoster(hatalar)
         return
       }
 
       dugme.disabled = true
-      dugme.textContent = form.dataset.gonderiliyor ?? 'Gönderiliyor'
+      const etiket = dugme.querySelector('span')
+      if (etiket) etiket.textContent = form.dataset.gonderiliyor ?? 'Gönderiliyor'
 
       try {
         const yanit = await fetch(form.dataset.adres!, {
@@ -433,22 +417,21 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
             access_key: form.dataset.anahtar,
-            subject: `Yeni iletişim formu: ${alanDegerleri.adSoyad}`,
+            subject: `Yeni iletişim formu: ${degerler.adSoyad}`,
             from_name: 'Monti Labs sitesi',
-            name: alanDegerleri.adSoyad,
-            email: alanDegerleri.eposta,
-            replyto: alanDegerleri.eposta,
-            sirket: alanDegerleri.sirket || '-',
-            telefon: alanDegerleri.telefon || '-',
-            message: alanDegerleri.mesaj,
+            name: degerler.adSoyad,
+            email: degerler.eposta,
+            replyto: degerler.eposta,
+            sirket: degerler.sirket || '-',
+            message: degerler.mesaj,
             botcheck: veri.get('botcheck') ? 'true' : '',
           }),
         })
-        const sonuc = (await yanit.json()) as { success?: boolean; message?: string }
+        const sonuc = (await yanit.json()) as { success?: boolean }
 
         if (yanit.ok && sonuc.success) {
           // Discord bildirimi. E-posta zaten gitti; buradaki hata
-          // kullanıcıya yansıtılmaz, mesajı kaybetmiş sayılmayız.
+          // kullanıcıya yansıtılmaz.
           const discord = form.dataset.discord
           if (discord) {
             const satir = (etiket: string, deger: string) =>
@@ -463,17 +446,14 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
                     title: 'Yeni iletişim formu',
                     color: 0x263baa,
                     description:
-                      satir('Ad soyad', alanDegerleri.adSoyad) +
-                      satir('E-posta', alanDegerleri.eposta) +
-                      satir('Şirket', alanDegerleri.sirket) +
-                      satir('Telefon', alanDegerleri.telefon) +
+                      satir('Ad soyad', degerler.adSoyad) +
+                      satir('E-posta', degerler.eposta) +
+                      satir('Şirket', degerler.sirket) +
                       '\n' +
-                      alanDegerleri.mesaj.slice(0, 1500),
+                      degerler.mesaj.slice(0, 1500),
                     timestamp: new Date().toISOString(),
                   },
                 ],
-                // Kullanıcı adı ve içerik dışarıdan geldiği için
-                // hiçbir bahsetme tetiklenmesin.
                 allowed_mentions: { parse: [] },
               }),
             }).catch(() => {})
@@ -490,7 +470,8 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
         hatalariGoster({ genel: form.dataset.hata ?? '' })
       } finally {
         dugme.disabled = false
-        dugme.textContent = form.dataset.gonder ?? 'Gönder'
+        const e = dugme.querySelector('span')
+        if (e) e.textContent = form.dataset.gonder ?? 'Gönder'
       }
     })
   }

@@ -1,0 +1,125 @@
+---
+/* Nasıl çalışıyoruz.
+
+   Problem → Süreç → Çözüm → Ürün. Marka paketi bu modeli
+   "markanın omurgası" diye tanımlıyor ve sitede görünmesini şart
+   koşuyor. Her adımın yanında eylem karşılığı da duruyor:
+   Anla, Sadeleştir, Geliştir, Ölçekle.
+
+   İkon kartı yok. Geniş ekranda yatay bir dizi, dar ekranda dikey
+   anlatı. Adımları birbirine bağlayan çizgi sırayı taşıyor. */
+
+import { icerik } from '../data/icerik'
+
+const n = icerik.nasilCalisiyoruz
+---
+
+<section class="bolum" id="nasil-calisiyoruz" aria-labelledby="nasil-baslik">
+  <div class="kabuk">
+    <p class="uste kunye">{n.kunye}</p>
+    <h2 class="bolum-baslik bas" id="nasil-baslik" data-acil>{n.baslik}</h2>
+
+    <ol class="dizi">
+      {
+        n.adimlar.map((a, i) => (
+          <li class="adim" data-acil style={`--gecikme:${i * 90}ms`}>
+            <div class="adim-bas">
+              <span class="kunye adim-no">{a.no}</span>
+              <span class="adim-cizgi" aria-hidden="true" />
+            </div>
+            <h3 class="adim-ad">{a.ad}</h3>
+            <p class="adim-eylem kunye">{a.eylem}</p>
+            <p class="adim-metin">{a.metin}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .bas {
+    max-width: 16ch;
+  }
+
+  .dizi {
+    display: grid;
+    gap: var(--ml-space-12);
+    margin-block-start: clamp(3rem, 1.5rem + 5vw, 5.5rem);
+  }
+
+  .adim {
+    display: grid;
+    gap: var(--ml-space-3);
+    align-content: start;
+  }
+
+  .adim-bas {
+    display: flex;
+    align-items: center;
+    gap: var(--ml-space-4);
+    margin-block-end: var(--ml-space-2);
+  }
+
+  .adim-no {
+    color: var(--ml-cobalt-600);
+    flex: none;
+  }
+
+  /* Sırayı taşıyan çizgi. Son adımda kısalır. */
+  .adim-cizgi {
+    height: 1px;
+    flex: 1;
+    background-color: var(--ml-ink-100);
+  }
+
+  .adim:last-child .adim-cizgi {
+    background: linear-gradient(
+      to right,
+      var(--ml-ink-100) 0%,
+      var(--ml-ink-100) 30%,
+      transparent 100%
+    );
+  }
+
+  .adim-ad {
+    font-size: var(--ml-text-bolum);
+    line-height: var(--ml-leading-tight);
+    letter-spacing: var(--ml-tracking-tighter);
+    color: var(--ml-ink-900);
+  }
+
+  .adim-eylem {
+    color: var(--ml-cobalt-600);
+  }
+
+  .adim-metin {
+    margin-block-start: var(--ml-space-2);
+    font-size: var(--ml-text-base);
+    line-height: var(--ml-leading-relaxed);
+    color: var(--ml-ink-700);
+    max-width: 42ch;
+  }
+
+  @media (min-width: 760px) {
+    .dizi {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--ml-space-12) var(--ml-space-10, 2.5rem);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .dizi {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--ml-space-8);
+    }
+
+    .adim-ad {
+      font-size: var(--ml-text-xl);
+    }
+
+    .adim-metin {
+      font-size: var(--ml-text-sm);
+    }
+  }
+</style>

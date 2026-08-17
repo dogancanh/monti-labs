@@ -1,0 +1,129 @@
+---
+/* Monti Labs.
+
+   Eskiden ayrı ayrı duran Prensipler, Farkımız, Kimler için ve
+   Ürünler bölümleri burada tek bir anlatıda birleşti. Sektör listesi
+   yok: marka belirli sektörlere hapsedilmiyor.
+
+   Ürün alanı küçük tutuldu. Gösterilecek gerçek ürün çıkınca
+   büyütülür, o zamana kadar sahte ürün mockup'ı üretilmiyor. */
+
+import { icerik } from '../data/icerik'
+
+const m = icerik.montiLabs
+---
+
+<section class="bolum" id="monti-labs" aria-labelledby="monti-baslik">
+  <div class="kabuk ic">
+    <div class="sol">
+      <p class="uste kunye">{m.kunye}</p>
+      <h2 class="bolum-baslik" id="monti-baslik" data-acil>{m.baslik}</h2>
+
+      <ol class="akis" aria-label="Problemden ürüne">
+        {
+          m.akis.map((a, i) => (
+            <li data-acil style={`--gecikme:${i * 80}ms`}>
+              <span class="akis-metin">{a}</span>
+              {i < m.akis.length - 1 && (
+                <span class="akis-ok" aria-hidden="true">
+                  →
+                </span>
+              )}
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <div class="sag">
+      {
+        m.paragraflar.map((p, i) => (
+          <p class="paragraf" data-acil style={`--gecikme:${i * 70}ms`}>
+            {p}
+          </p>
+        ))
+      }
+
+      <p class="urun-notu kunye" data-acil>{m.urunNotu}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ic {
+    display: grid;
+    gap: clamp(3rem, 1.5rem + 5vw, 5rem);
+  }
+
+  .bolum-baslik {
+    max-width: 18ch;
+  }
+
+  /* Müşteri problemi → İçgörü → Tekrar eden problem → Ürün */
+  .akis {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ml-space-3);
+    margin-block-start: clamp(2rem, 1rem + 3vw, 3.5rem);
+  }
+
+  .akis li {
+    display: flex;
+    align-items: center;
+    gap: var(--ml-space-3);
+  }
+
+  .akis-metin {
+    font-family: var(--ml-font-mono);
+    font-size: var(--ml-text-xs);
+    letter-spacing: 0.04em;
+    color: var(--ml-ink-700);
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--ml-ink-100);
+  }
+
+  .akis li:last-child .akis-metin {
+    border-color: var(--ml-cobalt-600);
+    color: var(--ml-cobalt-600);
+  }
+
+  .akis-ok {
+    color: var(--ml-ink-300);
+    font-size: var(--ml-text-sm);
+  }
+
+  .sag {
+    display: grid;
+    gap: var(--ml-space-6);
+    align-content: start;
+  }
+
+  .paragraf {
+    font-size: var(--ml-text-lg);
+    line-height: var(--ml-leading-relaxed);
+    color: var(--ml-ink-700);
+    max-width: 48ch;
+  }
+
+  .paragraf:first-child {
+    color: var(--ml-ink-900);
+  }
+
+  .urun-notu {
+    margin-block-start: var(--ml-space-6);
+    padding-block-start: var(--ml-space-6);
+    border-block-start: 1px solid var(--ml-ink-100);
+    color: var(--ml-ink-500);
+    text-transform: none;
+    letter-spacing: 0.04em;
+  }
+
+  @media (min-width: 900px) {
+    .ic {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--ml-space-16);
+      align-items: start;
+    }
+  }
+</style>

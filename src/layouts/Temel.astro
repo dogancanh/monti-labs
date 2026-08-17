@@ -21,28 +21,27 @@ import '@fontsource/ibm-plex-mono/latin-ext-500.css'
 import outfitLatin from '@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2?url'
 import plexSansLatin from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2?url'
 
-import Isaret from '../components/Isaret.astro'
-import { sirket, gezinti, yasalSayfalar, meta, ARAMA_MOTORLARINA_ACIK } from '../data/site'
+import { sirket, yasalSayfalar, meta, ARAMA_MOTORLARINA_ACIK } from '../data/site'
 import { icerik } from '../data/icerik'
 import { yol, tamAdres } from '../lib/yol'
 
 interface Props {
   baslik?: string
   aciklama?: string
-  /** Sayfaya özel gövde sınıfı (örneğin 404). */
-  govdeSinifi?: string
+  /** Ana sayfa dışındaki sayfalarda gezinti bağlantıları gizlenir. */
+  sadeGezinti?: boolean
 }
 
-const { baslik, aciklama, govdeSinifi } = Astro.props
+const { baslik, aciklama, sadeGezinti = false } = Astro.props
 
 const sayfaBasligi = baslik ? `${baslik} · ${sirket.ad}` : meta.baslik
 const sayfaAciklamasi = aciklama ?? meta.aciklama
 
-/* Astro.url.pathname derleme sırasında taban yolunu zaten içerir. */
 const kanonik = new URL(Astro.url.pathname, Astro.site ?? 'https://dogancanh.github.io')
 const ogGorsel = tamAdres('/og.png', Astro.site)
 const anaAdres = tamAdres('/', Astro.site)
 const yil = new Date().getFullYear()
+const epostaBelli = !sirket.eposta.startsWith('DEGISTIR')
 
 const kurulusVerisi = {
   '@context': 'https://schema.org',
@@ -68,14 +67,19 @@ const siteVerisi = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    {/* Belirme animasyonlarının gizleme kuralı bu sınıfa bağlı.
+        Betik çalışmazsa sınıf eklenmez ve içerik gizlenmeden görünür. */}
+    <script is:inline>
+      document.documentElement.classList.add('js')
+    </script>
+
     <title>{sayfaBasligi}</title>
     <meta name="description" content={sayfaAciklamasi} />
     <link rel="canonical" href={kanonik.toString()} />
 
     {
       /* İçerik taslak olduğu sürece arama motorlarına kapalı.
-         Açmak için src/data/site.ts içindeki ARAMA_MOTORLARINA_ACIK
-         değerini true yapmak yeterli, robots.txt de ona bakıyor. */
+         src/data/site.ts içindeki ARAMA_MOTORLARINA_ACIK ile açılır. */
       !ARAMA_MOTORLARINA_ACIK && <meta name="robots" content="noindex, nofollow" />
     }
 
@@ -85,7 +89,7 @@ const siteVerisi = {
     <link rel="icon" href={yol('/favicon.svg')} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={yol('/apple-touch-icon.png')} />
     <link rel="manifest" href={yol('/site.webmanifest')} />
-    <meta name="theme-color" content="#263BAA" />
+    <meta name="theme-color" content="#FFFBF0" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={sirket.ad} />
@@ -106,13 +110,14 @@ const siteVerisi = {
     <script type="application/ld+json" set:html={JSON.stringify(siteVerisi)} is:inline />
   </head>
 
-  <body class={govdeSinifi}>
+  <body>
     <a class="atla" href="#ana">İçeriğe geç</a>
 
-    <header class="ust">
+    <header class="ust" data-ust>
       <div class="kabuk ust-ic">
         <a class="ust-logo" href={yol('/')} aria-label={`${sirket.ad} ana sayfa`}>
-          <picture>
+          {/* Koyu bölümlerin üstünden geçerken krem sürüme geçilir. */}
+          <picture class="logo-acik">
             <source srcset={yol('/logo-yatay.avif')} type="image/avif" />
             <source srcset={yol('/logo-yatay.webp')} type="image/webp" />
             <img
@@ -123,14 +128,30 @@ const siteVerisi = {
               decoding="async"
             />
           </picture>
+          <img
+            class="logo-koyu"
+            src={yol('/logo-yatay-krem.png')}
+            alt=""
+            aria-hidden="true"
+            width="177"
+            height="26"
+            decoding="async"
+          />
         </a>
 
-        <nav class="ust-gezinti" aria-label="Ana gezinti">
-          {gezinti.map((oge) => <a href={yol(`/${oge.hedef}`)}>{oge.etiket}</a>)}
-        </nav>
+        {
+          !sadeGezinti && (
+            <nav class="ust-gezinti" aria-label="Ana gezinti">
+              {icerik.gezinti.baglantilar.map((oge) => (
+                <a href={yol(`/${oge.hedef}`)}>{oge.etiket}</a>
+              ))}
+            </nav>
+          )
+        }
 
-        <a class="dugme dugme-birincil ust-eylem" href={yol('/#iletisim')}>
-          Projenizi anlatın
+        <a class="cagri-kucuk ust-eylem" href={yol('/#iletisim')}>
+          {icerik.gezinti.cagri}
+          <span class="ok" aria-hidden="true">→</span>
         </a>
       </div>
     </header>
@@ -139,72 +160,181 @@ const siteVerisi = {
       <slot />
     </main>
 
+    {
+      /* Dar ekranda üst çubuğa çağrı sığmıyor. Sayfa uzun olduğu için
+         hero geçildikten sonra alta ince bir şerit gelir. Menü katmanı
+         veya hamburger yok, tek bağlantı. */
+      !sadeGezinti && (
+        <div class="alt-cagri" data-alt-cagri hidden>
+          <a href={yol('/#iletisim')}>
+            {icerik.gezinti.cagri}
+            <span class="ok" aria-hidden="true">
+              →
+            </span>
+          </a>
+        </div>
+      )
+    }
+
     <footer class="dip">
       <div class="kabuk">
         <div class="dip-ust">
           <div class="dip-marka">
-            <Isaret yukseklik="30px" />
+            <a href={yol('/')} aria-label={`${sirket.ad} ana sayfa`}>
+              <img
+                src={yol('/logo-yatay-krem.png')}
+                alt="Monti Labs"
+                width="177"
+                height="26"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
             <p class="dip-tanim">{icerik.footer.kisaTanim}</p>
           </div>
 
-          <div class="dip-gruplar">
+          <ul class="dip-alanlar">
+            {icerik.footer.alanlar.map((a) => <li>{a}</li>)}
+          </ul>
+
+          <div class="dip-iletisim">
             {
-              icerik.footer.gruplar.map((grup) => (
-                <div class="dip-grup">
-                  <h2 class="kunye">{grup.baslik}</h2>
-                  <ul>
-                    {grup.baglantilar.map((b) => (
-                      <li>
-                        <a href={yol(b.hedef)}>{b.etiket}</a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))
+              epostaBelli && (
+                <a class="dip-eposta" href={`mailto:${sirket.eposta}`}>
+                  {sirket.eposta}
+                </a>
+              )
             }
-            <div class="dip-grup">
-              <h2 class="kunye">Yasal</h2>
-              <ul>
-                {yasalSayfalar.map((s) => (
-                  <li>
-                    <a href={yol(s.hedef)}>{s.etiket}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {
+              sirket.telefon && (
+                <a href={`tel:${sirket.telefon.replace(/\s/g, '')}`}>{sirket.telefon}</a>
+              )
+            }
+            {
+              sirket.linkedin && (
+                <a href={sirket.linkedin} rel="me noopener">
+                  LinkedIn
+                </a>
+              )
+            }
           </div>
         </div>
 
         <div class="dip-alt">
           <p class="dip-telif">{icerik.footer.telifSablonu.replace('{yil}', String(yil))}</p>
-          <ul class="dip-iletisim">
+          <ul class="dip-yasal">
             {
-              !sirket.eposta.startsWith('DEGISTIR') && (
+              yasalSayfalar.map((s) => (
                 <li>
-                  <a href={`mailto:${sirket.eposta}`}>{sirket.eposta}</a>
+                  <a href={yol(s.hedef)}>{s.etiket}</a>
                 </li>
-              )
-            }
-            {
-              sirket.telefon && (
-                <li>
-                  <a href={`tel:${sirket.telefon.replace(/\s/g, '')}`}>{sirket.telefon}</a>
-                </li>
-              )
-            }
-            {
-              sirket.linkedin && (
-                <li>
-                  <a href={sirket.linkedin} rel="me noopener">
-                    LinkedIn
-                  </a>
-                </li>
-              )
+              ))
             }
           </ul>
         </div>
       </div>
     </footer>
+
+    <script is:inline>
+      // Üst çubuk: kaydırınca zemin kazanır, koyu bölümlerin üstünde
+      // kendi tonunu koyuya çevirir.
+      ;(function () {
+        var ust = document.querySelector('[data-ust]')
+        if (!ust) return
+
+        var koyular = document.querySelectorAll('.ml-koyu, .ml-inverse')
+        var beklemede = false
+
+        function guncelle() {
+          beklemede = false
+          ust.dataset.kaydi = window.scrollY > 24 ? 'evet' : 'hayir'
+
+          // Çubuğun orta hizasında koyu bir bölüm var mı?
+          var hiza = ust.offsetHeight / 2
+          var koyu = false
+          for (var i = 0; i < koyular.length; i++) {
+            var r = koyular[i].getBoundingClientRect()
+            if (r.top <= hiza && r.bottom >= hiza) {
+              koyu = true
+              break
+            }
+          }
+          ust.dataset.tema = koyu ? 'koyu' : 'acik'
+        }
+
+        function planla() {
+          if (beklemede) return
+          beklemede = true
+          window.requestAnimationFrame(guncelle)
+        }
+
+        guncelle()
+        window.addEventListener('scroll', planla, { passive: true })
+        window.addEventListener('resize', planla, { passive: true })
+      })()
+
+      // Dar ekranda alt çağrı şeridi: hero geçilince gelir,
+      // iletişim bölümüne varılınca çekilir.
+      ;(function () {
+        var serit = document.querySelector('[data-alt-cagri]')
+        if (!serit) return
+        serit.hidden = false
+
+        var hedef = document.getElementById('iletisim')
+        var beklemede = false
+
+        function guncelle() {
+          beklemede = false
+          var gecti = window.scrollY > window.innerHeight * 0.9
+          var iletisimGorunur = false
+          if (hedef) {
+            var r = hedef.getBoundingClientRect()
+            iletisimGorunur = r.top < window.innerHeight * 0.85
+          }
+          serit.dataset.gorunur = gecti && !iletisimGorunur ? 'evet' : 'hayir'
+        }
+
+        function planla() {
+          if (beklemede) return
+          beklemede = true
+          window.requestAnimationFrame(guncelle)
+        }
+
+        guncelle()
+        window.addEventListener('scroll', planla, { passive: true })
+        window.addEventListener('resize', planla, { passive: true })
+      })()
+
+      // Görünüre giren öğeler kademeli belirir.
+      ;(function () {
+        var ogeler = document.querySelectorAll('[data-acil]')
+        if (!ogeler.length) return
+
+        var azHareket = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        if (azHareket || !('IntersectionObserver' in window)) {
+          ogeler.forEach(function (o) {
+            o.dataset.gorunur = 'evet'
+          })
+          return
+        }
+
+        var gozlemci = new IntersectionObserver(
+          function (girisler) {
+            girisler.forEach(function (giris) {
+              if (giris.isIntersecting) {
+                giris.target.dataset.gorunur = 'evet'
+                gozlemci.unobserve(giris.target)
+              }
+            })
+          },
+          { rootMargin: '0px 0px -12% 0px', threshold: 0.15 },
+        )
+
+        ogeler.forEach(function (o) {
+          gozlemci.observe(o)
+        })
+      })()
+    </script>
   </body>
 </html>
 
@@ -214,30 +344,61 @@ const siteVerisi = {
     position: sticky;
     top: 0;
     z-index: 40;
-    background-color: var(--ml-paper);
+    background-color: transparent;
     border-block-end: 1px solid transparent;
-    transition: border-color var(--ml-duration-normal) var(--ml-ease-standard);
+    transition:
+      background-color var(--ml-duration-normal) var(--ml-ease-standard),
+      border-color var(--ml-duration-normal) var(--ml-ease-standard);
   }
 
   .ust[data-kaydi='evet'] {
+    background-color: rgb(255 251 240 / 0.86);
+    backdrop-filter: blur(12px);
     border-block-end-color: var(--ml-ink-100);
+  }
+
+  /* Koyu bölümlerin üstünde çubuk da koyulaşır. Aksi halde açık renkli
+     bir bant koyu zeminin üstünde asılı kalıyor. */
+  .ust[data-tema='koyu'][data-kaydi='evet'] {
+    background-color: rgb(15 21 51 / 0.78);
+    border-block-end-color: rgb(255 244 214 / 0.16);
+  }
+
+  .ust[data-tema='koyu'] .ust-gezinti a {
+    color: rgb(255 244 214 / 0.78);
+  }
+
+  .ust[data-tema='koyu'] .ust-gezinti a:hover {
+    color: var(--ml-cream-base);
+  }
+
+  .ust[data-tema='koyu'] .cagri-kucuk {
+    background-color: var(--ml-cream-base);
+    color: var(--ml-ink-900);
+  }
+
+  .ust[data-tema='koyu'] .cagri-kucuk:hover {
+    background-color: var(--ml-white);
   }
 
   .ust-ic {
     display: flex;
     align-items: center;
     gap: var(--ml-space-6);
-    min-height: 72px;
+    min-height: 76px;
   }
 
-  /* Resmî yatay kilit kullanılır. Kelime markası hiçbir yerde
-     başka bir fontla yeniden dizilmez (02-gorsel-kimlik.md).
-     Kaynak PNG vektöre çevrildiğinde burası SVG ile değiştirilebilir. */
   .ust-logo {
-    display: flex;
+    display: grid;
     align-items: center;
     text-decoration: none;
     margin-inline-end: auto;
+  }
+
+  /* İki logo üst üste. Görünen, arkadaki bölümün tonuna göre değişir. */
+  .ust-logo > * {
+    grid-area: 1 / 1;
+    transition: opacity var(--ml-duration-normal) var(--ml-ease-standard);
   }
 
   .ust-logo img {
@@ -245,102 +406,176 @@ const siteVerisi = {
     width: auto;
   }
 
-  @media (min-width: 560px) {
-    .ust-logo img {
-      height: 26px;
-    }
+  .logo-koyu {
+    opacity: 0;
+  }
+
+  .ust[data-tema='koyu'] .logo-acik {
+    opacity: 0;
+  }
+
+  .ust[data-tema='koyu'] .logo-koyu {
+    opacity: 1;
   }
 
   .ust-gezinti {
     display: none;
-    gap: var(--ml-space-6);
+    gap: var(--ml-space-8);
   }
 
   .ust-gezinti a {
-    color: var(--ml-text-body);
+    color: var(--ml-ink-700);
     text-decoration: none;
     font-size: var(--ml-text-sm);
     font-weight: var(--ml-weight-medium);
     padding-block: var(--ml-space-2);
-    border-block-end: 2px solid transparent;
+    position: relative;
+    transition: color var(--ml-duration-fast) var(--ml-ease-standard);
+  }
+
+  .ust-gezinti a::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--ml-duration-normal) var(--ml-ease-standard);
   }
 
   .ust-gezinti a:hover {
-    color: var(--ml-cobalt-600);
-    border-block-end-color: var(--ml-cobalt-600);
+    color: var(--ml-ink-900);
+  }
+
+  .ust-gezinti a:hover::after {
+    transform: scaleX(1);
   }
 
   .ust-eylem {
     display: none;
-    min-height: 42px;
-    padding-inline: var(--ml-space-6);
-    font-size: var(--ml-text-sm);
   }
 
-  @media (min-width: 900px) {
-    .ust-gezinti,
+  @media (min-width: 560px) {
+    .ust-logo img {
+      height: 26px;
+    }
+
     .ust-eylem {
+      display: inline-flex;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .ust-gezinti {
       display: flex;
     }
   }
 
-  /* ---------- Alt bilgi ---------- */
+  /* ---------- Mobil alt çağrı ---------- */
+  .alt-cagri {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 45;
+    background-color: rgb(255 251 240 / 0.94);
+    backdrop-filter: blur(12px);
+    border-block-start: 1px solid var(--ml-ink-100);
+    padding: var(--ml-space-3) var(--ml-gutter);
+    padding-block-end: calc(var(--ml-space-3) + env(safe-area-inset-bottom, 0px));
+    transform: translateY(100%);
+    transition: transform var(--ml-duration-normal) var(--ml-ease-standard);
+  }
+
+  .alt-cagri[data-gorunur='evet'] {
+    transform: none;
+  }
+
+  .alt-cagri a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    min-height: 48px;
+    background-color: var(--ml-cobalt-600);
+    color: var(--ml-cream-base);
+    font-size: var(--ml-text-base);
+    font-weight: var(--ml-weight-semibold);
+    text-decoration: none;
+    border-radius: 2px;
+  }
+
+  .alt-cagri a:active {
+    background-color: var(--ml-cobalt-800);
+  }
+
+  @media (min-width: 560px) {
+    .alt-cagri {
+      display: none;
+    }
+  }
+
+  /* ---------- Alt bilgi ----------
+     Tek satırlık, çok kolonlu kurumsal footer değil. */
   .dip {
     background-color: var(--ml-ink-900);
-    color: var(--ml-cream-base);
+    color: rgb(255 244 214 / 0.72);
     padding-block: var(--ml-space-16) var(--ml-space-8);
   }
 
   .dip-ust {
     display: grid;
-    gap: var(--ml-space-12);
+    gap: var(--ml-space-10, 2.5rem);
     padding-block-end: var(--ml-space-12);
-    border-block-end: 1px solid rgb(255 244 214 / 0.18);
   }
 
-  .dip-marka {
-    color: var(--ml-cream-base);
-    display: flex;
-    flex-direction: column;
-    gap: var(--ml-space-4);
+  .dip-marka img {
+    height: 26px;
+    width: auto;
   }
 
   .dip-tanim {
-    max-width: 42ch;
-    color: rgb(255 244 214 / 0.78);
+    margin-block-start: var(--ml-space-4);
+    max-width: 34ch;
+    color: rgb(255 244 214 / 0.7);
     font-size: var(--ml-text-sm);
     line-height: var(--ml-leading-relaxed);
   }
 
-  .dip-gruplar {
+  .dip-alanlar {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: var(--ml-space-8);
+    gap: var(--ml-space-2);
+    font-size: var(--ml-text-sm);
+    color: rgb(255 244 214 / 0.7);
   }
 
-  .dip-grup .kunye {
-    color: rgb(255 244 214 / 0.6);
-    font-size: var(--ml-text-xs);
-    font-weight: var(--ml-weight-medium);
-    margin-block-end: var(--ml-space-4);
-  }
-
-  .dip-grup ul {
+  .dip-iletisim {
     display: grid;
-    gap: var(--ml-space-3);
+    gap: var(--ml-space-2);
+    align-content: start;
   }
 
-  .dip-grup a,
   .dip-iletisim a {
     color: var(--ml-cream-base);
     font-size: var(--ml-text-sm);
     text-decoration: none;
+    justify-self: start;
+    border-block-end: 1px solid transparent;
+    transition: border-color var(--ml-duration-fast) var(--ml-ease-standard);
   }
 
-  .dip-grup a:hover,
   .dip-iletisim a:hover {
-    text-decoration: underline;
-    text-underline-offset: 0.22em;
+    border-block-end-color: var(--ml-cream-base);
+  }
+
+  /* E-posta alt bilginin asıl çağrısı, o yüzden gerçek bir basamak
+     yukarıda duruyor. Bir tık büyütmek vurgu olarak okunmuyordu,
+     yalnızca tutarsız görünüyordu. Özgüllük sıralamayla çözülüyor,
+     !important gerekmiyor. */
+  .dip-iletisim .dip-eposta {
+    font-size: var(--ml-text-lg);
+    font-weight: var(--ml-weight-medium);
   }
 
   .dip-alt {
@@ -350,39 +585,37 @@ const siteVerisi = {
     justify-content: space-between;
     align-items: center;
     padding-block-start: var(--ml-space-8);
+    border-block-start: 1px solid rgb(255 244 214 / 0.16);
   }
 
-  /* Marka adı büyük harfe çevrilmez, o yüzden .kunye kullanılmaz. */
   .dip-telif {
     font-family: var(--ml-font-mono);
     font-size: var(--ml-text-xs);
     letter-spacing: var(--ml-tracking-wide);
-    color: rgb(255 244 214 / 0.6);
+    color: rgb(255 244 214 / 0.55);
   }
 
-  .dip-iletisim {
+  .dip-yasal {
     display: flex;
     flex-wrap: wrap;
     gap: var(--ml-space-6);
   }
 
-  @media (min-width: 860px) {
+  .dip-yasal a {
+    color: rgb(255 244 214 / 0.7);
+    font-size: var(--ml-text-xs);
+    text-decoration: none;
+    transition: color var(--ml-duration-fast) var(--ml-ease-standard);
+  }
+
+  .dip-yasal a:hover {
+    color: var(--ml-cream-base);
+  }
+
+  @media (min-width: 820px) {
     .dip-ust {
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
-      gap: var(--ml-space-16);
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--ml-space-12);
     }
   }
 </style>
-
-<script is:inline>
-  // Üst çubuğun alt kenarlığı yalnızca sayfa kaydırıldığında görünür.
-  ;(function () {
-    var ust = document.querySelector('.ust')
-    if (!ust) return
-    var guncelle = function () {
-      ust.dataset.kaydi = window.scrollY > 8 ? 'evet' : 'hayir'
-    }
-    guncelle()
-    window.addEventListener('scroll', guncelle, { passive: true })
-  })()
-</script>

@@ -1,15 +1,16 @@
 ---
-/* Vaka çalışmaları.
+/* Çalışmalar. Sitenin merkezi.
 
-   Marka paketi bu bölümü sitenin en önemli parçası sayıyor.
-   Müşteri adı paylaşılmadığı için sektör yazılır ve kartların
-   üstünde gizlilik notu durur.
+   Küçük kart ızgarası yok. Her iş kendi başına geniş bir blok:
+   önce ne değiştiği, sonra anlatı, yanında sistem şeması, en altta
+   küçük teknoloji künyesi.
 
-   `sonuc` alanı olmayan vakalarda sonuç satırı hiç basılmaz.
-   Ölçülmemiş bir sonucu doldurmak marka sesine aykırıdır. */
+   Teknoloji ön planda değil. Ana mesaj sonuç.
+   Müşteri adı ve canlı bağlantı paylaşılmıyor. */
 
 import { getCollection } from 'astro:content'
 import { icerik } from '../data/icerik'
+import Sema from './Sema.astro'
 
 const c = icerik.calismalar
 
@@ -17,17 +18,12 @@ const kayitlar = (await getCollection('calismalar')).sort(
   (a, b) => a.data.sira - b.data.sira,
 )
 
-/* onayBekliyor alanı kendi başına bir şey yapmaz. Derleme sırasında
-   uyarı basılır ki onaylanmamış içerik sessizce yayına gitmesin.
-   Kartlar yine gösterilir: bölüm boş kalırsa site iş görmez, asıl
-   olan onayın atlanmadığının görünür olmasıdır. */
 const onaysiz = kayitlar.filter((k) => k.data.onayBekliyor)
 if (onaysiz.length > 0) {
   console.warn(
     `\n[monti] ${onaysiz.length} vaka çalışması onay bekliyor ve sitede görünüyor:\n` +
       onaysiz.map((k) => `  - ${k.id} (${k.data.baslik})`).join('\n') +
-      `\n  Onayladıktan sonra ilgili dosyada onayBekliyor: false yapın.` +
-      `\n  Ayrıntı: src/content/calismalar/OKUBENI.md\n`,
+      `\n  Onayladıktan sonra ilgili dosyada onayBekliyor: false yapın.\n`,
   )
 }
 
@@ -40,153 +36,216 @@ const turAdlari: Record<string, string> = {
 }
 ---
 
-<p class="gizlilik">{c.gizlilikNotu}</p>
+<section class="calismalar bolum" id="calismalar" aria-labelledby="calismalar-baslik">
+  <div class="kabuk">
+    <p class="uste kunye">{c.kunye}</p>
+    <div class="bas">
+      <h2 class="bolum-baslik" id="calismalar-baslik" data-acil>{c.baslik}</h2>
+      <p class="bas-alt" data-acil>{c.altMetin}</p>
+    </div>
+    <p class="gizlilik kunye" data-acil>{c.gizlilikNotu}</p>
+  </div>
 
-<ul class="kartlar">
-  {
-    kayitlar.map((kayit) => {
-      const v = kayit.data
-      return (
-        <li class="kart">
-          <div class="kart-ust">
-            <span class="kunye kart-sektor">{v.sektor}</span>
-            <span class="kunye kart-tur">{turAdlari[v.tur] ?? v.tur}</span>
-          </div>
+  <div class="isler">
+    {
+      kayitlar.map((kayit, i) => {
+        const v = kayit.data
+        return (
+          <article class="is" data-yon={i % 2 === 0 ? 'sag' : 'sol'}>
+            <div class="kabuk is-ic">
+              <header class="is-bas">
+                <p class="kunye is-meta">
+                  <span class="is-no">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="is-ayrac" aria-hidden="true" />
+                  {v.sektor}
+                  <span class="is-ayrac" aria-hidden="true" />
+                  {turAdlari[v.tur] ?? v.tur}
+                </p>
+                <p class="is-vurgu" data-acil>
+                  {v.vurgu}
+                </p>
+              </header>
 
-          <h3 class="kart-baslik">{v.baslik}</h3>
+              <div class="is-govde">
+                <div class="is-anlati">
+                  <div class="alan-blok" data-acil>
+                    <h3 class="kunye alan-etiket">{c.alanlar.problem}</h3>
+                    <p>{v.problem}</p>
+                  </div>
+                  <div class="alan-blok" data-acil style="--gecikme:80ms">
+                    <h3 class="kunye alan-etiket">{c.alanlar.mudahale}</h3>
+                    <p>{v.neYaptik}</p>
+                  </div>
+                  {v.sonuc && (
+                    <div class="alan-blok" data-acil style="--gecikme:160ms">
+                      <h3 class="kunye alan-etiket alan-sonuc">{c.alanlar.sonuc}</h3>
+                      <p class="sonuc-metin">{v.sonuc}</p>
+                    </div>
+                  )}
+                </div>
 
-          <dl class="kart-govde">
-            <dt class="kunye">{c.alanlar.problem}</dt>
-            <dd>{v.problem}</dd>
+                {v.sema && (
+                  <div class="is-sema" data-acil style="--gecikme:120ms">
+                    <Sema tur={v.sema} aciklama={`${v.baslik} sistem şeması`} />
+                  </div>
+                )}
+              </div>
 
-            <dt class="kunye">{c.alanlar.neYaptik}</dt>
-            <dd>{v.neYaptik}</dd>
-
-            {v.sonuc && (
-              <Fragment>
-                <dt class="kunye kart-sonuc-etiket">{c.alanlar.sonuc}</dt>
-                <dd class="kart-sonuc">{v.sonuc}</dd>
-              </Fragment>
-            )}
-          </dl>
-
-          {v.teknolojiler.length > 0 && (
-            <ul class="etiket-seridi kart-etiketler">
-              {v.teknolojiler.map((t) => (
-                <li class="etiket">{t}</li>
-              ))}
-            </ul>
-          )}
-        </li>
-      )
-    })
-  }
-</ul>
+              {v.teknolojiler.length > 0 && (
+                <p class="is-teknoloji kunye">
+                  {v.teknolojiler.join('  /  ')}
+                </p>
+              )}
+            </div>
+          </article>
+        )
+      })
+    }
+  </div>
+</section>
 
 <style>
-  /* Bu not da bölüm dilini izler: üstten çizgi, sol vurgu yok. */
-  .gizlilik {
-    font-size: var(--ml-text-sm);
-    color: var(--ml-text-muted);
-    max-width: 58ch;
-    margin-block-end: var(--ml-space-8);
-    padding-block-start: var(--ml-space-4);
-    border-block-start: 1px solid var(--ml-cobalt-200);
+  .calismalar {
+    padding-block-end: 0;
   }
 
-  .kartlar {
+  .bas {
     display: grid;
-    gap: var(--ml-space-6);
-  }
-
-  .kart {
-    display: flex;
-    flex-direction: column;
     gap: var(--ml-space-4);
-    background-color: var(--ml-white);
-    border: 1px solid var(--ml-ink-100);
-    padding: var(--ml-space-6);
   }
 
-  .kart-ust {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--ml-space-2) var(--ml-space-3);
+  .bolum-baslik {
+    max-width: 14ch;
   }
 
-  .kart-sektor {
-    color: var(--ml-cobalt-600);
-    font-weight: var(--ml-weight-medium);
+  .bas-alt {
+    font-size: var(--ml-text-xl);
+    color: var(--ml-text-muted);
+    max-width: 34ch;
   }
 
-  .kart-tur {
+  .gizlilik {
+    margin-block-start: var(--ml-space-8);
+    max-width: 56ch;
+    text-transform: none;
+    letter-spacing: 0;
+    line-height: var(--ml-leading-relaxed);
     color: var(--ml-ink-500);
   }
 
-  /* Ayraç metin değil, çizgidir. ink-300 yalnızca dekoratif öğede
-     kullanılabilir; metin rengi olarak kontrastı yetmiyor. */
-  .kart-tur::before {
-    content: '';
-    display: inline-block;
-    width: 1px;
-    height: 0.85em;
-    margin-inline-end: var(--ml-space-3);
-    background-color: var(--ml-ink-300);
-    vertical-align: -0.08em;
+  /* ---------- İş blokları ---------- */
+  .isler {
+    margin-block-start: clamp(3rem, 1.5rem + 5vw, 6rem);
   }
 
-  .kart-baslik {
-    font-size: var(--ml-text-xl);
+  .is {
+    padding-block: clamp(3.5rem, 2rem + 5vw, 7rem);
+    border-block-start: 1px solid var(--ml-ink-100);
+  }
+
+  .is:last-child {
+    border-block-end: 1px solid var(--ml-ink-100);
+  }
+
+  .is-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--ml-space-3);
+    flex-wrap: wrap;
+    color: var(--ml-ink-500);
+  }
+
+  .is-no {
+    color: var(--ml-cobalt-600);
+  }
+
+  .is-ayrac {
+    width: 12px;
+    height: 1px;
+    background-color: var(--ml-ink-300);
+    flex: none;
+  }
+
+  /* Bloğun en üstündeki büyük sonuç cümlesi. Ana mesaj bu. */
+  .is-vurgu {
+    margin-block-start: var(--ml-space-5, 1.25rem);
+    font-family: var(--ml-font-display);
+    font-size: var(--ml-text-is);
+    font-weight: var(--ml-weight-semibold);
+    line-height: var(--ml-leading-tight);
+    letter-spacing: var(--ml-tracking-tighter);
+    color: var(--ml-ink-900);
+    max-width: 20ch;
     text-wrap: balance;
   }
 
-  .kart-govde {
+  .is-govde {
+    display: grid;
+    gap: var(--ml-space-10, 2.5rem);
+    margin-block-start: clamp(2rem, 1rem + 3vw, 3.5rem);
+  }
+
+  .is-anlati {
+    display: grid;
+    gap: var(--ml-space-8);
+    align-content: start;
+  }
+
+  .alan-blok {
     display: grid;
     gap: var(--ml-space-2);
-    margin: 0;
-    flex: 1;
   }
 
-  .kart-govde dt {
+  .alan-etiket {
     color: var(--ml-ink-500);
-    margin-block-start: var(--ml-space-2);
   }
 
-  .kart-govde dt:first-of-type {
-    margin-block-start: 0;
+  .alan-sonuc {
+    color: var(--ml-cobalt-600);
   }
 
-  .kart-govde dd {
-    margin: 0;
-    color: var(--ml-text-body);
-    font-size: var(--ml-text-sm);
+  .alan-blok p {
+    font-size: var(--ml-text-base);
     line-height: var(--ml-leading-relaxed);
+    color: var(--ml-ink-700);
+    max-width: 44ch;
   }
 
-  .kart-sonuc-etiket {
-    color: var(--ml-cobalt-600) !important;
-  }
-
-  .kart-sonuc {
+  .sonuc-metin {
     color: var(--ml-ink-900) !important;
     font-weight: var(--ml-weight-medium);
   }
 
-  .kart-etiketler {
-    margin-block-start: var(--ml-space-2);
-    padding-block-start: var(--ml-space-4);
-    border-block-start: 1px solid var(--ml-ink-100);
+  .is-sema {
+    align-self: center;
+    padding-block: var(--ml-space-4);
   }
 
-  @media (min-width: 820px) {
-    .kartlar {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--ml-space-6);
+  .is-teknoloji {
+    margin-block-start: clamp(2rem, 1rem + 2.5vw, 3rem);
+    color: var(--ml-ink-500);
+    text-transform: none;
+    letter-spacing: 0.04em;
+  }
+
+  @media (min-width: 900px) {
+    .is-govde {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: var(--ml-space-16);
+      align-items: start;
     }
 
-    .kart {
-      padding: var(--ml-space-8);
+    /* Ritim için şema bir blokta sağda, sonrakinde solda. */
+    .is[data-yon='sol'] .is-anlati {
+      order: 2;
+    }
+
+    .is[data-yon='sol'] .is-sema {
+      order: 1;
+    }
+
+    .is-vurgu {
+      max-width: 24ch;
     }
   }
 </style>

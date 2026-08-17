@@ -1,0 +1,215 @@
+---
+/* Manifesto paneli.
+
+   Sayfanın en güçlü marka anı. Normal bir metin bölümü gibi görünmemesi
+   için tam genişlikte koyu bir editoryal blok olarak kuruluyor.
+   Yuvarlak köşeli SaaS kartı değil: keskin, geniş, tipografi taşıyor.
+
+   Sayfada koyu zemin yalnızca burada ve kapanışta var. */
+
+import { icerik } from '../data/icerik'
+
+const m = icerik.manifesto
+---
+
+<section class="manifesto ml-koyu" aria-labelledby="manifesto-baslik">
+  <div class="kabuk manifesto-ic">
+    <h2 class="ifade manifesto-baslik" id="manifesto-baslik" data-acil>
+      {m.baslik}
+    </h2>
+
+    <div class="manifesto-govde">
+      <div class="sutun">
+        {
+          m.girisParagraflar.map((p, i) => (
+            <p class="giris" data-acil style={`--gecikme:${i * 90}ms`}>
+              {p}
+            </p>
+          ))
+        }
+
+        <ul class="bazen">
+          {
+            m.bazen.map((satir, i) => (
+              <li data-acil style={`--gecikme:${i * 90}ms`}>
+                {satir}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="sutun">
+        <p class="giris" data-acil>{m.sorularGiris}</p>
+        <ul class="sorular">
+          {
+            m.sorular.map((s, i) => (
+              <li data-acil style={`--gecikme:${i * 90}ms`}>
+                {s}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="manifesto-kapanis">
+      <p class="giris" data-acil>{m.kapanisGiris}</p>
+      <p class="ifade vurgu" data-acil>{m.vurgu}</p>
+      <p class="giris son-giris" data-acil>
+        {m.kapanisMetin}
+        <span class="vurgu-satir">{m.kapanisVurgu}</span>
+      </p>
+    </div>
+
+    <ol class="manifesto-adimlar">
+      {
+        m.adimlar.map((a, i) => (
+          <li data-acil style={`--gecikme:${i * 80}ms`}>
+            <span class="kunye adim-no">{String(i + 1).padStart(2, '0')}</span>
+            <span class="adim-metin">{a}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .manifesto {
+    padding-block: clamp(5.5rem, 3rem + 10vw, 12rem);
+  }
+
+  .manifesto-baslik {
+    max-width: 18ch;
+    color: var(--ml-cream-base);
+  }
+
+  .manifesto-govde {
+    display: grid;
+    gap: var(--ml-space-12);
+    margin-block-start: clamp(3rem, 1.5rem + 5vw, 6rem);
+  }
+
+  .sutun {
+    display: grid;
+    gap: var(--ml-space-6);
+    align-content: start;
+  }
+
+  .giris {
+    font-size: var(--ml-text-xl);
+    line-height: var(--ml-leading-snug);
+    color: var(--ml-cream-base);
+    max-width: 34ch;
+  }
+
+  .bazen,
+  .sorular {
+    display: grid;
+    gap: var(--ml-space-4);
+  }
+
+  .bazen li,
+  .sorular li {
+    font-size: var(--ml-text-lg);
+    line-height: var(--ml-leading-normal);
+    color: rgb(255 244 214 / 0.74);
+    max-width: 40ch;
+    padding-inline-start: var(--ml-space-6);
+    position: relative;
+  }
+
+  /* Saç teli çizgi. Madde işareti değil, kenar çizgisi. */
+  .bazen li::before,
+  .sorular li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block: 0.55em auto;
+    width: 14px;
+    height: 1px;
+    background-color: rgb(255 244 214 / 0.4);
+  }
+
+  .manifesto-kapanis {
+    display: grid;
+    gap: var(--ml-space-6);
+    margin-block-start: clamp(4rem, 2rem + 6vw, 8rem);
+    max-width: 24ch;
+  }
+
+  .vurgu {
+    color: var(--ml-cream-base);
+  }
+
+  .son-giris {
+    max-width: 30ch;
+  }
+
+  .vurgu-satir {
+    display: block;
+    margin-block-start: var(--ml-space-3);
+    font-family: var(--ml-font-display);
+    font-size: var(--ml-text-bolum);
+    font-weight: var(--ml-weight-semibold);
+    line-height: var(--ml-leading-tight);
+    letter-spacing: var(--ml-tracking-tighter);
+    color: var(--ml-cream-base);
+  }
+
+  /* Dört adım. Panelin altında, mono künyeli bir şerit. */
+  .manifesto-adimlar {
+    display: grid;
+    gap: var(--ml-space-6);
+    margin-block-start: clamp(4rem, 2rem + 6vw, 7rem);
+    padding-block-start: var(--ml-space-8);
+    border-block-start: 1px solid rgb(255 244 214 / 0.22);
+  }
+
+  .manifesto-adimlar li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--ml-space-4);
+  }
+
+  .adim-no {
+    color: rgb(255 244 214 / 0.5);
+    flex: none;
+  }
+
+  .adim-metin {
+    font-family: var(--ml-font-display);
+    font-size: var(--ml-text-xl);
+    font-weight: var(--ml-weight-medium);
+    letter-spacing: var(--ml-tracking-tight);
+    color: var(--ml-cream-base);
+  }
+
+  @media (min-width: 760px) {
+    .manifesto-govde {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--ml-space-16);
+    }
+
+    .manifesto-kapanis {
+      max-width: 30ch;
+    }
+
+    .manifesto-adimlar {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--ml-space-8);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .manifesto-adimlar {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .manifesto-adimlar li {
+      flex-direction: column;
+      gap: var(--ml-space-3);
+    }
+  }
+</style>

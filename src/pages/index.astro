@@ -1,10 +1,11 @@
 ---
 import Temel from '../layouts/Temel.astro'
-import BolumBasi from '../components/BolumBasi.astro'
-import KalemListesi from '../components/KalemListesi.astro'
-import SurecSeridi from '../components/SurecSeridi.astro'
-import Yaklasim from '../components/Yaklasim.astro'
+import Manifesto from '../components/Manifesto.astro'
+import SurecGorseli from '../components/SurecGorseli.astro'
 import Calismalar from '../components/Calismalar.astro'
+import Gelistirdiklerimiz from '../components/Gelistirdiklerimiz.astro'
+import NasilCalisiyoruz from '../components/NasilCalisiyoruz.astro'
+import MontiLabs from '../components/MontiLabs.astro'
 import IletisimFormu from '../components/IletisimFormu.astro'
 import { icerik } from '../data/icerik'
 
@@ -12,107 +13,56 @@ const c = icerik
 ---
 
 <Temel>
-  {/* 1 — Hero ------------------------------------------------ */}
-  <section class="giris">
-    <div class="kabuk giris-ic">
-      <div class="giris-metin">
-        <h1>{c.hero.baslik}</h1>
-        <p class="giris-alt">{c.hero.altMetin}</p>
-        <div class="giris-eylemler">
-          <a class="dugme dugme-birincil" href={c.hero.birincilEylem.hedef}>
-            {c.hero.birincilEylem.etiket}
-          </a>
-          <a class="dugme dugme-ikincil" href={c.hero.ikincilEylem.hedef}>
-            {c.hero.ikincilEylem.etiket}
-          </a>
-        </div>
+  {/* 01 — Hero. Tamamen tipografi. Mockup, render, grafik yok. */}
+  <section class="giris" aria-labelledby="giris-baslik">
+    <div class="kabuk">
+      <h1 class="hero-baslik" id="giris-baslik" data-acil>{c.hero.baslik}</h1>
+
+      <p class="giris-alt" data-acil style="--gecikme:120ms">{c.hero.altMetin}</p>
+
+      <div class="giris-eylemler" data-acil style="--gecikme:200ms">
+        <a class="cagri" href={c.hero.birincilEylem.hedef}>
+          {c.hero.birincilEylem.etiket}
+          <span class="ok" aria-hidden="true">→</span>
+        </a>
+        <a class="cagri-sessiz" href={c.hero.ikincilEylem.hedef}>
+          {c.hero.ikincilEylem.etiket}
+        </a>
       </div>
 
-      <div class="giris-serit">
-        <SurecSeridi />
-      </div>
+      <ul class="giris-alanlar" data-acil style="--gecikme:280ms">
+        {c.hero.alanlar.map((a) => <li class="kunye">{a}</li>)}
+      </ul>
     </div>
   </section>
 
-  {/* 2 — Yaklaşım -------------------------------------------- */}
-  <section class="bolum" id="yaklasim">
+  {/* 02 — Manifesto */}
+  <Manifesto />
+
+  {/* 03 — Süreç görseli */}
+  <SurecGorseli />
+
+  {/* 04 — Çalışmalar */}
+  <Calismalar />
+
+  {/* 05 — Neler geliştiriyoruz */}
+  <Gelistirdiklerimiz />
+
+  {/* 06 — Nasıl çalışıyoruz */}
+  <NasilCalisiyoruz />
+
+  {/* 07 — Monti Labs */}
+  <MontiLabs />
+
+  {/* 08 — Kapanış ve form */}
+  <section class="kapanis ml-inverse" id="iletisim" aria-labelledby="kapanis-baslik">
     <div class="kabuk">
-      <BolumBasi
-        kunye={c.yaklasim.kunye}
-        baslik={c.yaklasim.baslik}
-        altMetin={c.yaklasim.altMetin}
-      />
-      <Yaklasim />
-    </div>
-  </section>
-
-  {/* 3 — Ne geliştiriyoruz ----------------------------------- */}
-  <section class="bolum" id="hizmetler">
-    <div class="kabuk">
-      <BolumBasi
-        kunye={c.hizmetler.kunye}
-        baslik={c.hizmetler.baslik}
-        altMetin={c.hizmetler.altMetin}
-      />
-      <KalemListesi kalemler={c.hizmetler.kalemler} sutun={3} />
-    </div>
-  </section>
-
-  {/* 4 — Çalışmalar ------------------------------------------ */}
-  <section class="bolum ml-muted" id="calismalar">
-    <div class="kabuk">
-      <BolumBasi
-        kunye={c.calismalar.kunye}
-        baslik={c.calismalar.baslik}
-        altMetin={c.calismalar.altMetin}
-      />
-      <Calismalar />
-    </div>
-  </section>
-
-  {/* 5 — Ürünler --------------------------------------------- */}
-  <section class="bolum ml-muted urunler" id="urunler">
-    <div class="kabuk">
-      <BolumBasi kunye={c.urunler.kunye} baslik={c.urunler.baslik} />
-      <p class="urunler-metin">{c.urunler.henuzYok}</p>
-    </div>
-  </section>
-
-  {/* 6 — Prensipler ------------------------------------------ */}
-  <section class="bolum" id="prensipler">
-    <div class="kabuk">
-      <BolumBasi kunye={c.prensipler.kunye} baslik={c.prensipler.baslik} />
-      <KalemListesi kalemler={c.prensipler.kalemler} sutun={3} />
-    </div>
-  </section>
-
-  {/* 7 — Farkımız -------------------------------------------- */}
-  <section class="bolum" id="neden">
-    <div class="kabuk">
-      <BolumBasi kunye={c.neden.kunye} baslik={c.neden.baslik} />
-      <KalemListesi kalemler={c.neden.kalemler} sutun={2} vurgu="cumle" />
-    </div>
-  </section>
-
-  {/* 8 — Kimler için ----------------------------------------- */}
-  <section class="bolum" id="kimler">
-    <div class="kabuk">
-      <BolumBasi kunye={c.kimlerIcin.kunye} baslik={c.kimlerIcin.baslik} />
-      <KalemListesi kalemler={c.kimlerIcin.kalemler} sutun={3} />
-    </div>
-  </section>
-
-  {/* 9 — Kapanış ve form ------------------------------------- */}
-  <section class="bolum ml-inverse kapanis" id="iletisim">
-    <div class="kabuk kapanis-ic">
-      <div class="kapanis-metin">
-        <p class="uste">{c.iletisim.kunye}</p>
-        <h2>{c.iletisim.kapanisBaslik}</h2>
-        <p class="kapanis-alt">{c.iletisim.kapanisMetin}</p>
+      <div class="kapanis-bas">
+        <h2 class="ifade" id="kapanis-baslik" data-acil>{c.kapanis.baslik}</h2>
+        <p class="kapanis-metin" data-acil style="--gecikme:100ms">{c.kapanis.metin}</p>
       </div>
 
-      <div class="kapanis-form">
-        <h3 class="form-baslik">{c.iletisim.formBaslik}</h3>
+      <div class="kapanis-form" data-acil style="--gecikme:160ms">
         <IletisimFormu />
       </div>
     </div>
@@ -122,82 +72,75 @@ const c = icerik
 <style>
   /* ---------- Hero ---------- */
   .giris {
-    padding-block: clamp(3rem, 1.5rem + 5vw, 6rem) var(--ml-section-y);
+    padding-block: clamp(4rem, 2rem + 7vw, 9rem) clamp(5rem, 3rem + 8vw, 11rem);
   }
 
-  .giris-ic {
-    display: grid;
-    gap: var(--ml-space-12);
-    align-items: start;
-  }
-
-  .giris-metin h1 {
-    max-width: 16ch;
+  .hero-baslik {
+    max-width: 15ch;
   }
 
   .giris-alt {
-    margin-block-start: var(--ml-space-6);
-    font-size: var(--ml-text-lg);
-    color: var(--ml-text-body);
+    margin-block-start: clamp(2rem, 1rem + 3vw, 3rem);
+    font-size: var(--ml-text-xl);
+    line-height: var(--ml-leading-snug);
+    color: var(--ml-ink-700);
     max-width: 46ch;
   }
 
   .giris-eylemler {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--ml-space-4);
-    margin-block-start: var(--ml-space-8);
+    align-items: center;
+    gap: var(--ml-space-6) var(--ml-space-10, 2.5rem);
+    margin-block-start: clamp(2.5rem, 1.5rem + 3vw, 4rem);
   }
 
-  @media (min-width: 980px) {
-    .giris-ic {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-      gap: var(--ml-space-16);
-      align-items: center;
-    }
-
-    .giris-metin h1 {
-      max-width: 14ch;
-    }
+  /* Alan şeridi. Sayfanın en altındaki çizgiye oturur. */
+  .giris-alanlar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ml-space-4) var(--ml-space-8);
+    margin-block-start: clamp(3.5rem, 2rem + 5vw, 6.5rem);
+    padding-block-start: var(--ml-space-5, 1.25rem);
+    border-block-start: 1px solid var(--ml-ink-100);
   }
 
-  /* ---------- Ürünler ---------- */
-  .urunler-metin {
-    max-width: var(--ml-measure);
-    font-size: var(--ml-text-lg);
-    color: var(--ml-text-body);
+  .giris-alanlar li {
+    color: var(--ml-ink-500);
   }
 
   /* ---------- Kapanış ---------- */
-  .kapanis-ic {
-    display: grid;
-    gap: var(--ml-space-12);
+  .kapanis {
+    padding-block: clamp(5rem, 3rem + 9vw, 11rem);
   }
 
-  .kapanis-metin h2 {
+  .kapanis-bas h2 {
     max-width: 16ch;
+    color: var(--ml-cream-base);
   }
 
-  .kapanis-alt {
+  .kapanis-metin {
     margin-block-start: var(--ml-space-6);
-    font-size: var(--ml-text-lg);
-    color: var(--ml-cream-base);
-    max-width: 42ch;
-  }
-
-  .form-baslik {
     font-size: var(--ml-text-xl);
-    color: var(--ml-cream-base);
-    margin-block-end: var(--ml-space-6);
-    padding-block-end: var(--ml-space-4);
-    border-block-end: 1px solid rgb(255 244 214 / 0.25);
+    line-height: var(--ml-leading-snug);
+    color: rgb(255 244 214 / 0.82);
+    max-width: 34ch;
   }
 
-  @media (min-width: 980px) {
-    .kapanis-ic {
-      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  .kapanis-form {
+    margin-block-start: clamp(3.5rem, 2rem + 5vw, 6rem);
+  }
+
+  @media (min-width: 1000px) {
+    .kapanis .kabuk {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
       gap: var(--ml-space-16);
-      align-items: center;
+      align-items: start;
+    }
+
+    .kapanis-form {
+      margin-block-start: 0;
     }
   }
 </style>

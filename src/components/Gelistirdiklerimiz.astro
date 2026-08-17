@@ -1,0 +1,88 @@
+---
+/* Neler geliştiriyoruz.
+
+   Dört başlık. Kart değil, editoryal satırlar: solda büyük ad,
+   sağda açıklama, aralarında saç teli çizgi.
+
+   Web sitesi geliştirme ana hizmet olarak listelenmiyor.
+   Monti Labs yapabilir ama marka web ajansı gibi görünmemeli. */
+
+import { icerik } from '../data/icerik'
+
+const g = icerik.gelistirdiklerimiz
+---
+
+<section class="bolum" id="gelistirdiklerimiz" aria-labelledby="gelistirdiklerimiz-baslik">
+  <div class="kabuk">
+    <p class="uste kunye">{g.kunye}</p>
+    <h2 class="bolum-baslik bas" id="gelistirdiklerimiz-baslik" data-acil>{g.baslik}</h2>
+
+    <ul class="kalemler">
+      {
+        g.kalemler.map((k, i) => (
+          <li class="kalem" data-acil style={`--gecikme:${i * 70}ms`}>
+            <span class="kunye kalem-no">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="kalem-ad">{k.ad}</h3>
+            <p class="kalem-metin">{k.metin}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .bas {
+    max-width: 20ch;
+  }
+
+  .kalemler {
+    margin-block-start: clamp(3rem, 1.5rem + 5vw, 5.5rem);
+  }
+
+  .kalem {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--ml-space-3) var(--ml-space-6);
+    padding-block: clamp(2rem, 1rem + 2.5vw, 3.25rem);
+    border-block-start: 1px solid var(--ml-ink-100);
+    align-items: start;
+  }
+
+  .kalem:last-child {
+    border-block-end: 1px solid var(--ml-ink-100);
+  }
+
+  .kalem-no {
+    color: var(--ml-cobalt-600);
+    padding-block-start: 0.55em;
+  }
+
+  .kalem-ad {
+    font-size: var(--ml-text-bolum);
+    line-height: var(--ml-leading-tight);
+    letter-spacing: var(--ml-tracking-tighter);
+    color: var(--ml-ink-900);
+  }
+
+  .kalem-metin {
+    grid-column: 2;
+    font-size: var(--ml-text-lg);
+    line-height: var(--ml-leading-relaxed);
+    color: var(--ml-ink-700);
+    max-width: 46ch;
+  }
+
+  @media (min-width: 900px) {
+    .kalem {
+      grid-template-columns: auto minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: var(--ml-space-8);
+      align-items: baseline;
+    }
+
+    .kalem-metin {
+      grid-column: 3;
+      font-size: var(--ml-text-base);
+    }
+  }
+</style>

@@ -1,0 +1,206 @@
+---
+/* Sistem şemaları.
+
+   Sahte dashboard veya uydurma ekran görüntüsü yerine, kurulan yapıyı
+   anlatan saç teli diyagramlar. Marka paketi görsel içerik olarak
+   "sistem şemaları, veri akış diyagramları" istiyor.
+
+   Ortak dil: 1px mürekkep çizgi, mono etiket, tek kobalt vurgu.
+   Vurgu her zaman değişen şeyi işaret eder. */
+
+interface Props {
+  tur: 'besleme' | 'kural-motoru' | 'tek-kaynak' | 'uyku'
+  aciklama: string
+}
+
+const { tur, aciklama } = Astro.props
+---
+
+<figure class="sema" data-tur={tur}>
+  {
+    tur === 'besleme' && (
+      <svg viewBox="0 0 340 200" role="img" aria-label={aciklama}>
+        <g class="cizgi">
+          <rect x="8" y="80" width="86" height="40" />
+          <rect x="127" y="80" width="86" height="40" class="vurgu-kutu" />
+          <rect x="246" y="80" width="86" height="40" />
+          <path d="M94 100 H127" class="ok" marker-end="url(#uc)" />
+          <path d="M213 100 H246" class="ok" marker-end="url(#uc)" />
+          <path d="M51 80 V44 H170 V80" class="ok kesik" marker-end="url(#uc)" />
+        </g>
+        <g class="etiket" aria-hidden="true">
+          <text x="51" y="104">katalog</text>
+          <text x="170" y="104" class="vurgu-yazi">besleme</text>
+          <text x="289" y="104">arama motoru</text>
+          <text x="170" y="36" class="kucuk">değişiklik</text>
+          <text x="170" y="150" class="kucuk">elle bildirim yok</text>
+        </g>
+        <defs>
+          <marker id="uc" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 1 L7 4 L0 7" class="ok-uc" />
+          </marker>
+        </defs>
+      </svg>
+    )
+  }
+
+  {
+    tur === 'kural-motoru' && (
+      <svg viewBox="0 0 340 200" role="img" aria-label={aciklama}>
+        <g class="cizgi">
+          <rect x="8" y="24" width="104" height="34" class="vurgu-kutu" />
+          <rect x="8" y="83" width="104" height="34" />
+          <path d="M112 41 H160 V100" class="ok" />
+          <path d="M112 100 H160" class="ok" />
+          <rect x="160" y="83" width="76" height="34" />
+          <path d="M236 100 H268" class="ok" marker-end="url(#uc2)" />
+          <rect x="268" y="60" width="64" height="24" />
+          <rect x="268" y="90" width="64" height="24" />
+          <rect x="268" y="120" width="64" height="24" />
+          <path d="M236 100 H252 V72 H268" class="ok" marker-end="url(#uc2)" />
+          <path d="M236 100 H252 V132 H268" class="ok" marker-end="url(#uc2)" />
+        </g>
+        <g class="etiket" aria-hidden="true">
+          <text x="60" y="45" class="vurgu-yazi">1.413 kural</text>
+          <text x="60" y="104">metadata</text>
+          <text x="198" y="104">kural motoru</text>
+          <text x="300" y="76" class="kucuk">süreç</text>
+          <text x="300" y="106" class="kucuk">süreç</text>
+          <text x="300" y="136" class="kucuk">süreç</text>
+          <text x="60" y="172" class="kucuk">kural eklemek kod değiştirmiyor</text>
+        </g>
+        <defs>
+          <marker id="uc2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 1 L7 4 L0 7" class="ok-uc" />
+          </marker>
+        </defs>
+      </svg>
+    )
+  }
+
+  {
+    tur === 'tek-kaynak' && (
+      <svg viewBox="0 0 340 200" role="img" aria-label={aciklama}>
+        <g class="cizgi">
+          <rect x="8" y="76" width="96" height="48" class="vurgu-kutu" />
+          <path d="M104 100 H140" class="ok" />
+          <path d="M140 100 V44 H176" class="ok" marker-end="url(#uc3)" />
+          <path d="M140 100 H176" class="ok" marker-end="url(#uc3)" />
+          <path d="M140 100 V156 H176" class="ok" marker-end="url(#uc3)" />
+          <rect x="176" y="26" width="72" height="36" />
+          <rect x="176" y="82" width="72" height="36" />
+          <rect x="176" y="138" width="72" height="36" />
+        </g>
+        <g class="etiket" aria-hidden="true">
+          <text x="56" y="96" class="vurgu-yazi">tek kaynak</text>
+          <text x="56" y="112" class="kucuk">renk · tipografi · aralık</text>
+          <text x="212" y="48" class="kucuk">ekran</text>
+          <text x="212" y="104" class="kucuk">ekran</text>
+          <text x="212" y="160" class="kucuk">ekran</text>
+        </g>
+        <defs>
+          <marker id="uc3" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 1 L7 4 L0 7" class="ok-uc" />
+          </marker>
+        </defs>
+      </svg>
+    )
+  }
+
+  {
+    tur === 'uyku' && (
+      <svg viewBox="0 0 340 200" role="img" aria-label={aciklama}>
+        <g class="cizgi">
+          <path d="M8 128 H332" />
+          {Array.from({ length: 25 }).map((_, i) => (
+            <path d={`M${8 + i * 13.5} 128 V${i % 6 === 0 ? 120 : 124}`} />
+          ))}
+          {/* Gündüz: ayakta */}
+          <rect x="116" y="72" width="122" height="40" class="vurgu-kutu" />
+          {/* Gece: uykuda */}
+          <rect x="8" y="94" width="108" height="18" class="sonuk" />
+          <rect x="238" y="94" width="94" height="18" class="sonuk" />
+        </g>
+        <g class="etiket" aria-hidden="true">
+          <text x="177" y="96" class="vurgu-yazi">ayakta</text>
+          <text x="62" y="106" class="kucuk">uykuda</text>
+          <text x="285" y="106" class="kucuk">uykuda</text>
+          <text x="8" y="150" class="kucuk baslangic">00:00</text>
+          <text x="332" y="150" class="kucuk bitis">24:00</text>
+          <text x="170" y="176" class="kucuk">test ortamı, istek gelince uyanıyor</text>
+        </g>
+      </svg>
+    )
+  }
+</figure>
+
+<style>
+  .sema {
+    margin: 0;
+    width: 100%;
+  }
+
+  .sema svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .cizgi rect,
+  .cizgi path {
+    fill: none;
+    stroke: var(--ml-ink-900);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .cizgi .vurgu-kutu {
+    stroke: var(--ml-cobalt-600);
+    stroke-width: 1.5;
+  }
+
+  .cizgi .sonuk {
+    stroke: var(--ml-ink-300);
+    stroke-dasharray: 3 3;
+  }
+
+  .cizgi .kesik {
+    stroke-dasharray: 4 4;
+    stroke: var(--ml-ink-300);
+  }
+
+  .ok-uc {
+    fill: none;
+    stroke: var(--ml-ink-900);
+    stroke-width: 1;
+  }
+
+  /* viewBox 340 birim. 360px ekranda SVG ~320px olur, yani ölçek 0.94:
+     9px burada 8.5px'e düşüyordu. Taban büyütüldü ki dar ekranda da
+     okunur kalsın; geniş ekranda ölçek zaten yukarı çalışıyor. */
+  .etiket text {
+    font-family: var(--ml-font-mono);
+    font-size: 11px;
+    fill: var(--ml-ink-700);
+    text-anchor: middle;
+    letter-spacing: 0.04em;
+  }
+
+  .etiket .kucuk {
+    font-size: 10px;
+    fill: var(--ml-ink-500);
+  }
+
+  .etiket .vurgu-yazi {
+    fill: var(--ml-cobalt-600);
+    font-weight: 500;
+  }
+
+  .etiket .baslangic {
+    text-anchor: start;
+  }
+
+  .etiket .bitis {
+    text-anchor: end;
+  }
+</style>

@@ -2,14 +2,16 @@
    Monti Labs — Temel stil katmanı
 
    Tasarım yönü:
-   Sayfa bir mühendislik künyesi gibi kurulur. Bölümler kobalt bir
-   saç teli çizgiyle ayrılır, her bölümün başında logodan türetilmiş
-   43.5 derecelik bir kama durur.
+   Sayfayı tipografi ve boşluk taşır. Kart yok, kutu yok, gölge yok.
+   Ayrım için saç teli çizgi ve büyük boşluk kullanılır.
 
-   Diyagonal yalnızca iki yerde kullanılır:
-     1. Bölüm işareti (kama)
-     2. Hero'daki süreç şeridinin adım bağlantıları
-   Başka hiçbir yerde diyagonal yoktur. Cesaret tek yerde harcanır.
+   Renk kontrollü: sayfanın tamamı kâğıt renginde yaşar. Yalnızca iki
+   yerde renk değişir, ikisi de bilinçli birer duruş anıdır:
+     manifesto  koyu mürekkep paneli
+     kapanış    kobalt
+
+   Diyagonal, logodan türetilen 43.5 derecelik açı, yalnızca bölüm
+   işaretinde ve süreç görselinde kullanılır. Başka yerde yoktur.
    ============================================================ */
 
 /* ------------------------------------------------------------
@@ -28,7 +30,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: 6rem;
+  scroll-padding-top: 5rem;
 }
 
 body {
@@ -41,11 +43,13 @@ body {
   font-synthesis-weight: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 img,
 picture,
-svg {
+svg,
+video {
   display: block;
   max-width: 100%;
 }
@@ -79,34 +83,14 @@ h4 {
   text-wrap: balance;
 }
 
-h1 {
-  font-size: var(--ml-text-4xl);
-  line-height: var(--ml-leading-tight);
-  letter-spacing: var(--ml-tracking-tighter);
-  font-weight: var(--ml-weight-bold);
-}
-
-h2 {
-  font-size: var(--ml-text-3xl);
-  letter-spacing: var(--ml-tracking-tighter);
-}
-
-h3 {
-  font-size: var(--ml-text-xl);
-}
-
 p {
   text-wrap: pretty;
 }
 
 a {
-  color: var(--ml-text-accent);
+  color: inherit;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.22em;
-}
-
-a:hover {
-  text-decoration-thickness: 2px;
 }
 
 strong,
@@ -115,12 +99,57 @@ b {
   color: var(--ml-text);
 }
 
+/* Sayfadaki en büyük tipografik anlar. */
+.hero-baslik {
+  font-size: var(--ml-text-hero);
+  line-height: var(--ml-leading-sikisik);
+  letter-spacing: var(--ml-tracking-hero);
+  font-weight: var(--ml-weight-bold);
+}
+
+.ifade {
+  font-size: var(--ml-text-ifade);
+  line-height: var(--ml-leading-tight);
+  letter-spacing: var(--ml-tracking-tighter);
+  font-weight: var(--ml-weight-semibold);
+}
+
+.bolum-baslik {
+  font-size: var(--ml-text-bolum);
+  line-height: var(--ml-leading-tight);
+  letter-spacing: var(--ml-tracking-tighter);
+}
+
+/* Mono künye. Bölüm işareti, meta veri ve etiketler. */
+.kunye {
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  font-weight: var(--ml-weight-medium);
+  letter-spacing: var(--ml-tracking-widest);
+  text-transform: uppercase;
+  color: var(--ml-text-muted);
+}
+
+.sayi {
+  font-family: var(--ml-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.olcu {
+  max-width: var(--ml-measure);
+}
+
+.olcu-dar {
+  max-width: var(--ml-measure-dar);
+}
+
 /* ------------------------------------------------------------
    Erişilebilirlik
    ------------------------------------------------------------ */
 :focus-visible {
   outline: 2px solid var(--ml-focus);
   outline-offset: 3px;
+  border-radius: 2px;
 }
 
 .atla {
@@ -153,6 +182,197 @@ b {
   border: 0;
 }
 
+/* ------------------------------------------------------------
+   Kabuk ve bölüm ritmi
+   ------------------------------------------------------------ */
+.kabuk {
+  width: 100%;
+  max-width: var(--ml-container);
+  margin-inline: auto;
+  padding-inline: var(--ml-gutter);
+}
+
+.bolum {
+  padding-block: var(--ml-section-y) var(--ml-section-y-alt);
+  background-color: var(--ml-bg);
+}
+
+/* Bölüm işareti: mono künye ve logodan türeyen kama.
+   Kama 43.5 derece, logonun kütlelerinden biri. */
+.uste {
+  display: flex;
+  align-items: center;
+  gap: var(--ml-space-3);
+  margin-block-end: var(--ml-space-8);
+  color: var(--ml-text-accent);
+}
+
+.uste::before {
+  content: '';
+  flex: none;
+  width: 10px;
+  height: 10.5px;
+  background-color: currentColor;
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+
+/* ------------------------------------------------------------
+   Bağlantılar ve çağrılar
+   ------------------------------------------------------------ */
+
+/* Birincil çağrı. Dolu kutu değil, altı çizili büyük bağlantı;
+   sayfanın editoryal dilini bozmuyor. */
+.cagri {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--ml-font-body);
+  font-size: var(--ml-text-lg);
+  font-weight: var(--ml-weight-semibold);
+  color: var(--ml-text);
+  text-decoration: none;
+  padding-block: var(--ml-space-2);
+  border-block-end: 2px solid var(--ml-cobalt-600);
+  transition: color var(--ml-duration-normal) var(--ml-ease-standard);
+}
+
+.cagri .ok {
+  display: inline-block;
+  transition: transform var(--ml-duration-normal) var(--ml-ease-standard);
+  color: var(--ml-cobalt-600);
+}
+
+.cagri:hover {
+  color: var(--ml-cobalt-600);
+}
+
+.cagri:hover .ok {
+  transform: translateX(0.35em);
+}
+
+.cagri:active {
+  transform: translateY(1px);
+}
+
+/* İkincil, daha sessiz bağlantı. */
+.cagri-sessiz {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: var(--ml-text-base);
+  font-weight: var(--ml-weight-medium);
+  color: var(--ml-text-muted);
+  text-decoration: none;
+  border-block-end: 1px solid var(--ml-border);
+  padding-block: var(--ml-space-1);
+  transition:
+    color var(--ml-duration-normal) var(--ml-ease-standard),
+    border-color var(--ml-duration-normal) var(--ml-ease-standard);
+}
+
+.cagri-sessiz:hover {
+  color: var(--ml-text);
+  border-block-end-color: var(--ml-text);
+}
+
+/* Ters zeminlerde */
+.ml-inverse .cagri,
+.ml-koyu .cagri {
+  color: var(--ml-cream-base);
+  border-block-end-color: var(--ml-cream-base);
+}
+
+.ml-inverse .cagri .ok,
+.ml-koyu .cagri .ok {
+  color: var(--ml-cream-base);
+}
+
+.ml-inverse .cagri:hover,
+.ml-koyu .cagri:hover {
+  color: var(--ml-white);
+}
+
+/* Üst çubuktaki küçük çağrı. Tek dolu öğe, bilinçli. */
+.cagri-kucuk {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: 44px;
+  padding-inline: var(--ml-space-5, 1.25rem);
+  background-color: var(--ml-cobalt-600);
+  color: var(--ml-cream-base);
+  font-size: var(--ml-text-sm);
+  font-weight: var(--ml-weight-semibold);
+  text-decoration: none;
+  border-radius: 2px;
+  transition:
+    background-color var(--ml-duration-fast) var(--ml-ease-standard),
+    transform var(--ml-duration-fast) var(--ml-ease-standard);
+}
+
+.cagri-kucuk:hover {
+  background-color: var(--ml-cobalt-800);
+}
+
+.cagri-kucuk:active {
+  transform: translateY(1px);
+}
+
+/* ------------------------------------------------------------
+   Koyu ve renkli bölümler
+   Sayfada yalnızca ikisi var: manifesto ve kapanış.
+   ------------------------------------------------------------ */
+.ml-koyu {
+  --ml-bg: var(--ml-ink-900);
+  --ml-text: var(--ml-cream-base);
+  --ml-text-body: rgb(255 244 214 / 0.82);
+  --ml-text-muted: rgb(255 244 214 / 0.58);
+  --ml-text-accent: var(--ml-cream-base);
+  --ml-border: rgb(255 244 214 / 0.22);
+  --ml-focus: var(--ml-cream-base);
+
+  background-color: var(--ml-bg);
+  color: var(--ml-text-body);
+}
+
+.ml-inverse {
+  --ml-bg: var(--ml-cobalt-600);
+  --ml-bg-surface: var(--ml-cobalt-800);
+  --ml-text: var(--ml-cream-base);
+  --ml-text-body: rgb(255 244 214 / 0.88);
+  --ml-text-muted: var(--ml-cobalt-200);
+  --ml-text-accent: var(--ml-cream-base);
+  --ml-border: var(--ml-cobalt-500);
+  --ml-focus: var(--ml-cream-base);
+
+  background-color: var(--ml-bg);
+  color: var(--ml-text-body);
+}
+
+/* ------------------------------------------------------------
+   Görünüre girince beliren öğeler
+   Kademeli giriş. Her şey aynı anda inmez.
+   ------------------------------------------------------------ */
+/* Gizleme yalnızca .js sınıfı varken uygulanır. O sınıfı head'deki
+   satır içi betik ekler. JavaScript çalışmazsa hiçbir şey gizlenmez ve
+   içerik olduğu gibi görünür; aksi halde betik başarısız olduğunda
+   sayfanın tamamı görünmez kalırdı. */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-acil] {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    transition:
+      opacity 0.7s var(--ml-ease-enter),
+      transform 0.7s var(--ml-ease-enter);
+    transition-delay: var(--gecikme, 0ms);
+  }
+
+  .js [data-acil][data-gorunur='evet'] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -165,161 +385,6 @@ b {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* ------------------------------------------------------------
-   Kabuk ve bölüm ritmi
-   ------------------------------------------------------------ */
-.kabuk {
-  width: 100%;
-  max-width: var(--ml-container);
-  margin-inline: auto;
-  padding-inline: var(--ml-gutter);
-}
-
-.bolum {
-  padding-block: var(--ml-section-y);
-  background-color: var(--ml-bg);
-}
-
-/* Aynı zemin rengini paylaşan ardışık bölümler tek bir blok gibi okunur.
-   Aradaki boşluk ikiye katlanmasın diye üstteki dolgu kaldırılır. */
-.bolum + .bolum:not(.ml-muted):not(.ml-inverse),
-.ml-muted + .bolum.ml-muted {
-  padding-block-start: 0;
-}
-
-.olcu {
-  max-width: var(--ml-measure);
-}
-
-/* ------------------------------------------------------------
-   Bölüm başlığı ve kama
-   Kama, logonun iki kütlesinden birinin küçültülmüş halidir.
-   Açı: 43.5 derece (dikey kenar / yatay kenar = 1.0537)
-   ------------------------------------------------------------ */
-.uste {
-  display: flex;
-  align-items: center;
-  gap: var(--ml-space-3);
-  font-family: var(--ml-font-mono);
-  font-size: var(--ml-text-xs);
-  font-weight: var(--ml-weight-medium);
-  letter-spacing: var(--ml-tracking-widest);
-  text-transform: uppercase;
-  color: var(--ml-text-accent);
-  margin-block-end: var(--ml-space-6);
-}
-
-.uste::before {
-  content: '';
-  flex: none;
-  width: 10px;
-  height: 10.5px;
-  background-color: currentColor;
-  clip-path: polygon(0 0, 100% 100%, 0 100%);
-}
-
-.bolum-basi {
-  border-block-start: 1px solid var(--ml-border-strong);
-  padding-block-start: var(--ml-space-8);
-  margin-block-end: var(--ml-space-12);
-}
-
-.bolum-basi h2 {
-  max-width: 22ch;
-}
-
-.bolum-alt {
-  margin-block-start: var(--ml-space-4);
-  color: var(--ml-text-muted);
-  font-size: var(--ml-text-lg);
-  max-width: 52ch;
-}
-
-/* ------------------------------------------------------------
-   Düğmeler
-   ------------------------------------------------------------ */
-.dugme {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--ml-space-2);
-  min-height: 48px;
-  padding: var(--ml-space-3) var(--ml-space-8);
-  border: 1px solid transparent;
-  border-radius: var(--ml-radius-sm);
-  font-family: var(--ml-font-body);
-  font-size: var(--ml-text-base);
-  font-weight: var(--ml-weight-semibold);
-  text-decoration: none;
-  cursor: pointer;
-  transition:
-    background-color var(--ml-duration-fast) var(--ml-ease-standard),
-    border-color var(--ml-duration-fast) var(--ml-ease-standard),
-    color var(--ml-duration-fast) var(--ml-ease-standard);
-}
-
-.dugme-birincil {
-  background-color: var(--ml-cobalt-600);
-  color: var(--ml-cream-base);
-}
-
-.dugme-birincil:hover {
-  background-color: var(--ml-cobalt-800);
-}
-
-.dugme-birincil:active {
-  background-color: var(--ml-cobalt-900);
-}
-
-.ml-inverse .dugme-birincil {
-  background-color: var(--ml-cream-base);
-  color: var(--ml-cobalt-800);
-}
-
-.ml-inverse .dugme-birincil:hover {
-  background-color: var(--ml-white);
-}
-
-.dugme-ikincil {
-  background-color: transparent;
-  border-color: var(--ml-border-strong);
-  color: var(--ml-text-accent);
-}
-
-.dugme-ikincil:hover {
-  background-color: var(--ml-cobalt-50);
-}
-
-.ml-inverse .dugme-ikincil:hover {
-  background-color: var(--ml-cobalt-800);
-}
-
-/* ------------------------------------------------------------
-   Yüzeyler
-   Kart köşeleri keskindir. Diyagonal karta uygulanmaz.
-   ------------------------------------------------------------ */
-.yuzey {
-  background-color: var(--ml-bg-surface);
-  border: 1px solid var(--ml-border);
-  border-radius: var(--ml-radius-none);
-}
-
-.etiket-seridi {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--ml-space-2);
-}
-
-.etiket {
-  font-family: var(--ml-font-mono);
-  font-size: var(--ml-text-xs);
-  line-height: 1.4;
-  padding: 0.3rem 0.5rem;
-  background-color: var(--ml-cobalt-50);
-  color: var(--ml-cobalt-800);
-  border-radius: var(--ml-radius-sm);
 }
 
 /* ------------------------------------------------------------
@@ -339,25 +404,33 @@ b {
 
 .alan input,
 .alan textarea {
-  min-height: 48px;
-  padding: var(--ml-space-3) var(--ml-space-4);
-  background-color: var(--ml-white);
-  color: var(--ml-ink-900);
-  border: 1px solid var(--ml-ink-100);
-  border-radius: var(--ml-radius-sm);
-  font-size: var(--ml-text-base);
-  transition: border-color var(--ml-duration-fast) var(--ml-ease-standard);
+  min-height: 52px;
+  padding: var(--ml-space-3) 0;
+  background-color: transparent;
+  color: var(--ml-text);
+  border: 0;
+  border-block-end: 1px solid var(--ml-border);
+  border-radius: 0;
+  font-size: var(--ml-text-lg);
+  transition: border-color var(--ml-duration-normal) var(--ml-ease-standard);
 }
 
 .alan textarea {
-  min-height: 9rem;
+  min-height: 7rem;
   resize: vertical;
   line-height: var(--ml-leading-normal);
 }
 
 .alan input:hover,
-.alan textarea:hover {
-  border-color: var(--ml-cobalt-200);
+.alan textarea:hover,
+.alan input:focus,
+.alan textarea:focus {
+  border-block-end-color: var(--ml-text);
+}
+
+.alan input:focus-visible,
+.alan textarea:focus-visible {
+  outline-offset: 6px;
 }
 
 .alan-yardim {
@@ -371,29 +444,10 @@ b {
   color: var(--ml-danger);
 }
 
-.ml-inverse .alan-hata {
+.ml-inverse .alan-hata,
+.ml-koyu .alan-hata {
   color: var(--ml-cream-base);
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 0.2em;
-}
-
-.ml-inverse .alan-yardim {
-  color: var(--ml-cobalt-200);
-}
-
-/* ------------------------------------------------------------
-   Yardımcılar
-   ------------------------------------------------------------ */
-.kunye {
-  font-family: var(--ml-font-mono);
-  font-size: var(--ml-text-xs);
-  letter-spacing: var(--ml-tracking-wide);
-  text-transform: uppercase;
-  color: var(--ml-text-muted);
-}
-
-.sayi {
-  font-family: var(--ml-font-mono);
-  font-variant-numeric: tabular-nums;
 }

@@ -1,0 +1,321 @@
+---
+/* Süreç görseli.
+
+   Aynı işin iki hâli. Kaydırma ilerledikçe elle yapılan adımlar
+   sistemin devraldığı adımlara dönüşür, toplam süre düşer.
+
+   Dashboard kartı değil: yapışkan bir sahne, saç teli çizgiler ve
+   büyük bir sayı. Kaydırma ele geçirilmiyor, sayfa normal akıyor;
+   yalnızca sahnedeki durum ilerlemeye göre değişiyor.
+
+   Sayılar temsilîdir ve ekranda öyle etiketlenmiştir. */
+
+import { icerik } from '../data/icerik'
+
+const s = icerik.surec
+const oncesiToplam = s.adimlar.reduce((t, a) => t + a.dakika, 0)
+const sonrasiToplam = s.sonrasiAdimlar.reduce((t, a) => t + a.dakika, 0)
+---
+
+<section class="surec" aria-labelledby="surec-baslik">
+  <div class="kabuk">
+    <p class="uste kunye">{s.kunye}</p>
+    <h2 class="bolum-baslik surec-baslik" id="surec-baslik" data-acil>{s.baslik}</h2>
+  </div>
+
+  <div class="sarmal" data-sarmal>
+    <div class="sahne" data-sahne data-asama="0">
+      <div class="kabuk sahne-ic">
+        <p class="kunye sahne-ad">{s.ad}</p>
+
+        <div class="tablo">
+          {/* Elle yürüyen hâl */}
+          <div class="hal hal-once">
+            <p class="hal-etiket kunye">{s.oncesiEtiket}</p>
+            <ol class="adimlar">
+              {
+                s.adimlar.map((a, i) => (
+                  <li class="adim" data-sira={i}>
+                    <span class="adim-ad">{a.ad}</span>
+                    <span class="adim-sure sayi">
+                      {a.dakika} {s.birim}
+                    </span>
+                  </li>
+                ))
+              }
+            </ol>
+          </div>
+
+          {/* Sistemle yürüyen hâl */}
+          <div class="hal hal-sonra">
+            <p class="hal-etiket kunye">{s.sonrasiEtiket}</p>
+            <ol class="adimlar">
+              {
+                s.sonrasiAdimlar.map((a, i) => (
+                  <li class="adim" data-sira={i} data-otomatik={a.otomatik ? 'evet' : 'hayir'}>
+                    <span class="adim-ad">{a.ad}</span>
+                    <span class="adim-sure sayi">
+                      {a.dakika === 0 ? s.anlikEtiketi : `${a.dakika} ${s.birim}`}
+                    </span>
+                  </li>
+                ))
+              }
+            </ol>
+          </div>
+        </div>
+
+        <div class="toplam">
+          <span class="toplam-sayi sayi" data-sayac data-once={oncesiToplam} data-sonra={sonrasiToplam}>
+            {oncesiToplam}
+          </span>
+          <span class="toplam-birim">
+            {s.birim}
+            <span class="toplam-basina">{s.basinaEtiketi}</span>
+          </span>
+        </div>
+
+        <p class="not">{s.not}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .surec {
+    padding-block: var(--ml-section-y) 0;
+  }
+
+  .surec-baslik {
+    max-width: 16ch;
+  }
+
+  /* Sahne bu sarmalın içinde yapışkan durur. Yükseklik, kaydırma
+     ilerlemesinin ölçüleceği mesafeyi belirler. */
+  .sarmal {
+    position: relative;
+    height: 220vh;
+    margin-block-start: var(--ml-space-8);
+  }
+
+  .sahne {
+    position: sticky;
+    top: 0;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+  }
+
+  .sahne-ic {
+    width: 100%;
+    padding-block: var(--ml-space-8);
+  }
+
+  .sahne-ad {
+    color: var(--ml-ink-900);
+    margin-block-end: var(--ml-space-6);
+  }
+
+  .tablo {
+    display: grid;
+    gap: var(--ml-space-10, 2.5rem);
+    border-block-start: 1px solid var(--ml-ink-900);
+    padding-block-start: var(--ml-space-6);
+  }
+
+  .hal-etiket {
+    margin-block-end: var(--ml-space-4);
+  }
+
+  .hal-once .hal-etiket {
+    color: var(--ml-ink-500);
+  }
+
+  .hal-sonra .hal-etiket {
+    color: var(--ml-cobalt-600);
+  }
+
+  .adimlar {
+    display: grid;
+  }
+
+  .adim {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--ml-space-4);
+    padding-block: 0.5rem;
+    border-block-end: 1px solid var(--ml-ink-100);
+    font-size: var(--ml-text-base);
+    transition:
+      opacity 0.5s var(--ml-ease-standard),
+      transform 0.5s var(--ml-ease-standard),
+      color 0.5s var(--ml-ease-standard);
+  }
+
+  .adim-ad {
+    color: var(--ml-ink-700);
+  }
+
+  .adim-sure {
+    flex: none;
+    font-size: var(--ml-text-xs);
+    color: var(--ml-ink-500);
+  }
+
+  .hal-sonra .adim[data-otomatik='evet'] .adim-ad,
+  .hal-sonra .adim[data-otomatik='evet'] .adim-sure {
+    color: var(--ml-cobalt-600);
+  }
+
+  /* ---------- Aşamalar ----------
+     Kaydırma ilerledikçe elle yapılan adımlar sırayla siliniyor,
+     sistem tarafı beliriyor. */
+  .hal-sonra {
+    opacity: 0;
+    transition: opacity 0.6s var(--ml-ease-standard);
+  }
+
+  .sahne[data-asama='0'] .hal-once .adim,
+  .sahne[data-asama='1'] .hal-once .adim,
+  .sahne[data-asama='2'] .hal-once .adim {
+    opacity: 1;
+  }
+
+  .sahne[data-asama='1'] .hal-once .adim[data-sira='0'],
+  .sahne[data-asama='1'] .hal-once .adim[data-sira='1'] {
+    opacity: 0.22;
+    transform: translateX(-0.5rem);
+  }
+
+  .sahne[data-asama='2'] .hal-once .adim[data-sira='0'],
+  .sahne[data-asama='2'] .hal-once .adim[data-sira='1'],
+  .sahne[data-asama='2'] .hal-once .adim[data-sira='2'],
+  .sahne[data-asama='2'] .hal-once .adim[data-sira='3'] {
+    opacity: 0.22;
+    transform: translateX(-0.5rem);
+  }
+
+  .sahne[data-asama='3'] .hal-once {
+    opacity: 0.16;
+  }
+
+  .sahne[data-asama='3'] .hal-sonra {
+    opacity: 1;
+  }
+
+  /* ---------- Toplam ---------- */
+  .toplam {
+    display: flex;
+    align-items: baseline;
+    gap: var(--ml-space-3);
+    margin-block-start: var(--ml-space-8);
+  }
+
+  .toplam-sayi {
+    font-size: clamp(3rem, 1.5rem + 5vw, 6rem);
+    line-height: 0.9;
+    font-weight: var(--ml-weight-medium);
+    letter-spacing: var(--ml-tracking-hero);
+    color: var(--ml-ink-900);
+    transition: color 0.5s var(--ml-ease-standard);
+  }
+
+  .sahne[data-asama='3'] .toplam-sayi {
+    color: var(--ml-cobalt-600);
+  }
+
+  .toplam-birim {
+    font-family: var(--ml-font-mono);
+    font-size: var(--ml-text-sm);
+    color: var(--ml-ink-500);
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .toplam-basina {
+    font-size: var(--ml-text-xs);
+    color: var(--ml-ink-500);
+  }
+
+  .not {
+    margin-block-start: var(--ml-space-6);
+    font-size: var(--ml-text-xs);
+    color: var(--ml-ink-500);
+    max-width: 46ch;
+  }
+
+  @media (min-width: 820px) {
+    .tablo {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--ml-space-12);
+    }
+  }
+
+  /* Hareket azaltılmışsa sahne yapışmaz, iki hâl yan yana durur. */
+  @media (prefers-reduced-motion: reduce) {
+    .sarmal {
+      height: auto;
+    }
+
+    .sahne {
+      position: static;
+      min-height: 0;
+    }
+
+    .hal-sonra {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script is:inline>
+  ;(function () {
+    var sarmal = document.querySelector('[data-sarmal]')
+    var sahne = document.querySelector('[data-sahne]')
+    var sayac = document.querySelector('[data-sayac]')
+    if (!sarmal || !sahne || !sayac) return
+
+    var once = Number(sayac.dataset.once)
+    var sonra = Number(sayac.dataset.sonra)
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      sahne.dataset.asama = '3'
+      sayac.textContent = String(sonra)
+      return
+    }
+
+    var beklemede = false
+
+    function guncelle() {
+      beklemede = false
+      var kutu = sarmal.getBoundingClientRect()
+      var mesafe = kutu.height - window.innerHeight
+      if (mesafe <= 0) return
+
+      var ilerleme = Math.min(1, Math.max(0, -kutu.top / mesafe))
+
+      var asama = 0
+      if (ilerleme > 0.72) asama = 3
+      else if (ilerleme > 0.48) asama = 2
+      else if (ilerleme > 0.24) asama = 1
+      sahne.dataset.asama = String(asama)
+
+      // Sayı, son aşamada hedefe doğru iner.
+      var oran = Math.min(1, Math.max(0, (ilerleme - 0.5) / 0.3))
+      var deger = Math.round(once + (sonra - once) * oran)
+      if (sayac.textContent !== String(deger)) sayac.textContent = String(deger)
+    }
+
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (beklemede) return
+        beklemede = true
+        window.requestAnimationFrame(guncelle)
+      },
+      { passive: true },
+    )
+    window.addEventListener('resize', guncelle, { passive: true })
+    guncelle()
+  })()
+</script>

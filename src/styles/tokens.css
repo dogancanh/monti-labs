@@ -72,27 +72,41 @@
   --ml-weight-semibold: 600;
   --ml-weight-bold: 700;
 
+  /* --- Metin ölçeği ---
+     Tipografi sayfanın ana tasarım öğesi. Ölçek editoryal:
+     büyük olan gerçekten büyük, küçük olan gerçekten küçük.
+     Aradaki basamaklar bilinçli olarak seyrek. */
   --ml-text-xs: 0.8125rem;
   --ml-text-sm: 0.9375rem;
   --ml-text-base: 1.0625rem;
-  --ml-text-lg: 1.1875rem;
-  --ml-text-xl: 1.4375rem;
-  --ml-text-2xl: clamp(1.625rem, 1.2rem + 1.6vw, 2.125rem);
-  --ml-text-3xl: clamp(2rem, 1.35rem + 2.6vw, 3rem);
-  --ml-text-4xl: clamp(2.5rem, 1.5rem + 4.2vw, 4.5rem);
+  --ml-text-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+  --ml-text-xl: clamp(1.3125rem, 1.15rem + 0.7vw, 1.625rem);
 
-  --ml-leading-tight: 1.08;
-  --ml-leading-snug: 1.22;
-  --ml-leading-normal: 1.5;
-  --ml-leading-relaxed: 1.65;
+  /* Bölüm başlıkları */
+  --ml-text-bolum: clamp(1.875rem, 1.1rem + 3.4vw, 3.5rem);
+  /* Çalışma bloklarının sonuç cümlesi */
+  --ml-text-is: clamp(1.625rem, 1rem + 2.8vw, 3rem);
+  /* Manifesto ve kapanış gibi tam ekran ifadeler */
+  --ml-text-ifade: clamp(2.125rem, 1rem + 5.4vw, 4.75rem);
+  /* Hero. Sayfadaki en büyük şey, tek bir yerde. */
+  --ml-text-hero: clamp(2.625rem, 0.9rem + 8vw, 7rem);
 
-  --ml-tracking-tighter: -0.03em;
+  --ml-leading-sikisik: 0.98;
+  --ml-leading-tight: 1.06;
+  --ml-leading-snug: 1.18;
+  --ml-leading-normal: 1.45;
+  --ml-leading-relaxed: 1.62;
+
+  /* Büyük punto negatif, küçük punto pozitif iz aralığı. */
+  --ml-tracking-hero: -0.04em;
+  --ml-tracking-tighter: -0.028em;
   --ml-tracking-tight: -0.015em;
   --ml-tracking-normal: 0;
   --ml-tracking-wide: 0.06em;
-  --ml-tracking-widest: 0.14em;
+  --ml-tracking-widest: 0.16em;
 
-  --ml-measure: 62ch;
+  --ml-measure: 58ch;
+  --ml-measure-dar: 46ch;
 
   /* --- Boşluk --- */
   --ml-space-1: 0.25rem;
@@ -106,8 +120,10 @@
   --ml-space-24: 6rem;
   --ml-space-32: 8rem;
 
-  /* Bölüm ritmi: dar ekranda sıkı, geniş ekranda ferah */
-  --ml-section-y: clamp(4rem, 2rem + 7vw, 8rem);
+  /* Bölüm ritmi. Boşluk sayfanın nefes aldığı yer, cimrilik edilmez.
+     Alt dolgu üstten bir tık fazla: optik olarak daha dengeli oturuyor. */
+  --ml-section-y: clamp(5rem, 2.5rem + 9vw, 10.5rem);
+  --ml-section-y-alt: clamp(5.5rem, 3rem + 9.5vw, 11.5rem);
 
   /* --- Köşe yarıçapı ---
      Marka geometrik ve keskin. Büyük radius marka dışıdır. */
@@ -163,11 +179,3 @@
   color: var(--ml-text-body);
 }
 
-/* Krem zeminli bölüm */
-.ml-muted {
-  --ml-bg: var(--ml-cream-base);
-  --ml-bg-surface: var(--ml-paper);
-  --ml-border: var(--ml-cream-deep);
-
-  background-color: var(--ml-bg);
-}

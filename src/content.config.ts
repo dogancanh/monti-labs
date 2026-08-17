@@ -12,6 +12,12 @@ const calismalar = defineCollection({
     base: './src/content/calismalar',
   }),
   schema: z.object({
+    /**
+     * Bloğun en üstünde duran büyük sonuç cümlesi.
+     * Teknolojiyi değil, ne değiştiğini söyler.
+     * Örnek: "1.413 kural. Yeni kural için kod değişikliği yok."
+     */
+    vurgu: z.string(),
     /** Kısa, problem odaklı başlık. */
     baslik: z.string(),
     /** Müşteri adı yerine sektör yazılır. */
@@ -24,6 +30,9 @@ const calismalar = defineCollection({
     /** Ölçülebilir sonuç. Doğrulanamıyorsa alan hiç yazılmaz. */
     sonuc: z.string().optional(),
     teknolojiler: z.array(z.string()).default([]),
+    /** Blokta çizilecek sistem şeması. Sahte ekran görüntüsü yerine
+        gerçek yapıyı anlatan hairline diyagram. */
+    sema: z.enum(['besleme', 'kural-motoru', 'tek-kaynak', 'uyku']).optional(),
     /** Ana sayfadaki gösterim sırası. */
     sira: z.number().default(99),
     /** true ise yayına girmeden önce içerik onayı bekliyor demektir. */
