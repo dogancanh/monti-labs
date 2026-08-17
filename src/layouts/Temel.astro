@@ -21,6 +21,7 @@ import '@fontsource/ibm-plex-mono/latin-ext-500.css'
 import outfitLatin from '@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2?url'
 import plexSansLatin from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2?url'
 
+import Gezinti from '../components/Gezinti.astro'
 import { sirket, yasalSayfalar, meta, ARAMA_MOTORLARINA_ACIK } from '../data/site'
 import { icerik } from '../data/icerik'
 import { yol, tamAdres } from '../lib/yol'
@@ -28,11 +29,9 @@ import { yol, tamAdres } from '../lib/yol'
 interface Props {
   baslik?: string
   aciklama?: string
-  /** Ana sayfa dışındaki sayfalarda gezinti bağlantıları gizlenir. */
-  sadeGezinti?: boolean
 }
 
-const { baslik, aciklama, sadeGezinti = false } = Astro.props
+const { baslik, aciklama } = Astro.props
 
 const sayfaBasligi = baslik ? `${baslik} · ${sirket.ad}` : meta.baslik
 const sayfaAciklamasi = aciklama ?? meta.aciklama
@@ -113,68 +112,11 @@ const siteVerisi = {
   <body>
     <a class="atla" href="#ana">İçeriğe geç</a>
 
-    <header class="ust" data-ust>
-      <div class="kabuk ust-ic">
-        <a class="ust-logo" href={yol('/')} aria-label={`${sirket.ad} ana sayfa`}>
-          {/* Koyu bölümlerin üstünden geçerken krem sürüme geçilir. */}
-          <picture class="logo-acik">
-            <source srcset={yol('/logo-yatay.avif')} type="image/avif" />
-            <source srcset={yol('/logo-yatay.webp')} type="image/webp" />
-            <img
-              src={yol('/logo-yatay.png')}
-              alt="Monti Labs"
-              width="177"
-              height="26"
-              decoding="async"
-            />
-          </picture>
-          <img
-            class="logo-koyu"
-            src={yol('/logo-yatay-krem.png')}
-            alt=""
-            aria-hidden="true"
-            width="177"
-            height="26"
-            decoding="async"
-          />
-        </a>
-
-        {
-          !sadeGezinti && (
-            <nav class="ust-gezinti" aria-label="Ana gezinti">
-              {icerik.gezinti.baglantilar.map((oge) => (
-                <a href={yol(`/${oge.hedef}`)}>{oge.etiket}</a>
-              ))}
-            </nav>
-          )
-        }
-
-        <a class="cagri-kucuk ust-eylem" href={yol('/#iletisim')}>
-          {icerik.gezinti.cagri}
-          <span class="ok" aria-hidden="true">→</span>
-        </a>
-      </div>
-    </header>
+    <Gezinti />
 
     <main id="ana">
       <slot />
     </main>
-
-    {
-      /* Dar ekranda üst çubuğa çağrı sığmıyor. Sayfa uzun olduğu için
-         hero geçildikten sonra alta ince bir şerit gelir. Menü katmanı
-         veya hamburger yok, tek bağlantı. */
-      !sadeGezinti && (
-        <div class="alt-cagri" data-alt-cagri hidden>
-          <a href={yol('/#iletisim')}>
-            {icerik.gezinti.cagri}
-            <span class="ok" aria-hidden="true">
-              →
-            </span>
-          </a>
-        </div>
-      )
-    }
 
     <footer class="dip">
       <div class="kabuk">
@@ -193,9 +135,9 @@ const siteVerisi = {
             <p class="dip-tanim">{icerik.footer.kisaTanim}</p>
           </div>
 
-          <ul class="dip-alanlar">
-            {icerik.footer.alanlar.map((a) => <li>{a}</li>)}
-          </ul>
+          <nav class="dip-gezinti" aria-label="Alt bilgi gezintisi">
+            {icerik.footer.baglantilar.map((o) => <a href={yol(o.hedef)}>{o.etiket}</a>)}
+          </nav>
 
           <div class="dip-iletisim">
             {
@@ -203,11 +145,6 @@ const siteVerisi = {
                 <a class="dip-eposta" href={`mailto:${sirket.eposta}`}>
                   {sirket.eposta}
                 </a>
-              )
-            }
-            {
-              sirket.telefon && (
-                <a href={`tel:${sirket.telefon.replace(/\s/g, '')}`}>{sirket.telefon}</a>
               )
             }
             {
@@ -236,75 +173,6 @@ const siteVerisi = {
     </footer>
 
     <script is:inline>
-      // Üst çubuk: kaydırınca zemin kazanır, koyu bölümlerin üstünde
-      // kendi tonunu koyuya çevirir.
-      ;(function () {
-        var ust = document.querySelector('[data-ust]')
-        if (!ust) return
-
-        var koyular = document.querySelectorAll('.ml-koyu, .ml-inverse')
-        var beklemede = false
-
-        function guncelle() {
-          beklemede = false
-          ust.dataset.kaydi = window.scrollY > 24 ? 'evet' : 'hayir'
-
-          // Çubuğun orta hizasında koyu bir bölüm var mı?
-          var hiza = ust.offsetHeight / 2
-          var koyu = false
-          for (var i = 0; i < koyular.length; i++) {
-            var r = koyular[i].getBoundingClientRect()
-            if (r.top <= hiza && r.bottom >= hiza) {
-              koyu = true
-              break
-            }
-          }
-          ust.dataset.tema = koyu ? 'koyu' : 'acik'
-        }
-
-        function planla() {
-          if (beklemede) return
-          beklemede = true
-          window.requestAnimationFrame(guncelle)
-        }
-
-        guncelle()
-        window.addEventListener('scroll', planla, { passive: true })
-        window.addEventListener('resize', planla, { passive: true })
-      })()
-
-      // Dar ekranda alt çağrı şeridi: hero geçilince gelir,
-      // iletişim bölümüne varılınca çekilir.
-      ;(function () {
-        var serit = document.querySelector('[data-alt-cagri]')
-        if (!serit) return
-        serit.hidden = false
-
-        var hedef = document.getElementById('iletisim')
-        var beklemede = false
-
-        function guncelle() {
-          beklemede = false
-          var gecti = window.scrollY > window.innerHeight * 0.9
-          var iletisimGorunur = false
-          if (hedef) {
-            var r = hedef.getBoundingClientRect()
-            iletisimGorunur = r.top < window.innerHeight * 0.85
-          }
-          serit.dataset.gorunur = gecti && !iletisimGorunur ? 'evet' : 'hayir'
-        }
-
-        function planla() {
-          if (beklemede) return
-          beklemede = true
-          window.requestAnimationFrame(guncelle)
-        }
-
-        guncelle()
-        window.addEventListener('scroll', planla, { passive: true })
-        window.addEventListener('resize', planla, { passive: true })
-      })()
-
       // Görünüre giren öğeler kademeli belirir.
       ;(function () {
         var ogeler = document.querySelectorAll('[data-acil]')
@@ -339,183 +207,6 @@ const siteVerisi = {
 </html>
 
 <style>
-  /* ---------- Üst çubuk ---------- */
-  .ust {
-    position: sticky;
-    top: 0;
-    z-index: 40;
-    background-color: transparent;
-    border-block-end: 1px solid transparent;
-    transition:
-      background-color var(--ml-duration-normal) var(--ml-ease-standard),
-      border-color var(--ml-duration-normal) var(--ml-ease-standard);
-  }
-
-  .ust[data-kaydi='evet'] {
-    background-color: rgb(255 251 240 / 0.86);
-    backdrop-filter: blur(12px);
-    border-block-end-color: var(--ml-ink-100);
-  }
-
-  /* Koyu bölümlerin üstünde çubuk da koyulaşır. Aksi halde açık renkli
-     bir bant koyu zeminin üstünde asılı kalıyor. */
-  .ust[data-tema='koyu'][data-kaydi='evet'] {
-    background-color: rgb(15 21 51 / 0.78);
-    border-block-end-color: rgb(255 244 214 / 0.16);
-  }
-
-  .ust[data-tema='koyu'] .ust-gezinti a {
-    color: rgb(255 244 214 / 0.78);
-  }
-
-  .ust[data-tema='koyu'] .ust-gezinti a:hover {
-    color: var(--ml-cream-base);
-  }
-
-  .ust[data-tema='koyu'] .cagri-kucuk {
-    background-color: var(--ml-cream-base);
-    color: var(--ml-ink-900);
-  }
-
-  .ust[data-tema='koyu'] .cagri-kucuk:hover {
-    background-color: var(--ml-white);
-  }
-
-  .ust-ic {
-    display: flex;
-    align-items: center;
-    gap: var(--ml-space-6);
-    min-height: 76px;
-  }
-
-  .ust-logo {
-    display: grid;
-    align-items: center;
-    text-decoration: none;
-    margin-inline-end: auto;
-  }
-
-  /* İki logo üst üste. Görünen, arkadaki bölümün tonuna göre değişir. */
-  .ust-logo > * {
-    grid-area: 1 / 1;
-    transition: opacity var(--ml-duration-normal) var(--ml-ease-standard);
-  }
-
-  .ust-logo img {
-    height: 24px;
-    width: auto;
-  }
-
-  .logo-koyu {
-    opacity: 0;
-  }
-
-  .ust[data-tema='koyu'] .logo-acik {
-    opacity: 0;
-  }
-
-  .ust[data-tema='koyu'] .logo-koyu {
-    opacity: 1;
-  }
-
-  .ust-gezinti {
-    display: none;
-    gap: var(--ml-space-8);
-  }
-
-  .ust-gezinti a {
-    color: var(--ml-ink-700);
-    text-decoration: none;
-    font-size: var(--ml-text-sm);
-    font-weight: var(--ml-weight-medium);
-    padding-block: var(--ml-space-2);
-    position: relative;
-    transition: color var(--ml-duration-fast) var(--ml-ease-standard);
-  }
-
-  .ust-gezinti a::after {
-    content: '';
-    position: absolute;
-    inset-inline: 0;
-    inset-block-end: 0;
-    height: 1px;
-    background-color: currentColor;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform var(--ml-duration-normal) var(--ml-ease-standard);
-  }
-
-  .ust-gezinti a:hover {
-    color: var(--ml-ink-900);
-  }
-
-  .ust-gezinti a:hover::after {
-    transform: scaleX(1);
-  }
-
-  .ust-eylem {
-    display: none;
-  }
-
-  @media (min-width: 560px) {
-    .ust-logo img {
-      height: 26px;
-    }
-
-    .ust-eylem {
-      display: inline-flex;
-    }
-  }
-
-  @media (min-width: 1000px) {
-    .ust-gezinti {
-      display: flex;
-    }
-  }
-
-  /* ---------- Mobil alt çağrı ---------- */
-  .alt-cagri {
-    position: fixed;
-    inset-inline: 0;
-    inset-block-end: 0;
-    z-index: 45;
-    background-color: rgb(255 251 240 / 0.94);
-    backdrop-filter: blur(12px);
-    border-block-start: 1px solid var(--ml-ink-100);
-    padding: var(--ml-space-3) var(--ml-gutter);
-    padding-block-end: calc(var(--ml-space-3) + env(safe-area-inset-bottom, 0px));
-    transform: translateY(100%);
-    transition: transform var(--ml-duration-normal) var(--ml-ease-standard);
-  }
-
-  .alt-cagri[data-gorunur='evet'] {
-    transform: none;
-  }
-
-  .alt-cagri a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6em;
-    min-height: 48px;
-    background-color: var(--ml-cobalt-600);
-    color: var(--ml-cream-base);
-    font-size: var(--ml-text-base);
-    font-weight: var(--ml-weight-semibold);
-    text-decoration: none;
-    border-radius: 2px;
-  }
-
-  .alt-cagri a:active {
-    background-color: var(--ml-cobalt-800);
-  }
-
-  @media (min-width: 560px) {
-    .alt-cagri {
-      display: none;
-    }
-  }
-
   /* ---------- Alt bilgi ----------
      Tek satırlık, çok kolonlu kurumsal footer değil. */
   .dip {
@@ -543,11 +234,26 @@ const siteVerisi = {
     line-height: var(--ml-leading-relaxed);
   }
 
-  .dip-alanlar {
+  .dip-gezinti {
     display: grid;
-    gap: var(--ml-space-2);
-    font-size: var(--ml-text-sm);
+    gap: var(--ml-space-3);
+    align-content: start;
+    justify-items: start;
+  }
+
+  .dip-gezinti a {
     color: rgb(255 244 214 / 0.7);
+    font-size: var(--ml-text-sm);
+    text-decoration: none;
+    border-block-end: 1px solid transparent;
+    transition:
+      color var(--ml-duration-fast) var(--ml-ease-standard),
+      border-color var(--ml-duration-fast) var(--ml-ease-standard);
+  }
+
+  .dip-gezinti a:hover {
+    color: var(--ml-cream-base);
+    border-block-end-color: var(--ml-cream-base);
   }
 
   .dip-iletisim {
@@ -605,7 +311,11 @@ const siteVerisi = {
      aynı puntoda durmaları ikisini de aynı işi yapıyormuş gibi
      gösteriyordu. Gövde puntosuna alındılar; telif satırı tek başına
      xs'te kalıyor ve orada asıl ayrımı mono dokusu taşıyor. */
+  /* Dokunma hedefi 24 pikselin altına düşmesin (WCAG 2.5.8). */
   .dip-yasal a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
     color: rgb(255 244 214 / 0.7);
     font-size: var(--ml-text-sm);
     text-decoration: none;

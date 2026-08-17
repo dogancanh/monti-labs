@@ -20,3 +20,6 @@ npm-debug.log*
 # yerel arac onbellekleri
 .impeccable/
 .claude/
+
+# asset toplama alani (secilenler public/ altina tasinir)
+_assetler/

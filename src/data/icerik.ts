@@ -1,210 +1,130 @@
 /* ============================================================
    SAYFA METİNLERİ
 
-   Metinler koddan ayrı tutulur. İleride İngilizce sürüm eklenirse
-   bu dosyanın yanına `en.ts` konur ve `icerik` seçimi yapılır.
+   Yön: daha az yazı, daha fazla ürün. Ziyaretçi uzun paragraf
+   okuyarak değil, işleri görerek güveniyor.
 
-   Dil kuralı: kısa, net, kendinden emin. Yapay kurumsal Türkçe yok.
-   Yasaklı ifadeler: inovatif çözümler, dijital dönüşüm partneriniz,
+   "Problem" fikri markanın tamamı değil. Sitede yalnızca bir kez,
+   manifestoda kullanılıyor. Hero'dan iletişime kadar tekrarlanmıyor.
+
+   Dil: kısa, net, kendinden emin. Yapay kurumsal Türkçe yok.
+   Yasaklı: inovatif çözümler, dijital dönüşüm partneriniz,
    uçtan uca çözümler, yeni nesil teknoloji, geleceğin teknolojileri,
-   işinizi geleceğe taşıyoruz.
+   işinizi geleceğe taşıyoruz, çözüm ortağınız.
    ============================================================ */
 
 export const tr = {
-  /* ---------- 1. Gezinti ---------- */
+  /* ---------- Gezinti ----------
+     Dört bağlantıdan fazlası yok. "Nasıl çalışıyoruz" ana sayfada
+     bölüm olarak duruyor ama menüde yer kaplamıyor. */
   gezinti: {
     baglantilar: [
       { etiket: 'Çalışmalar', hedef: '#calismalar' },
-      { etiket: 'Neler geliştiriyoruz', hedef: '#gelistirdiklerimiz' },
-      { etiket: 'Nasıl çalışıyoruz', hedef: '#nasil-calisiyoruz' },
-      { etiket: 'Monti Labs', hedef: '#monti-labs' },
+      { etiket: 'Ne yapıyoruz', hedef: '#ne-yapiyoruz' },
+      { etiket: 'Biz kimiz', hedef: '/biz-kimiz' },
     ],
-    cagri: 'Projenizi anlatın',
+    cagri: 'Birlikte çalışalım',
+    /* Mobil panelde ek olarak gösterilenler */
+    mobilEk: [{ etiket: 'İletişim', hedef: '#iletisim' }],
+    menuAc: 'Menüyü aç',
+    menuKapat: 'Menüyü kapat',
   },
 
-  /* ---------- 2. Hero ---------- */
+  /* ---------- Hero ----------
+     Otomasyon danışmanlığı gibi değil, ürün şirketi gibi konuşuyor.
+     Uzun paragraf yok: başlık, kısa açıklama, çağrı, alan şeridi. */
   hero: {
-    baslik: 'Her şirkette çözülmeyi bekleyen bir süreç vardır.',
+    baslik: 'Fikirden ürüne, sistemden ölçeğe.',
     altMetin:
-      'Elle yürüyen, hata veren, birbirinden kopuk sistemler arasında kaybolan işleri bulur; yazılım, otomasyon ve entegrasyonlarla çalışan sistemlere dönüştürürüz.',
-    alanlar: ['Yazılım', 'Otomasyon', 'Entegrasyon', 'Dijital Ürünler'],
-    birincilEylem: { etiket: 'Projenizi anlatın', hedef: '#iletisim' },
-    ikincilEylem: { etiket: 'Çalışmaları görün', hedef: '#calismalar' },
+      'B2B ürünlerden özel yazılıma, otomasyondan entegrasyona kadar dijital sistemler tasarlıyor ve geliştiriyoruz.',
+    alanlar: ['Dijital ürünler', 'Yazılım sistemleri', 'Otomasyon', 'Entegrasyon'],
+    birincilEylem: { etiket: 'Birlikte çalışalım', hedef: '#iletisim' },
+    ikincilEylem: { etiket: 'Çalışmalarımız', hedef: '#calismalar' },
   },
 
-  /* ---------- 3. Manifesto ---------- */
-  manifesto: {
-    baslik: 'Teknolojiyle başlamıyoruz. Problemle başlıyoruz.',
-    girisParagraflar: [
-      'Bir işletmenin ihtiyacı her zaman yeni bir yazılım değildir.',
-    ],
-    bazen: [
-      'Bazen iki sistemin doğru şekilde konuşması yeterlidir.',
-      'Bazen saatler süren bir işi otomatikleştirmek gerekir.',
-      'Bazen küçük bir araç, büyük bir operasyonel problemi çözer.',
-      'Bazen de tekrar eden bir problem yeni bir ürüne dönüşür.',
-    ],
-    sorularGiris: 'Biz önce süreci anlamaya çalışırız.',
-    sorular: [
-      'Nerede zaman kaybediliyor?',
-      'Nerede hata oluşuyor?',
-      'Hangi iş hâlâ insanlara gereksiz yük bindiriyor?',
-      'Hangi sistemler birbirinden kopuk çalışıyor?',
-    ],
-    kapanisGiris: 'Sonra probleme gereken kadar teknoloji uygularız.',
-    vurgu: 'Ne eksik, ne fazla.',
-    kapanisMetin: 'Çünkü iyi teknoloji en karmaşık olan değil,',
-    kapanisVurgu: 'işi gerçekten çözen teknolojidir.',
-    adimlar: [
-      'Problemi anla.',
-      'Süreci sadeleştir.',
-      'Çözümü geliştir.',
-      'Tekrar ediyorsa ürüne dönüştür.',
-    ],
-  },
-
-  /* ---------- 4. Süreç görseli ----------
-     Sayılar temsilîdir ve ekranda öyle etiketlenmiştir.
-     Marka paketi örnek verinin açıkça örnek olmasını şart koşuyor. */
-  surec: {
-    kunye: 'Örnek süreç',
-    baslik: 'Aynı iş, iki farklı hâli.',
-    ad: 'Gelen siparişin faturaya dönmesi',
-    not: 'Temsilî bir akıştır, müşteri verisi değildir. Süreçler şirkete göre değişir.',
-    birim: 'dk',
-    basinaEtiketi: 'sipariş başına',
-    anlikEtiketi: 'anlık',
-    oncesiEtiket: 'Bugün',
-    sonrasiEtiket: 'Sistemle',
-    gosterge: { elle: 'İnsanın yaptığı', sistem: 'Sistemin yaptığı' },
-    adimlar: [
-      { ad: 'Sipariş e-postası okunur', dakika: 5, kalir: false },
-      { ad: 'Bilgiler tabloya girilir', dakika: 10, kalir: false },
-      { ad: 'Stok elle kontrol edilir', dakika: 8, kalir: false },
-      { ad: 'Fatura programına yeniden girilir', dakika: 12, kalir: false },
-      { ad: 'Muhasebeye e-posta atılır', dakika: 5, kalir: false },
-    ],
-    sonrasiAdimlar: [
-      { ad: 'Sipariş sisteme düşer', dakika: 0, otomatik: true },
-      { ad: 'Stok ve fatura tek akışta üretilir', dakika: 0, otomatik: true },
-      { ad: 'Yalnızca istisnalar kontrol edilir', dakika: 6, otomatik: false },
-    ],
-  },
-
-  /* ---------- 5. Çalışmalar ---------- */
+  /* ---------- Seçili çalışmalar ----------
+     Sahiplik konusunda dürüst ama markayı küçültmeyen tek cümle. */
   calismalar: {
-    kunye: 'Çalışmalar',
-    baslik: 'Yaptığımız işler',
-    altMetin: 'Her iş bir problemle başladı.',
-    gizlilikNotu:
-      'Müşteri adı ve canlı bağlantı paylaşılmıyor. Aşağıdaki anlatımlar kurulan sistemlerin yapısını gösteriyor.',
-    alanlar: {
-      problem: 'Problem',
-      mudahale: 'Müdahale',
-      sonuc: 'Sonuç',
-    },
+    kunye: 'Seçili çalışmalar',
+    baslik: 'Geliştirdiğimiz ürünler.',
+    altMetin: 'Monti Labs ekibinin geliştirdiği seçili ürünler ve dijital sistemler.',
+    detayCagri: 'Projeyi incele',
+    adresCagri: 'Siteyi aç',
   },
 
-  /* ---------- 6. Neler geliştiriyoruz ---------- */
-  gelistirdiklerimiz: {
-    kunye: 'Neler geliştiriyoruz',
-    baslik: 'Çözümün biçimi problemin kendisine göre değişir.',
+  /* ---------- Ne yapıyoruz ----------
+     Dört alan. İkon kartı yok, numaralı editoryal satırlar. */
+  neYapiyoruz: {
+    kunye: 'Ne yapıyoruz',
+    baslik: 'Dört alan.',
     kalemler: [
       {
-        ad: 'Yazılım',
-        metin:
-          'İşletmenin çalışma biçimine göre tasarlanmış özel sistemler ve şirket içi araçlar. Hazır yazılımın yetmediği yerde.',
+        ad: 'Dijital ürünler',
+        metin: 'SaaS, B2B, web ve mobil ürünler. Fikirden yayına.',
+      },
+      {
+        ad: 'Yazılım sistemleri',
+        metin: 'Özel platformlar, uygulamalar ve şirket içi sistemler.',
       },
       {
         ad: 'Otomasyon',
-        metin:
-          'Tekrarlayan operasyonel işleri insanlardan alan sistemler. Veri girişi, kontrol, bildirim, raporlama.',
+        metin: 'Tekrarlayan operasyonları hızlandıran ve güvenilir kılan sistemler.',
       },
       {
         ad: 'Entegrasyon',
-        metin:
-          'Birbirinden kopuk yazılımları, API\'leri ve veri kaynaklarını konuşturan çözümler. Veri tek yerden akar.',
-      },
-      {
-        ad: 'Dijital Ürünler',
-        metin:
-          'Tekrar eden iş problemlerini ölçeklenebilir dijital ürünlere ve B2B yazılımlara dönüştüren sistemler.',
+        metin: "API'leri, servisleri ve veri kaynaklarını birbirine bağlayan çözümler.",
       },
     ],
   },
 
-  /* ---------- 7. Nasıl çalışıyoruz ---------- */
+  /* ---------- Manifesto ----------
+     Görsel bir duruş anı, makale değil. Sitede "problem" fikrinin
+     kullanıldığı tek yer burası. */
+  manifesto: {
+    baslik: 'Teknoloji, ancak işe yaradığında değerlidir.',
+    satirlar: [
+      'Bazen yeni bir ürün geliştiririz.',
+      'Bazen mevcut sistemleri birbirine bağlarız.',
+      'Bazen tek bir otomasyon bütün akışı değiştirir.',
+    ],
+    kapanis: 'Ne gerekiyorsa onu tasarlar ve geliştiririz.',
+    vurgu: 'Ne eksik, ne fazla.',
+  },
+
+  /* ---------- Nasıl çalışıyoruz ----------
+     Dört adım, her biri tek cümle. Ürün şirketi dili. */
   nasilCalisiyoruz: {
     kunye: 'Nasıl çalışıyoruz',
-    baslik: 'Dört adım. Sırayla ve atlamadan.',
     adimlar: [
-      {
-        no: '01',
-        ad: 'Problem',
-        eylem: 'Anla',
-        metin:
-          'Önce gerçek problemi anlarız. Talep edilen şey ile çözülmesi gereken şey her zaman aynı olmaz. Süreci konuşarak, gözlemleyerek ve doğru soruları sorarak başlarız.',
-      },
-      {
-        no: '02',
-        ad: 'Süreç',
-        eylem: 'Sadeleştir',
-        metin:
-          'Mevcut akışı, kullanılan sistemleri ve darboğazları çıkarırız. Kimin ne zaman ne yaptığı netleşmeden hiçbir şey geliştirilmez.',
-      },
-      {
-        no: '03',
-        ad: 'Çözüm',
-        eylem: 'Geliştir',
-        metin:
-          'Ölçüt tek: bu sistem olmasa problem çözülür mü? Çözülüyorsa yazılmaz. Çözülmüyorsa, gerektiği kadarı yazılır ve ekibinize devredilir.',
-      },
-      {
-        no: '04',
-        ad: 'Ürün',
-        eylem: 'Ölçekle',
-        metin:
-          'Aynı problem farklı şirketlerde tekrar ediyorsa, çözümün bağımsız bir ürüne dönüşme potansiyelini değerlendiririz.',
-      },
+      { no: '01', ad: 'Keşfet', metin: 'İşin nasıl yürüdüğünü ve neyin eksik olduğunu anlarız.' },
+      { no: '02', ad: 'Tasarla', metin: 'Kullanılacak şeyi tasarlarız, gösterilecek şeyi değil.' },
+      { no: '03', ad: 'Geliştir', metin: 'Küçük parçalar halinde yayına alır, erken göstermeye başlarız.' },
+      { no: '04', ad: 'Ölçekle', metin: 'İşleyen sistemi büyütür, ekibinize devrederiz.' },
     ],
   },
 
-  /* ---------- 8. Monti Labs ---------- */
-  montiLabs: {
-    kunye: 'Monti Labs',
-    baslik: 'Gerçek iş problemlerinin etrafında teknoloji geliştiriyoruz.',
-    paragraflar: [
-      'Sektör seçmiyoruz. Bizi ilgilendiren şey problemin hangi alanda olduğu değil, ne kadar net tarif edilebildiği.',
-      'Çalışan bir şeyi sırf yenisini yazmak için sökmüyoruz. Mevcut sistemleri değiştirmek yerine, gerektiğinde onların üzerine doğru katmanı kuruyoruz.',
-      'Müşteriyi bize bağımlı hale getirmeyi hedeflemiyoruz. Geliştirdiğimiz sistemlerin biz olmadan da çalışabilir olması gerektiğine inanıyoruz. Devrettiğimizde iş biter, abonelik başlamaz.',
-      'Bir problemi farklı şirketlerde tekrar tekrar görüyorsak, çözümün bağımsız bir ürüne dönüşüp dönüşemeyeceğine bakıyoruz.',
-    ],
-    akis: ['Müşteri problemi', 'İçgörü', 'Tekrar eden problem', 'Ürün'],
-    urunNotu: 'Monti Labs ürünleri geliştiriliyor.',
+  /* ---------- Biz kimiz ----------
+     Ana sayfada önizleme. Uzun biyografi yok. */
+  bizKimiz: {
+    kunye: 'Biz kimiz',
+    ozet: 'Monti Labs, ürün tasarımı ile mühendisliği aynı masada birleştiren iki kurucu ortak tarafından geliştiriliyor.',
+    cagri: 'Biz kimiz',
+    cagriHedef: '/biz-kimiz',
   },
 
-  /* ---------- 9. Kapanış ---------- */
-  kapanis: {
-    baslik: 'Çözmeye değer bir probleminiz mi var?',
-    metin:
-      'Ne yapılması gerektiğini bilmek zorunda değilsiniz. Problemi anlatmanız yeterli.',
-    cagri: 'Projenizi anlatın',
-  },
-
-  /* ---------- 10. Form ---------- */
+  /* ---------- İletişim ---------- */
   iletisim: {
     kunye: 'İletişim',
-    formBaslik: 'Projenizi anlatın',
-    formAltMetin: 'Formu doldurun, {sure} içinde dönüş yapalım.',
+    baslik: 'Birlikte bir şey geliştirelim.',
+    metin:
+      'Yeni bir ürün, mevcut bir sistem veya geliştirmek istediğiniz bir fikir. Biraz anlatın, devamını birlikte konuşalım.',
     alanlar: {
       adSoyad: 'Ad soyad',
       eposta: 'E-posta',
       sirket: 'Şirket',
-      mesaj: 'Probleminiz',
+      mesaj: 'Projenizden biraz bahsedin',
     },
     opsiyonelEtiketi: 'isteğe bağlı',
-    mesajYardim:
-      'Teknik detay gerekmiyor. Şu an işin nasıl yürüdüğünü ve nerede takıldığını anlatmanız yeterli.',
     gonderButonu: 'Gönder',
     gonderiliyor: 'Gönderiliyor',
     basariMesaji: 'Mesajınız bize ulaştı. {sure} içinde dönüş yapacağız.',
@@ -214,15 +134,34 @@ export const tr = {
       'Formu göndererek, iletişim bilgilerimin talebimin değerlendirilmesi amacıyla işlenmesini kabul ediyorum. Detaylar için ',
     kvkkOnayBaglantiEtiketi: 'Aydınlatma Metni',
     kvkkOnaySonrasi: '.',
-    alternatifOnce: 'Form yerine doğrudan yazmayı tercih ederseniz: ',
+    alternatifOnce: 'Doğrudan yazmayı tercih ederseniz: ',
+    formAltMetin: '{sure} içinde dönüş yapıyoruz.',
   },
 
-  /* ---------- 11. Alt bilgi ---------- */
+  /* ---------- Alt bilgi ---------- */
   footer: {
-    kisaTanim:
-      'Gerçek iş problemlerini yazılım, otomasyon, entegrasyon ve dijital ürünlerle çözüyoruz.',
-    alanlar: ['Yazılım', 'Otomasyon', 'Entegrasyon', 'Dijital Ürünler'],
+    kisaTanim: 'Dijital ürünler ve iş sistemleri geliştiriyoruz.',
+    baglantilar: [
+      { etiket: 'Çalışmalar', hedef: '/#calismalar' },
+      { etiket: 'Ne yapıyoruz', hedef: '/#ne-yapiyoruz' },
+      { etiket: 'Biz kimiz', hedef: '/biz-kimiz' },
+      { etiket: 'İletişim', hedef: '/#iletisim' },
+    ],
     telifSablonu: '© {yil} Monti Labs',
+  },
+
+  /* ---------- /biz-kimiz sayfası ---------- */
+  bizKimizSayfasi: {
+    baslik: 'Monti Labs',
+    ozet:
+      'Dijital ürünler ve iş sistemleri geliştiren bir teknoloji şirketi. Kendi ürünlerimizi geliştiriyor, aynı işi başka şirketler için de yapıyoruz.',
+    kurucularKunye: 'Kurucular',
+    yaklasimKunye: 'Yaklaşım',
+    yaklasimBaslik: 'Ürün, mühendislik ve iş sistemleri aynı masada.',
+    yaklasimMetin:
+      'Bir ürünün tasarımı, altyapısı ve işletmeye dokunan tarafı birbirinden ayrı düşünülmez. Üçünü birlikte kurar, çalışır halde teslim ederiz.',
+    cagriBaslik: 'Birlikte bir şey geliştirelim.',
+    cagri: 'Bize yazın',
   },
 
   /* ---------- 404 ---------- */

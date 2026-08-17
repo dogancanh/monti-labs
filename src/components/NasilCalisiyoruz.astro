@@ -1,34 +1,28 @@
 ---
 /* Nasıl çalışıyoruz.
 
-   Problem → Süreç → Çözüm → Ürün. Marka paketi bu modeli
-   "markanın omurgası" diye tanımlıyor ve sitede görünmesini şart
-   koşuyor. Her adımın yanında eylem karşılığı da duruyor:
-   Anla, Sadeleştir, Geliştir, Ölçekle.
+   Dört adım gerçekten bir sıra olduğu için numaralı. Numaralar
+   sıranın kendisi; süs değil.
 
-   İkon kartı yok. Geniş ekranda yatay bir dizi, dar ekranda dikey
-   anlatı. Adımları birbirine bağlayan çizgi sırayı taşıyor. */
+   Adımlar arasındaki bağlantı, logodan gelen 43 derecelik açıyla
+   çizilen ince bir kama. Sayfada bu açının kullanıldığı üç yerden
+   biri. */
 
 import { icerik } from '../data/icerik'
 
 const n = icerik.nasilCalisiyoruz
 ---
 
-<section class="bolum" id="nasil-calisiyoruz" aria-labelledby="nasil-baslik">
+<section class="surec bolum" id="nasil-calisiyoruz" aria-labelledby="surec-baslik">
   <div class="kabuk">
-    <p class="uste kunye">{n.kunye}</p>
-    <h2 class="bolum-baslik bas" id="nasil-baslik" data-acil>{n.baslik}</h2>
+    <p class="kunye uste" id="surec-baslik" data-acil>{n.kunye}</p>
 
-    <ol class="dizi">
+    <ol class="adimlar">
       {
         n.adimlar.map((a, i) => (
-          <li class="adim" data-acil style={`--gecikme:${i * 90}ms`}>
-            <div class="adim-bas">
-              <span class="kunye adim-no">{a.no}</span>
-              <span class="adim-cizgi" aria-hidden="true" />
-            </div>
+          <li class="adim" data-acil style={`--gecikme:${i * 80}ms`}>
+            <p class="adim-no sayi">{a.no}</p>
             <h3 class="adim-ad">{a.ad}</h3>
-            <p class="adim-eylem kunye">{a.eylem}</p>
             <p class="adim-metin">{a.metin}</p>
           </li>
         ))
@@ -38,88 +32,70 @@ const n = icerik.nasilCalisiyoruz
 </section>
 
 <style>
-  .bas {
-    max-width: 16ch;
-  }
-
-  .dizi {
+  .adimlar {
     display: grid;
-    gap: var(--ml-space-12);
-    margin-block-start: clamp(3rem, 1.5rem + 5vw, 5.5rem);
+    gap: 0;
+    margin: 0;
+    counter-reset: adim;
   }
 
   .adim {
+    position: relative;
     display: grid;
-    gap: var(--ml-space-3);
-    align-content: start;
+    gap: var(--ml-space-2);
+    padding-block: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+    border-block-start: 1px solid var(--ml-border);
   }
 
-  .adim-bas {
-    display: flex;
-    align-items: center;
-    gap: var(--ml-space-4);
-    margin-block-end: var(--ml-space-2);
+  .adim:last-child {
+    border-block-end: 1px solid var(--ml-border);
   }
 
   .adim-no {
+    font-size: var(--ml-text-xs);
+    font-weight: var(--ml-weight-semibold);
+    letter-spacing: var(--ml-tracking-wide);
     color: var(--ml-cobalt-600);
-    flex: none;
-  }
-
-  /* Sırayı taşıyan çizgi. Son adımda kısalır. */
-  .adim-cizgi {
-    height: 1px;
-    flex: 1;
-    background-color: var(--ml-ink-100);
-  }
-
-  .adim:last-child .adim-cizgi {
-    background: linear-gradient(
-      to right,
-      var(--ml-ink-100) 0%,
-      var(--ml-ink-100) 30%,
-      transparent 100%
-    );
   }
 
   .adim-ad {
-    font-size: var(--ml-text-bolum);
+    font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.625rem);
     line-height: var(--ml-leading-tight);
-    letter-spacing: var(--ml-tracking-tighter);
-    color: var(--ml-ink-900);
-  }
-
-  .adim-eylem {
-    color: var(--ml-cobalt-600);
+    letter-spacing: var(--ml-tracking-tight);
   }
 
   .adim-metin {
-    margin-block-start: var(--ml-space-2);
-    font-size: var(--ml-text-base);
-    line-height: var(--ml-leading-relaxed);
-    color: var(--ml-ink-700);
-    max-width: 42ch;
+    max-width: 34ch;
+    font-size: var(--ml-text-sm);
+    color: var(--ml-text-muted);
   }
 
   @media (min-width: 760px) {
-    .dizi {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--ml-space-12) var(--ml-space-10, 2.5rem);
-    }
-  }
-
-  @media (min-width: 1100px) {
-    .dizi {
+    .adimlar {
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: var(--ml-space-8);
     }
 
-    .adim-ad {
-      font-size: var(--ml-text-xl);
+    .adim {
+      border-block-start: 1px solid var(--ml-border);
+      padding-block: var(--ml-space-6) var(--ml-space-12);
     }
 
-    .adim-metin {
-      font-size: var(--ml-text-sm);
+    .adim:last-child {
+      border-block-end: 0;
+    }
+
+    /* Adımı bir sonrakine bağlayan kama. Son adımda yok:
+       süreç orada bitiyor. */
+    .adim:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      inset-block-start: -1px;
+      inset-inline-end: calc(var(--ml-space-8) / -2 - 5px);
+      width: 10px;
+      height: 10.5px;
+      background-color: var(--ml-cobalt-200);
+      clip-path: polygon(0 0, 100% 0, 100% 100%);
     }
   }
 </style>

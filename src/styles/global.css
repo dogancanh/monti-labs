@@ -217,105 +217,151 @@ b {
 }
 
 /* ------------------------------------------------------------
-   Bağlantılar ve çağrılar
-   ------------------------------------------------------------ */
+   Düğme sistemi
 
-/* Birincil çağrı. Dolu kutu değil, altı çizili büyük bağlantı;
-   sayfanın editoryal dilini bozmuyor. */
-.cagri {
+   Üç tip var, fazlası yok:
+     .dugme-birincil   ana aksiyon
+     .dugme-ikincil    ikincil aksiyon
+     .baglanti-ok      metin ve ok
+
+   Etkileşim küçük ve ölçülü: ok bir tık ilerler, ikincilde zemin
+   soldan açılır. Mıknatıs efekti, büyüme, gölge yok.
+   ------------------------------------------------------------ */
+.dugme-birincil,
+.dugme-ikincil {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.6em;
+  justify-content: center;
+  gap: 0.7em;
+  min-height: 52px;
+  padding-inline: var(--ml-space-8);
   font-family: var(--ml-font-body);
-  font-size: var(--ml-text-lg);
+  font-size: var(--ml-text-base);
   font-weight: var(--ml-weight-semibold);
-  color: var(--ml-text);
   text-decoration: none;
-  padding-block: var(--ml-space-2);
-  border-block-end: 2px solid var(--ml-cobalt-600);
+  border: 1px solid transparent;
+  border-radius: 2px;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
   transition: color var(--ml-duration-normal) var(--ml-ease-standard);
 }
 
-.cagri .ok {
-  display: inline-block;
+.dugme-birincil {
+  background-color: var(--ml-cobalt-600);
+  color: var(--ml-cream-base);
+}
+
+.dugme-birincil:hover {
+  background-color: var(--ml-cobalt-800);
+}
+
+/* İkincil: zemin soldan açılır. */
+.dugme-ikincil {
+  background-color: transparent;
+  border-color: var(--ml-border-koyu, var(--ml-ink-900));
+  color: var(--ml-text);
+}
+
+.dugme-ikincil::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--ml-ink-900);
+  transform: scaleX(0);
+  transform-origin: left;
   transition: transform var(--ml-duration-normal) var(--ml-ease-standard);
-  color: var(--ml-cobalt-600);
 }
 
-.cagri:hover {
-  color: var(--ml-cobalt-600);
+.dugme-ikincil:hover {
+  color: var(--ml-paper);
 }
 
-.cagri:hover .ok {
-  transform: translateX(0.35em);
+.dugme-ikincil:hover::before {
+  transform: scaleX(1);
 }
 
-.cagri:active {
+.dugme-birincil:active,
+.dugme-ikincil:active {
   transform: translateY(1px);
 }
 
-/* İkincil, daha sessiz bağlantı. */
-.cagri-sessiz {
+/* Ok, her üç tipte de aynı davranır. */
+.dugme-birincil .ok,
+.dugme-ikincil .ok,
+.baglanti-ok .ok {
+  display: inline-block;
+  transition: transform var(--ml-duration-normal) var(--ml-ease-standard);
+}
+
+.dugme-birincil:hover .ok,
+.dugme-ikincil:hover .ok,
+.baglanti-ok:hover .ok {
+  transform: translateX(0.3em);
+}
+
+/* Metin bağlantısı. Altındaki çizgi soldan büyür. */
+.baglanti-ok {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
   font-size: var(--ml-text-base);
   font-weight: var(--ml-weight-medium);
-  color: var(--ml-text-muted);
-  text-decoration: none;
-  border-block-end: 1px solid var(--ml-border);
-  padding-block: var(--ml-space-1);
-  transition:
-    color var(--ml-duration-normal) var(--ml-ease-standard),
-    border-color var(--ml-duration-normal) var(--ml-ease-standard);
-}
-
-.cagri-sessiz:hover {
   color: var(--ml-text);
-  border-block-end-color: var(--ml-text);
-}
-
-/* Ters zeminlerde */
-.ml-inverse .cagri,
-.ml-koyu .cagri {
-  color: var(--ml-cream-base);
-  border-block-end-color: var(--ml-cream-base);
-}
-
-.ml-inverse .cagri .ok,
-.ml-koyu .cagri .ok {
-  color: var(--ml-cream-base);
-}
-
-.ml-inverse .cagri:hover,
-.ml-koyu .cagri:hover {
-  color: var(--ml-white);
-}
-
-/* Üst çubuktaki küçük çağrı. Tek dolu öğe, bilinçli. */
-.cagri-kucuk {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5em;
-  min-height: 44px;
-  padding-inline: var(--ml-space-5, 1.25rem);
-  background-color: var(--ml-cobalt-600);
-  color: var(--ml-cream-base);
-  font-size: var(--ml-text-sm);
-  font-weight: var(--ml-weight-semibold);
   text-decoration: none;
-  border-radius: 2px;
-  transition:
-    background-color var(--ml-duration-fast) var(--ml-ease-standard),
-    transform var(--ml-duration-fast) var(--ml-ease-standard);
+  padding-block-end: 0.35em;
 }
 
-.cagri-kucuk:hover {
-  background-color: var(--ml-cobalt-800);
+.baglanti-ok::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--ml-duration-normal) var(--ml-ease-standard);
 }
 
-.cagri-kucuk:active {
-  transform: translateY(1px);
+.baglanti-ok:hover::after {
+  transform: scaleX(1);
+}
+
+/* Koyu zeminlerde */
+.ml-koyu .dugme-ikincil,
+.ml-inverse .dugme-ikincil {
+  border-color: rgb(255 244 214 / 0.45);
+  color: var(--ml-cream-base);
+}
+
+.ml-koyu .dugme-ikincil::before,
+.ml-inverse .dugme-ikincil::before {
+  background-color: var(--ml-cream-base);
+}
+
+.ml-koyu .dugme-ikincil:hover,
+.ml-inverse .dugme-ikincil:hover {
+  color: var(--ml-ink-900);
+}
+
+.ml-koyu .dugme-birincil,
+.ml-inverse .dugme-birincil {
+  background-color: var(--ml-cream-base);
+  color: var(--ml-ink-900);
+}
+
+.ml-koyu .dugme-birincil:hover,
+.ml-inverse .dugme-birincil:hover {
+  background-color: var(--ml-white);
+}
+
+.ml-koyu .baglanti-ok,
+.ml-inverse .baglanti-ok {
+  color: var(--ml-cream-base);
 }
 
 /* ------------------------------------------------------------

@@ -1,57 +1,77 @@
-# Vaka çalışmaları: yayın öncesi onay listesi
+# Seçili çalışmalar: yayın öncesi kontrol listesi
 
-Bu dosya siteye çıkmaz. Astro içerik şemasının dışında tutuluyor.
+Bu dosya siteye çıkmaz, Astro içerik şemasının dışında tutuluyor.
 
-Dört vaka da onaylandı (`onayBekliyor: false`). Onay 16 Ağustos 2026'da
-verildi. Derleme artık uyarı basmıyor.
+## Vitrinin çalışma biçimi
 
-## Onayın anlamı
+Ana sayfadaki bölüm bir portfolyo vitrini: önce ürünün gerçek arayüzü
+görünür, sonra tek cümlelik başlık gelir. Uzun proje anlatısı ana
+sayfada yok.
 
-Metinler, projelerin bilinen kapsamından yazıldı. Müşteri adı, marka adı ve
-canlı bağlantı hiçbirinde yok, yalnızca sektör yazılı. Onay şu iki şeyi
-kapsıyor:
+Her dosya bir ürün. Alanlar `src/content.config.ts` içinde tanımlı.
+`sunum` alanı o ürünün nasıl gösterileceğini belirler:
 
-1. Anlatılan işin gerçekten yapılan iş olduğu
-2. Müşterinin bu düzeyde anlatıma itiraz etmeyeceği
+| sunum   | görünüm                                    | örnek     |
+| ------- | ------------------------------------------ | --------- |
+| `mobil` | koyu zeminde telefon ekranları             | Inkstay   |
+| `ios`   | uygulama ikonu ve üç ekran yan yana         | Guardi    |
+| `web`   | tarayıcı çerçeveli geniş görünüm            | EcceHome  |
 
-## Sitedeki tek somut rakam
+## Görsel kuralı
 
-- `02-sigortacilik.md` içindeki **1413 kontrol kuralı** sayısı.
-  Sonradan yanlış olduğu anlaşılırsa düzeltin veya cümleden çıkarın.
+**Görseli olmayan proje vitrine girmez.** Temsilî kutu, akış şeması
+veya uydurma arayüz üretilmez. Bütün görseller ürünün kendisinden
+alınmış ekran görüntüleridir.
 
-Başka hiçbir dosyada sayı yok. Yazılan ilk taslakta bulunan
-"30 dakikadan 5 dakikaya" ifadesi doğrulanamadığı için kaldırıldı.
+Ham yakalamalar `_assetler/` altında durur ve depoya girmez.
+`scripts/is-gorselleri.mjs` seçilenleri ölçeklendirip AVIF ve WebP
+olarak `public/isler/` altına yazar. Yeni bir görsel eklerken:
 
-## Eksik olan: sonuç satırları
+1. Ham dosyayı `_assetler/<proje>/` altına koyun
+2. `scripts/is-gorselleri.mjs` içindeki listeye satır ekleyin
+3. `node scripts/is-gorselleri.mjs` çalıştırın
+4. İlgili `.md` dosyasına `gorseller` girdisini yazın (`en` ve `boy`
+   betiğin bastığı ölçülerden alınır; yanlış yazılırsa sayfa görsel
+   yüklenirken kayar)
 
-Üç vakanın `sonuc` alanı boş, çünkü elimizde ölçülmüş bir rakam yok.
-Marka sesi kuralı doğrulanamayan sayı yazılmasını yasaklıyor, bu yüzden
-alan boş bırakıldı. Site bu alanı olmayan kartlarda sonuç satırını hiç
-göstermiyor.
+`alt` metni boş geçilemez. Ekranda ne göründüğünü yazın, "ekran
+görüntüsü" demeyin.
 
-Şu türde bir rakamınız varsa `sonuc` alanını ekleyin, kart otomatik
-olarak gösterir:
+## Sahiplik: ne diyoruz, ne demiyoruz
 
-```yaml
-sonuc: Sipariş başına harcanan süre 40 dakikadan 6 dakikaya indi.
-```
+Üç ürün de Monti Labs kurucularının geliştirdiği ürünler. Bunlar
+**müşteri işi olarak sunulmuyor**. Bölüm alt metni bu yüzden
+"Monti Labs ekibinin geliştirdiği seçili ürünler ve dijital
+sistemler" diyor.
 
-Ölçülebilir olan her şey işe yarar: kazanılan saat, düşen hata sayısı,
-kısalan süre, azalan maliyet. Yuvarlak tahmin değil, gerçek ölçüm.
+Sonradan gerçek müşteri işi eklenirse ikisi ayrı ayrı işaretlenmeli;
+aynı listede ayrımsız durmamalı.
 
-## Yeni vaka eklemek
+## Rakam kuralı
 
-`src/content/calismalar/` altına yeni bir `.md` dosyası koyun.
-Alanlar `src/content.config.ts` içinde tanımlı:
+Şu an metinlerde tek bir rakam yok. Doğrulanamayan hiçbir sayı
+("%40 hızlandı", "30 dakikadan 5 dakikaya") yazılmaz. Rakam
+eklenecekse kaynağı bilinmeli.
 
-| Alan | Zorunlu | Not |
-|---|---|---|
-| `baslik` | evet | Kısa, problem odaklı |
-| `sektor` | evet | Müşteri adı değil, sektör |
-| `tur` | evet | uygulama, b2b-urun, web-sitesi, otomasyon, entegrasyon |
-| `problem` | evet | Bir iki cümle |
-| `neYaptik` | evet | İki dört cümle |
-| `sonuc` | hayır | Ölçülmüş rakam yoksa hiç yazmayın |
-| `teknolojiler` | hayır | Etiket listesi |
-| `sira` | hayır | Ana sayfadaki sıra |
-| `onayBekliyor` | hayır | Onaylandığında `false` |
+Görsellerin içinde ürünün kendi verisi görünüyor (örneğin Guardi
+ekranındaki engellenen numara sayacı). Bunlar ürünün kendi arayüzü;
+bizim iddiamız değil, o yüzden sorun değil.
+
+## Durum
+
+| Proje    | Durum                              | onayBekliyor |
+| -------- | ---------------------------------- | ------------ |
+| Inkstay  | Erken erişim aşamasında, canlı     | `false`      |
+| Guardi   | App Store'da yayında               | `false`      |
+| EcceHome | Canlı mağaza                       | `false`      |
+
+`onayBekliyor: true` olan dosyalar vitrine hiç girmez. Yeni bir proje
+eklerken içerik onayı gelene kadar bu alanı `true` bırakın.
+
+## Vitrine girmeyen iş
+
+Sigortacılık alanındaki kural motoru çalışması (1413 kontrol kuralı)
+gerçek bir iş ama gösterilebilecek arayüzü yok ve müşteri adı
+paylaşılamıyor. Vitrinin kuralı "önce göster" olduğu için dışarıda
+bırakıldı. İleride ekranı olmayan işler için ayrı bir bölüm
+açılabilir; o zaman anlatı biçimi de farklı olmalı.

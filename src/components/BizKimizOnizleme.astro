@@ -1,0 +1,111 @@
+---
+/* Biz kimiz — ana sayfadaki önizleme.
+
+   Uzun biyografi burada değil, /biz-kimiz sayfasında.
+   Fotoğraf yokken avatar dairesi veya baş harf rozeti üretilmiyor;
+   isimler tipografiyle duruyor. */
+
+import { kurucular, portreVar } from '../data/kurucular'
+import { icerik } from '../data/icerik'
+import { yol } from '../lib/yol'
+
+const b = icerik.bizKimiz
+const portreli = portreVar()
+---
+
+<section class="kimiz bolum" id="biz-kimiz" aria-labelledby="kimiz-baslik">
+  <div class="kabuk kimiz-ic">
+    <div>
+      <p class="kunye uste" id="kimiz-baslik" data-acil>{b.kunye}</p>
+      <p class="kimiz-ozet" data-acil style="--gecikme:80ms">{b.ozet}</p>
+      <a class="baglanti-ok kimiz-cagri" href={yol(b.cagriHedef)} data-acil style="--gecikme:160ms">
+        {b.cagri}
+        <span class="ok" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <ul class="kurucular" role="list" data-acil style="--gecikme:200ms">
+      {
+        kurucular.map((k) => (
+          <li class="kurucu">
+            {portreli && k.gorsel && (
+              <img class="kurucu-portre" src={yol(k.gorsel)} alt={k.gorselAlt ?? ''} loading="lazy" decoding="async" />
+            )}
+            <p class="kurucu-ad">{k.ad}</p>
+            <p class="kurucu-unvan">{k.unvan}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .kimiz-ozet {
+    max-width: 44ch;
+    font-size: var(--ml-text-xl);
+    line-height: var(--ml-leading-snug);
+    color: var(--ml-text);
+  }
+
+  .kimiz-cagri {
+    margin-block-start: var(--ml-space-8);
+  }
+
+  .kurucular {
+    display: grid;
+    gap: var(--ml-space-8);
+    margin-block-start: clamp(3rem, 2rem + 3vw, 4rem);
+  }
+
+  .kurucu {
+    padding-block-start: var(--ml-space-4);
+    border-block-start: 1px solid var(--ml-border);
+  }
+
+  .kurucu-portre {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    margin-block-end: var(--ml-space-4);
+    border-radius: var(--ml-radius-sm);
+  }
+
+  .kurucu-ad {
+    font-family: var(--ml-font-display);
+    font-size: var(--ml-text-lg);
+    font-weight: var(--ml-weight-semibold);
+    letter-spacing: var(--ml-tracking-tight);
+    color: var(--ml-text);
+  }
+
+  .kurucu-unvan {
+    margin-block-start: var(--ml-space-1);
+    font-family: var(--ml-font-mono);
+    font-size: var(--ml-text-xs);
+    letter-spacing: var(--ml-tracking-wide);
+    text-transform: uppercase;
+    color: var(--ml-text-muted);
+  }
+
+  @media (min-width: 620px) {
+    .kurucular {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 900px) {
+    /* İki kolon alttan hizalanıyor. Üstten hizalandığında kurucu
+       adlarının altında büyük bir boşluk kalıyordu. */
+    .kimiz-ic {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 6rem);
+      align-items: end;
+    }
+
+    .kurucular {
+      margin-block-start: 0;
+    }
+  }
+</style>

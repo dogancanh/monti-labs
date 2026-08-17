@@ -1,0 +1,510 @@
+---
+/* ============================================================
+   SEÇİLİ ÇALIŞMALAR
+
+   Sayfanın merkezi. Önce ürün görünür, sonra tek cümle.
+   Uzun proje anlatısı burada yok.
+
+   Her ürün kendi karakterine göre sunuluyor, hepsi aynı karta
+   sokulmuyor: Inkstay koyu zeminde telefon grubu, Guardi ikon
+   ve arayüz, EcceHome geniş tarayıcı görünümü. Ortak dil ise
+   sabit: aynı künye satırı, aynı başlık ölçüsü, aynı bağlantı
+   biçimi, aynı boşluk ritmi.
+
+   Görseller gerçek üründen alınmış ekran görüntüleridir.
+   ============================================================ */
+
+import { getCollection } from 'astro:content'
+import Gorsel from './Gorsel.astro'
+import { icerik } from '../data/icerik'
+
+const c = icerik.calismalar
+
+const hepsi = await getCollection('calismalar', ({ data }) => !data.onayBekliyor)
+const isler = hepsi.sort((a, b) => a.data.sira - b.data.sira)
+
+/** Belirli bir rolü taşıyan görselleri döndürür. */
+function rol(is: (typeof isler)[number], istenen: string) {
+  return is.data.gorseller.filter((g) => g.rol === istenen)
+}
+function tek(is: (typeof isler)[number], istenen: string) {
+  return rol(is, istenen)[0]
+}
+---
+
+<section class="vitrin bolum" id="calismalar" aria-labelledby="vitrin-baslik">
+  <div class="kabuk">
+    <p class="kunye uste" data-acil>{c.kunye}</p>
+    <h2 class="bolum-baslik" id="vitrin-baslik" data-acil style="--gecikme:80ms">
+      {c.baslik}
+    </h2>
+    <p class="vitrin-alt olcu" data-acil style="--gecikme:140ms">{c.altMetin}</p>
+  </div>
+
+  <div class="vitrin-akis">
+    {
+      isler.map((is, i) => {
+        const d = is.data
+        const ana = tek(is, 'ana')
+        const yanlar = rol(is, 'yan')
+        const ikon = tek(is, 'ikon')
+        const logo = tek(is, 'logo')
+        const numara = String(i + 1).padStart(2, '0')
+
+        return (
+          <article
+            class:list={['is', 'is-' + d.sunum, d.koyuZemin && 'is-koyu']}
+            style={d.vurguRengi ? `--vurgu:${d.vurguRengi}` : undefined}
+            aria-labelledby={`is-${is.id}`}
+            data-koyu={d.koyuZemin ? '' : undefined}
+          >
+            <div class="kabuk is-kabuk">
+              {/* --- Künye ve başlık --- */}
+              <header class="is-bas" data-acil>
+                <p class="is-kunye">
+                  <span class="sayi is-no">{numara}</span>
+                  <span class="is-kategori">{d.kategori}</span>
+                </p>
+
+                <div class="is-ad-satiri">
+                  {ikon && (
+                    <span class="is-ikon" aria-hidden="true">
+                      <Gorsel src={ikon.src} alt="" en={ikon.en} boy={ikon.boy} />
+                    </span>
+                  )}
+                  <h3 class="is-ad" id={`is-${is.id}`}>
+                    {d.ad}
+                  </h3>
+                </div>
+
+                <p class="is-baslik">{d.baslik}</p>
+
+                {d.adres && (
+                  <a class="baglanti-ok is-adres" href={d.adres} rel="noopener" target="_blank">
+                    {c.adresCagri}
+                    <span class="ok" aria-hidden="true">
+                      ↗
+                    </span>
+                  </a>
+                )}
+              </header>
+
+              {/* --- Ürün görselleri --- */}
+              <div class="is-sahne" data-acil style="--gecikme:120ms">
+                {d.sunum === 'web' ? (
+                  <>
+                    {ana && (
+                      <div class="tarayici">
+                        <div class="tarayici-cubugu" aria-hidden="true">
+                          <span class="tarayici-nokta" />
+                          <span class="tarayici-nokta" />
+                          <span class="tarayici-nokta" />
+                          {d.adres && (
+                            <span class="tarayici-adres">{d.adres.replace(/^https?:\/\//, '')}</span>
+                          )}
+                        </div>
+                        <Gorsel
+                          src={ana.src}
+                          alt={ana.alt}
+                          en={ana.en}
+                          boy={ana.boy}
+                          sinif="tarayici-ekran"
+                        />
+                      </div>
+                    )}
+                    {yanlar[0] && (
+                      <div class="web-mobil">
+                        <Gorsel
+                          src={yanlar[0].src}
+                          alt={yanlar[0].alt}
+                          en={yanlar[0].en}
+                          boy={yanlar[0].boy}
+                        />
+                      </div>
+                    )}
+                    {logo && <span class="gorsel-gizli">{logo.alt}</span>}
+                  </>
+                ) : (
+                  <ul class="ekranlar" role="list">
+                    {ana && (
+                      <li class="ekran ekran-ana">
+                        <Gorsel
+                          src={ana.src}
+                          alt={ana.alt}
+                          en={ana.en}
+                          boy={ana.boy}
+                        />
+                      </li>
+                    )}
+                    {yanlar.map((g) => (
+                      <li class="ekran ekran-yan">
+                        <Gorsel
+                          src={g.src}
+                          alt={g.alt}
+                          en={g.en}
+                          boy={g.boy}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </article>
+        )
+      })
+    }
+  </div>
+</section>
+
+<style>
+  /* ------------------------------------------------------------
+     Bölüm başı
+     ------------------------------------------------------------ */
+  /* Giriş bölümü zaten bir çizgiyle kapandığı için üst dolgu
+     bölüm ritminden bir kademe kısa. */
+  .vitrin {
+    padding-block: clamp(4rem, 2.5rem + 6vw, 8rem) 0;
+  }
+
+  .vitrin-alt {
+    margin-block-start: var(--ml-space-6);
+    font-size: var(--ml-text-lg);
+    color: var(--ml-text-muted);
+  }
+
+  .vitrin-akis {
+    margin-block-start: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+  }
+
+  /* ------------------------------------------------------------
+     Ortak çalışma bloğu
+
+     Üç sunumun da paylaştığı iskelet: aynı dolgu, aynı künye,
+     aynı başlık ölçüsü. Fark yalnızca sahnede.
+     ------------------------------------------------------------ */
+  .is {
+    --vurgu: var(--ml-cobalt-600);
+    padding-block: clamp(4rem, 2.5rem + 6vw, 8rem);
+    background-color: var(--ml-bg);
+    color: var(--ml-text-body);
+    overflow: hidden;
+  }
+
+  .is-kunye {
+    display: flex;
+    align-items: baseline;
+    gap: var(--ml-space-4);
+    font-family: var(--ml-font-mono);
+    font-size: var(--ml-text-xs);
+    letter-spacing: var(--ml-tracking-wide);
+    text-transform: uppercase;
+    color: var(--ml-text-muted);
+  }
+
+  /* Numara açık zeminde metin rengiyle yazılır. Ürünün kendi
+     vurgu rengi küçük puntoda krem zeminde okunmuyordu
+     (EcceHome altını 1.52:1, gereken 4.5:1). Ürün rengi yalnızca
+     koyu blokta, kontrastın geçtiği yerde kullanılıyor. */
+  .is-no {
+    color: var(--ml-text);
+    font-weight: var(--ml-weight-semibold);
+  }
+
+  .is-koyu .is-no {
+    color: var(--vurgu);
+  }
+
+  .is-kategori {
+    letter-spacing: var(--ml-tracking-widest);
+  }
+
+  .is-ad-satiri {
+    display: flex;
+    align-items: center;
+    gap: var(--ml-space-4);
+    margin-block-start: var(--ml-space-6);
+  }
+
+  /* Uygulama ikonu yalnızca ürünün kendi kimliği buysa görünür. */
+  .is-ikon {
+    flex: none;
+    width: 3.25rem;
+    border-radius: 22.5%;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgb(15 21 51 / 0.16);
+  }
+
+  .is-ad {
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+    line-height: var(--ml-leading-tight);
+    letter-spacing: var(--ml-tracking-tighter);
+    color: var(--ml-text);
+  }
+
+  .is-baslik {
+    margin-block-start: var(--ml-space-4);
+    max-width: 34ch;
+    font-size: var(--ml-text-xl);
+    line-height: var(--ml-leading-snug);
+    color: var(--ml-text-body);
+  }
+
+  .is-adres {
+    margin-block-start: var(--ml-space-8);
+  }
+
+  .is-sahne {
+    margin-block-start: clamp(3rem, 2rem + 4vw, 4.5rem);
+  }
+
+  /* ------------------------------------------------------------
+     Telefon ekranları (mobil ve ios sunumları)
+
+     Dar ekranda yan yana sığmadığı için yatay kaydırma şeridi
+     olur; kırpılmış küçük görsellerden daha okunaklı.
+     ------------------------------------------------------------ */
+  .ekranlar {
+    display: flex;
+    gap: var(--ml-space-6);
+    align-items: flex-start;
+    margin: 0;
+    padding-block-end: var(--ml-space-4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ml-border) transparent;
+  }
+
+  .ekran {
+    flex: none;
+    scroll-snap-align: center;
+    border-radius: 1.25rem;
+    overflow: hidden;
+  }
+
+  .ekran-ana {
+    width: 68vw;
+    max-width: 320px;
+  }
+
+  .ekran-yan {
+    width: 56vw;
+    max-width: 230px;
+  }
+
+  /* Çerçevesiz ekran görüntüleri saç teli bir kenarlık alır; aksi
+     halde cihaz çerçeveli ana görselin yanında kesilmiş gibi duruyor. */
+  .ekran-yan {
+    border: 1px solid rgb(15 21 51 / 0.1);
+  }
+
+  .is-koyu .ekran-yan {
+    border-color: rgb(245 241 232 / 0.14);
+  }
+
+  @media (min-width: 900px) {
+    .ekranlar {
+      overflow: visible;
+      align-items: flex-end;
+      gap: clamp(1rem, 1.4vw, 1.75rem);
+    }
+
+    .ekran {
+      scroll-snap-align: none;
+    }
+
+    /* Ana ekran öne çıkar, yandakiler bir kademe geride durur. */
+    .ekran-ana {
+      width: 290px;
+      max-width: none;
+    }
+
+    .ekran-yan {
+      width: 196px;
+      max-width: none;
+      margin-block-end: clamp(1.5rem, 3vw, 3rem);
+    }
+
+    .ekran-yan:last-child {
+      margin-block-end: clamp(3rem, 6vw, 6rem);
+    }
+  }
+
+  /* ------------------------------------------------------------
+     Inkstay — koyu zeminde mobil ürün
+     Ürünün kendi zemini ve altın vurgusu bloğun içinde kalır,
+     sayfanın geri kalanına taşmaz.
+     ------------------------------------------------------------ */
+  .is-koyu {
+    --ml-text: #f5f1e8;
+    --ml-text-body: rgb(245 241 232 / 0.78);
+    --ml-text-muted: rgb(245 241 232 / 0.55);
+    background-color: #0b0b0c;
+    color: var(--ml-text-body);
+  }
+
+  .is-koyu .baglanti-ok {
+    color: var(--vurgu);
+  }
+
+  .is-koyu .is-ikon {
+    box-shadow: none;
+  }
+
+  @media (min-width: 900px) {
+    /* Metin dar bir kolonda, ekran grubu geniş kolonda. Oran
+       telefonların taşmayacağı şekilde seçildi: üç ekran ve
+       aralar toplam 720 piksel, kolon bundan geniş. */
+    .is-mobil .is-kabuk {
+      display: grid;
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      gap: clamp(1.5rem, 3vw, 3.5rem);
+      align-items: center;
+    }
+
+    .is-mobil .is-sahne {
+      margin-block-start: 0;
+      min-width: 0;
+    }
+
+    .is-mobil .ekranlar {
+      justify-content: flex-end;
+    }
+  }
+
+  /* ------------------------------------------------------------
+     Guardi — uygulama ikonu ve arayüz
+     Açık zemin. Ekranlar aynı hizada durur, ikon başı çeker.
+     ------------------------------------------------------------ */
+  .is-ios {
+    background-color: var(--ml-paper);
+  }
+
+  .is-ios .is-bas {
+    max-width: 60ch;
+  }
+
+  @media (min-width: 900px) {
+    /* Üç ekran genişliği paylaşıyor, ana ekran ortada ve bir tık
+       geniş. App Store listesindeki gibi okunuyor; başlığın altında
+       küçük bir grup olarak asılı kalmıyor. */
+    .is-ios .ekranlar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.22fr) minmax(0, 1fr);
+      gap: clamp(1.5rem, 3vw, 3rem);
+      align-items: center;
+    }
+
+    .is-ios .ekran {
+      width: auto;
+      max-width: none;
+      margin-block-end: 0;
+    }
+
+    .is-ios .ekran-ana {
+      order: 2;
+    }
+
+    .is-ios .ekran-yan:first-of-type {
+      order: 1;
+    }
+
+    .is-ios .ekran-yan:last-child {
+      order: 3;
+    }
+  }
+
+  /* ------------------------------------------------------------
+     EcceHome — geniş tarayıcı sunumu
+     ------------------------------------------------------------ */
+  .is-web {
+    background-color: var(--ml-cream-base);
+  }
+
+  /* Dar ekranda sıra değişiyor: telefon görünümü öne geçiyor.
+     Geniş masaüstü ekran görüntüsü 390 pikselde okunmuyor, orada
+     ana görsel olmasının anlamı yok. */
+  .is-web .is-sahne {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ml-space-6);
+  }
+
+  .tarayici {
+    border-radius: 0.625rem;
+    overflow: hidden;
+    background-color: var(--ml-white);
+    box-shadow:
+      0 1px 1px rgb(15 21 51 / 0.05),
+      0 18px 44px -12px rgb(15 21 51 / 0.22);
+  }
+
+  .tarayici-cubugu {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.85rem;
+    background-color: #e8e4da;
+    border-block-end: 1px solid rgb(15 21 51 / 0.08);
+  }
+
+  .tarayici-nokta {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background-color: rgb(15 21 51 / 0.16);
+  }
+
+  .tarayici-adres {
+    margin-inline-start: var(--ml-space-4);
+    font-family: var(--ml-font-mono);
+    font-size: var(--ml-text-xs);
+    letter-spacing: var(--ml-tracking-normal);
+    color: var(--ml-ink-500);
+  }
+
+  /* Telefon görünümü dar ekranda başa geçer, geniş ekranda
+     tarayıcının sol alt köşesine biner. */
+  .web-mobil {
+    order: -1;
+    width: 62%;
+    max-width: 260px;
+    border-radius: 0.9rem;
+    overflow: hidden;
+    box-shadow: 0 12px 30px -10px rgb(15 21 51 / 0.3);
+  }
+
+  @media (min-width: 900px) {
+    /* Telefon tarayıcının sol alt köşesine biniyor. Kadraj dışına
+       taşacak kadar dışarıda: masaüstü ekranındaki ürünleri
+       kapatmadan derinlik veriyor. */
+    .web-mobil {
+      position: absolute;
+      order: 0;
+      inset-block-end: -3rem;
+      inset-inline-start: -3rem;
+      width: 196px;
+      max-width: none;
+      margin: 0;
+    }
+  }
+
+  /* ------------------------------------------------------------
+     Hareket
+     Ekran grubu göründüğünde tek tek değil, kademeli girer.
+     ------------------------------------------------------------ */
+  @media (prefers-reduced-motion: no-preference) {
+    .ekran,
+    .tarayici,
+    .web-mobil {
+      transition: transform var(--ml-duration-slow) var(--ml-ease-standard);
+    }
+
+    .is:hover .ekran-ana {
+      transform: translateY(-0.5rem);
+    }
+  }
+</style>

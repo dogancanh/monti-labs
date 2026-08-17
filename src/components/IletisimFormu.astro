@@ -70,15 +70,7 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
 
     <div class="alan alan-genis">
       <label for="mesaj">{i.alanlar.mesaj}</label>
-      <textarea
-        id="mesaj"
-        name="mesaj"
-        rows="4"
-        required
-        minlength="20"
-        maxlength="4000"
-        aria-describedby="yardim-mesaj"></textarea>
-      <p class="alan-yardim" id="yardim-mesaj">{i.mesajYardim}</p>
+      <textarea id="mesaj" name="mesaj" rows="4" required minlength="20" maxlength="4000"></textarea>
       <p class="alan-hata" id="hata-mesaj" hidden></p>
     </div>
   </div>
@@ -98,7 +90,7 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
   <p class="alan-hata onay-hata" id="hata-kvkkOnay" hidden></p>
 
   <div class="alt">
-    <button type="submit" class="gonder" data-gonder-dugmesi disabled={!formHazir}>
+    <button type="submit" class="dugme-birincil gonder" data-gonder-dugmesi disabled={!formHazir}>
       <span>{i.gonderButonu}</span>
       <span class="ok" aria-hidden="true">→</span>
     </button>
@@ -191,10 +183,11 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
     align-items: start;
   }
 
+  /* WCAG 2.5.8 en az 24x24 istiyor. */
   .onay input {
-    inline-size: 20px;
-    block-size: 20px;
-    margin-block-start: 0.15rem;
+    inline-size: 24px;
+    block-size: 24px;
+    margin-block-start: 0.1rem;
     accent-color: var(--ml-cream-base);
   }
 
@@ -219,36 +212,8 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
     gap: var(--ml-space-4) var(--ml-space-8);
   }
 
-  /* Dolu kutu yerine altı çizili büyük çağrı. */
-  .gonder {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6em;
-    background: transparent;
-    border: 0;
-    border-block-end: 2px solid var(--ml-cream-base);
-    padding: var(--ml-space-2) 0;
-    font-family: var(--ml-font-body);
-    font-size: var(--ml-text-lg);
-    font-weight: var(--ml-weight-semibold);
-    color: var(--ml-cream-base);
-    cursor: pointer;
-    transition: opacity var(--ml-duration-fast) var(--ml-ease-standard);
-  }
-
-  .gonder .ok {
-    display: inline-block;
-    transition: transform var(--ml-duration-normal) var(--ml-ease-standard);
-  }
-
-  .gonder:hover .ok {
-    transform: translateX(0.35em);
-  }
-
-  .gonder:active {
-    transform: translateY(1px);
-  }
-
+  /* Görünüm .dugme-birincil'den geliyor; burada yalnızca formun
+     kendine özgü durumu tanımlı. */
   .gonder[disabled] {
     opacity: 0.45;
     cursor: not-allowed;

@@ -1,19 +1,19 @@
 ---
 import Temel from '../layouts/Temel.astro'
+import Vitrin from '../components/Vitrin.astro'
+import NeYapiyoruz from '../components/NeYapiyoruz.astro'
 import Manifesto from '../components/Manifesto.astro'
-import SurecGorseli from '../components/SurecGorseli.astro'
-import Calismalar from '../components/Calismalar.astro'
-import Gelistirdiklerimiz from '../components/Gelistirdiklerimiz.astro'
 import NasilCalisiyoruz from '../components/NasilCalisiyoruz.astro'
-import MontiLabs from '../components/MontiLabs.astro'
+import BizKimizOnizleme from '../components/BizKimizOnizleme.astro'
 import IletisimFormu from '../components/IletisimFormu.astro'
 import { icerik } from '../data/icerik'
+import { yol } from '../lib/yol'
 
 const c = icerik
 ---
 
 <Temel>
-  {/* 01 — Hero. Tamamen tipografi. Mockup, render, grafik yok. */}
+  {/* 01 — Giriş. Tipografi ve iki çağrı. Mockup veya şema yok. */}
   <section class="giris" aria-labelledby="giris-baslik">
     <div class="kabuk">
       <h1 class="hero-baslik" id="giris-baslik" data-acil>{c.hero.baslik}</h1>
@@ -21,11 +21,11 @@ const c = icerik
       <p class="giris-alt" data-acil style="--gecikme:120ms">{c.hero.altMetin}</p>
 
       <div class="giris-eylemler" data-acil style="--gecikme:200ms">
-        <a class="cagri" href={c.hero.birincilEylem.hedef}>
+        <a class="dugme-birincil" href={yol(c.hero.birincilEylem.hedef)}>
           {c.hero.birincilEylem.etiket}
           <span class="ok" aria-hidden="true">→</span>
         </a>
-        <a class="cagri-sessiz" href={c.hero.ikincilEylem.hedef}>
+        <a class="dugme-ikincil" href={yol(c.hero.ikincilEylem.hedef)}>
           {c.hero.ikincilEylem.etiket}
         </a>
       </div>
@@ -36,33 +36,33 @@ const c = icerik
     </div>
   </section>
 
-  {/* 02 — Manifesto */}
+  {/* 02 — Seçili çalışmalar. Sayfanın merkezi. */}
+  <Vitrin />
+
+  {/* 03 — Ne yapıyoruz */}
+  <NeYapiyoruz />
+
+  {/* 04 — Manifesto */}
   <Manifesto />
 
-  {/* 03 — Süreç görseli */}
-  <SurecGorseli />
-
-  {/* 04 — Çalışmalar */}
-  <Calismalar />
-
-  {/* 05 — Neler geliştiriyoruz */}
-  <Gelistirdiklerimiz />
-
-  {/* 06 — Nasıl çalışıyoruz */}
+  {/* 05 — Nasıl çalışıyoruz */}
   <NasilCalisiyoruz />
 
-  {/* 07 — Monti Labs */}
-  <MontiLabs />
+  {/* 06 — Biz kimiz */}
+  <BizKimizOnizleme />
 
-  {/* 08 — Kapanış ve form */}
+  {/* 07 — İletişim */}
   <section class="kapanis ml-inverse" id="iletisim" aria-labelledby="kapanis-baslik">
     <div class="kabuk">
       <div class="kapanis-bas">
-        <h2 class="ifade" id="kapanis-baslik" data-acil>{c.kapanis.baslik}</h2>
-        <p class="kapanis-metin" data-acil style="--gecikme:100ms">{c.kapanis.metin}</p>
+        <p class="kunye kapanis-kunye" data-acil>{c.iletisim.kunye}</p>
+        <h2 class="ifade" id="kapanis-baslik" data-acil style="--gecikme:60ms">
+          {c.iletisim.baslik}
+        </h2>
+        <p class="kapanis-metin" data-acil style="--gecikme:120ms">{c.iletisim.metin}</p>
       </div>
 
-      <div class="kapanis-form" data-acil style="--gecikme:160ms">
+      <div class="kapanis-form" data-acil style="--gecikme:180ms">
         <IletisimFormu />
       </div>
     </div>
@@ -70,13 +70,13 @@ const c = icerik
 </Temel>
 
 <style>
-  /* ---------- Hero ---------- */
+  /* ---------- Giriş ---------- */
   .giris {
-    padding-block: clamp(4rem, 2rem + 7vw, 9rem) clamp(5rem, 3rem + 8vw, 11rem);
+    padding-block: clamp(3.5rem, 2rem + 6vw, 8rem) clamp(3rem, 2rem + 4vw, 6rem);
   }
 
   .hero-baslik {
-    max-width: 15ch;
+    max-width: 14ch;
   }
 
   .giris-alt {
@@ -84,18 +84,27 @@ const c = icerik
     font-size: var(--ml-text-xl);
     line-height: var(--ml-leading-snug);
     color: var(--ml-ink-700);
-    max-width: 46ch;
+    max-width: 44ch;
   }
 
   .giris-eylemler {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--ml-space-6) var(--ml-space-10, 2.5rem);
+    gap: var(--ml-space-4);
     margin-block-start: clamp(2.5rem, 1.5rem + 3vw, 4rem);
   }
 
-  /* Alan şeridi. Sayfanın en altındaki çizgiye oturur. */
+  /* Dar ekranda düğmeler alt alta düşüyor. İçeriğe göre farklı
+     genişliklerde durmaları düzensiz okunuyordu; eşitleniyorlar. */
+  @media (max-width: 479px) {
+    .giris-eylemler {
+      display: grid;
+      gap: var(--ml-space-3);
+    }
+  }
+
+  /* Alan şeridi. Girişi bir çizgiyle kapatıyor. */
   .giris-alanlar {
     display: flex;
     flex-wrap: wrap;
@@ -109,22 +118,27 @@ const c = icerik
     color: var(--ml-ink-500);
   }
 
-  /* ---------- Kapanış ---------- */
+  /* ---------- İletişim ---------- */
   .kapanis {
     padding-block: clamp(5rem, 3rem + 9vw, 11rem);
   }
 
+  .kapanis-kunye {
+    margin-block-end: var(--ml-space-6);
+    color: var(--ml-cobalt-200);
+  }
+
   .kapanis-bas h2 {
-    max-width: 16ch;
+    max-width: 15ch;
     color: var(--ml-cream-base);
   }
 
   .kapanis-metin {
     margin-block-start: var(--ml-space-6);
-    font-size: var(--ml-text-xl);
+    font-size: var(--ml-text-lg);
     line-height: var(--ml-leading-snug);
     color: rgb(255 244 214 / 0.82);
-    max-width: 34ch;
+    max-width: 36ch;
   }
 
   .kapanis-form {
