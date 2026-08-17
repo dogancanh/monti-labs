@@ -601,9 +601,13 @@ const siteVerisi = {
     gap: var(--ml-space-6);
   }
 
+  /* Yasal bağlantılar tıklanan öğeler, künye değil. Telif satırıyla
+     aynı puntoda durmaları ikisini de aynı işi yapıyormuş gibi
+     gösteriyordu. Gövde puntosuna alındılar; telif satırı tek başına
+     xs'te kalıyor ve orada asıl ayrımı mono dokusu taşıyor. */
   .dip-yasal a {
     color: rgb(255 244 214 / 0.7);
-    font-size: var(--ml-text-xs);
+    font-size: var(--ml-text-sm);
     text-decoration: none;
     transition: color var(--ml-duration-fast) var(--ml-ease-standard);
   }
