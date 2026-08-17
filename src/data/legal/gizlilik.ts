@@ -58,8 +58,8 @@ export const gizlilik: YasalMetin = {
     {
       baslik: 'Kimlerle paylaşılıyor',
       paragraflar: [
-        'Mesajınızın bize ulaşabilmesi için iki hizmet sağlayıcı devrededir:',
-        'Siteyi barındıran altyapı sağlayıcısı: GitHub Pages (GitHub, Inc.)\nForm mesajını ileten e-posta sağlayıcısı: Web3Forms',
+        'Mesajınızın bize ulaşabilmesi için üç hizmet sağlayıcı devrededir:',
+        'Siteyi barındıran altyapı sağlayıcısı: GitHub Pages (GitHub, Inc.)\nForm mesajını ileten e-posta sağlayıcısı: Web3Forms\nEkip bildirimi için mesaj kopyası: Discord (Discord, Inc.)',
         'Bunun dışında verileriniz üçüncü taraflarla paylaşılmaz, satılmaz ve kiralanmaz. Yasal zorunluluk veya yetkili merci talebi halinde mevzuatın gerektirdiği ölçüde paylaşım yapılabilir.',
       ],
     },

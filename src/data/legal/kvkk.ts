@@ -56,7 +56,7 @@ export const kvkk: YasalMetin = {
       baslik: 'Aktarım',
       paragraflar: [
         'Kişisel verileriniz, hizmetin sunulabilmesi için zorunlu olan aşağıdaki hizmet sağlayıcılar dışında üçüncü kişilere aktarılmaz:',
-        'Siteyi barındıran altyapı sağlayıcısı: GitHub Pages (GitHub, Inc.)\nForm mesajını ileten e-posta sağlayıcısı: Web3Forms',
+        'Siteyi barındıran altyapı sağlayıcısı: GitHub Pages (GitHub, Inc.)\nForm mesajını ileten e-posta sağlayıcısı: Web3Forms\nEkip bildirimi için mesaj kopyası: Discord (Discord, Inc.)',
         'Bunun dışında verileriniz yalnızca kanunen yetkili kamu kurum ve kuruluşlarına, mevzuatın öngördüğü ölçüde aktarılabilir. Verileriniz satılmaz ve kiralanmaz.',
       ],
     },

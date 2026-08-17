@@ -11,7 +11,7 @@
    geçmez (marka paketi 03-marka-sesi.md). */
 
 import { icerik } from '../data/icerik'
-import { sirket, FORM_SERVISI } from '../data/site'
+import { sirket, FORM_SERVISI, DISCORD_BILDIRIM } from '../data/site'
 import { yol } from '../lib/yol'
 
 const i = icerik.iletisim
@@ -45,6 +45,7 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
   data-hazir={formHazir ? 'evet' : 'hayir'}
   data-adres={FORM_SERVISI.adres}
   data-anahtar={FORM_SERVISI.anahtar}
+  data-discord={DISCORD_BILDIRIM.adres}
   data-basari={basari}
   data-hata={hata}
   data-gonderiliyor={i.gonderiliyor}
@@ -446,6 +447,38 @@ const hata = i.hataMesaji.replace('{eposta}', epostaBelli ? sirket.eposta : 'biz
         const sonuc = (await yanit.json()) as { success?: boolean; message?: string }
 
         if (yanit.ok && sonuc.success) {
+          // Discord bildirimi. E-posta zaten gitti; buradaki hata
+          // kullanıcıya yansıtılmaz, mesajı kaybetmiş sayılmayız.
+          const discord = form.dataset.discord
+          if (discord) {
+            const satir = (etiket: string, deger: string) =>
+              deger ? `**${etiket}:** ${deger}\n` : ''
+            fetch(discord, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                username: 'Site formu',
+                embeds: [
+                  {
+                    title: 'Yeni iletişim formu',
+                    color: 0x263baa,
+                    description:
+                      satir('Ad soyad', alanDegerleri.adSoyad) +
+                      satir('E-posta', alanDegerleri.eposta) +
+                      satir('Şirket', alanDegerleri.sirket) +
+                      satir('Telefon', alanDegerleri.telefon) +
+                      '\n' +
+                      alanDegerleri.mesaj.slice(0, 1500),
+                    timestamp: new Date().toISOString(),
+                  },
+                ],
+                // Kullanıcı adı ve içerik dışarıdan geldiği için
+                // hiçbir bahsetme tetiklenmesin.
+                allowed_mentions: { parse: [] },
+              }),
+            }).catch(() => {})
+          }
+
           form.reset()
           durum.textContent = form.dataset.basari ?? ''
           durum.dataset.tur = 'basari'

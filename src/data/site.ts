@@ -97,6 +97,29 @@ export const FORM_SERVISI = {
   saglayiciAdi: 'Web3Forms',
 }
 
+/**
+ * Form mesajlarının ayrıca düşeceği Discord kanalı.
+ *
+ * >>> BU ADRES HERKESE AÇIKTIR. <<<
+ * Site statik olduğu için istek tarayıcıdan gidiyor; adres sayfa
+ * kaynağında ve depoda okunabilir durumda. Webhook yalnızca yazabilir,
+ * kanalı okuyamaz ve sunucuda başka bir şey yapamaz. Riski, adresi bulan
+ * birinin kanala istenmeyen mesaj göndermesidir.
+ *
+ * İstenmeyen mesaj gelirse: Discord'da kanal ayarları > Entegrasyonlar >
+ * Web kancaları bölümünden silin, buradaki değeri boşaltın. Form
+ * çalışmaya devam eder, yalnızca Discord bildirimi durur.
+ *
+ * Kalıcı çözüm: site bir Node ortamına taşındığında bu bildirim sunucu
+ * tarafından gönderilir ve adres hiç dışarı çıkmaz.
+ * (sunucu/iletisim-uc-noktasi.ts hazır bekliyor)
+ *
+ * Boş bırakılırsa Discord bildirimi hiç denenmez.
+ */
+export const DISCORD_BILDIRIM = {
+  adres: 'https://discord.com/api/webhooks/1538981791313035285/1eBHRhJdPbZSNMBqgAS1Gtj7cl7siR27fx-iWXRL1CsomohdQ4JspJZ_sikFw5PKJ2yP',
+}
+
 export const gezinti = [
   { etiket: 'Yaklaşım', hedef: '#yaklasim' },
   { etiket: 'Ne geliştiriyoruz', hedef: '#hizmetler' },
