@@ -17,7 +17,7 @@ a { color: inherit; text-decoration: none; }
 
 .site-shell { min-height: 100vh; background: var(--paper); overflow: hidden; transition: background .35s ease; }
 .site-shell[data-palette='ember'] { --accent: #ff5a36; --accent-soft: #ffd8ce; --paper: #f3eee8; }
-.site-shell[data-palette='monti'] { --accent: #263baa; --accent-soft: #fff4d6; --paper: #fff4d6; }
+.site-shell[data-palette='monti'] { --accent: #263baa; --accent-soft: #eceff1; --paper: #eceff1; }
 .site-shell[data-palette='forest'] { --accent: #1c6b52; --accent-soft: #c9ded5; --paper: #eef0e9; }
 .site-shell[data-palette='ink'] { --accent: #161616; --accent-soft: #d8d4ca; --paper: #f1ede4; }
 

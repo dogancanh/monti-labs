@@ -105,7 +105,7 @@ const copy = {
 
 const palettes = [
   { id: 'cobalt', label: 'Cobalt', color: '#5147f5' },
-  { id: 'monti', label: 'Monti', color: '#263BAA', secondary: '#FFF4D6' },
+  { id: 'monti', label: 'Monti', color: '#263BAA', secondary: '#ECEFF1' },
   { id: 'ember', label: 'Ember', color: '#ff5a36' },
   { id: 'forest', label: 'Forest', color: '#1c6b52' },
   { id: 'ink', label: 'Ink', color: '#161616' },
