@@ -209,6 +209,7 @@ export default function Home() {
                   tabIndex={setIndex === 1 ? -1 : undefined}
                 >
                   <div className="project-meta"><span>01</span><span>B2B SaaS</span></div>
+                  <img className="project-logo project-logo-inkstay" src="/inkstay-logo.png" alt="" aria-hidden="true" />
                   <div className="project-content">
                     <h3>Inkstay</h3>
                     <p>{text.work[0][0]}</p>

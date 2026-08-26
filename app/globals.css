@@ -86,6 +86,8 @@ h1 > span { display: block; }
 .project-card:hover { transform: translateY(-6px); box-shadow: 0 18px 45px rgba(17,17,15,.12); }
 .project-card::before { content: ''; position: absolute; width: 230px; height: 230px; border-radius: 50%; right: -70px; bottom: -80px; border: 42px solid rgba(255,255,255,.18); }
 .project-meta { display: flex; justify-content: space-between; font: 9px var(--font-geist-mono); letter-spacing: .15em; position: relative; z-index: 1; }
+.project-logo { position: absolute; z-index: 2; top: 58px; left: 20px; display: block; width: 72px; height: 72px; object-fit: cover; border-radius: 21px; }
+.project-logo-inkstay { box-shadow: 0 0 0 1px rgba(255,255,255,.1), 0 14px 34px rgba(0,0,0,.32); }
 .project-content { position: relative; z-index: 1; margin-top: auto; padding: 70px 62px 58px 0; }
 .project-card h3 { margin: 0 0 10px; font-family: var(--font-display); font-size: clamp(36px, 3.7vw, 58px); line-height: 1; letter-spacing: -.06em; }
 .project-card p { margin: 0; max-width: 310px; font-size: 13px; line-height: 1.48; }
