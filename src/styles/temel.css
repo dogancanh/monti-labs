@@ -371,9 +371,24 @@ html:not(.js) [data-tema] {
    .acilim sınıfını kullanıyor ve yalnızca JavaScript açıkken gizli
    başlıyor. */
 
+/* Satır maskesi.
+
+   Türkçe'de ç harfinin çengeli, ğ ve ş gibi harflerin alt işaretleri
+   taban çizgisinin altına iniyor. Görüntü başlığının satır yüksekliği
+   0.94 olduğu için satır kutusu bu bölgeyi kapsamıyor ve overflow
+   maskesi işaretleri kesiyor.
+
+   Maske aşağı doğru büyütülüp aynı kadar yukarı çekiliyor: görünen
+   alan alt işaretleri kapsıyor, satır aralığı değişmiyor.
+
+   Dolguyu span'a verip negatif kenar boşluğunu da span'a vermek işe
+   yaramaz; ikisi birbirini götürür ve maske yine aynı yerde kalır.
+   Dolgu maskenin kendisinde olmak zorunda. */
 .satir {
   display: block;
   overflow: hidden;
+  padding-bottom: 0.18em;
+  margin-bottom: -0.18em;
 }
 
 .satir > span {
@@ -381,9 +396,11 @@ html:not(.js) [data-tema] {
   animation: satir-yukari var(--temel) var(--egri) both;
 }
 
+/* Maske dolgu kadar uzadığı için başlangıç konumu da o kadar aşağı
+   iniyor, yoksa satırın üstü animasyon başlamadan görünür kalıyor. */
 @keyframes satir-yukari {
   from {
-    transform: translateY(105%);
+    transform: translateY(125%);
   }
   to {
     transform: none;
