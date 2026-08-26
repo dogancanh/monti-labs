@@ -1,0 +1,144 @@
+---
+/* Giriş bölümü.
+
+   Ekranın büyük kısmı boş. Başlık ve alt metin alt hizada duruyor,
+   sayfanın en altında üç ürün adı ince bir satır halinde.
+
+   Buton yok, kaydırma oku yok. Üç ürün adı hem yönlendirme hem de
+   ilk kanıt: ziyaretçi daha ilk ekranda ne yapıldığını görüyor.
+
+   Başlık satır kırımı içerik dosyasında tanımlı. Otomatik sarmaya
+   bırakılmıyor, çünkü nerede kırıldığı tasarımın parçası ve Türkçe
+   ile İngilizce farklı yerlerde kırılıyor.
+
+   Başlığın satır satır belirmesi CSS animasyonu, JavaScript'e bağlı
+   değil. İlk ekranın açılışı hiçbir betiği beklemiyor. */
+
+import { sayfaYolu, type Dil } from '../lib/diller'
+import type { Icerik } from '../icerik'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  dil: Dil
+  icerik: Icerik
+  isler: CollectionEntry<'isler'>[]
+}
+
+const { dil, icerik, isler } = Astro.props
+const { giris } = icerik
+---
+
+<section class="giris" data-tema="kobalt" aria-labelledby="giris-baslik">
+  <div class="kabuk ic">
+    <h1 class="goruntu" id="giris-baslik">
+      {
+        giris.baslikSatirlari.map((satir, sira) => (
+          <span class="satir">
+            <span style={`animation-delay:${sira * 80}ms`}>{satir}</span>
+          </span>
+        ))
+      }
+    </h1>
+
+    <p class="metin-buyuk alt">{giris.altMetin}</p>
+
+    <div class="urunler">
+      <span class="etiket ikincil">{giris.urunlerEtiketi}</span>
+      <ul class="adlar">
+        {
+          isler.map((is) => (
+            <li>
+              <a class="bag ad" href={sayfaYolu(`/#${is.id.replace(/^\d+-/, '')}`, dil)}>
+                {is.data.ad}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .giris {
+    display: flex;
+    align-items: flex-end;
+    min-height: 100svh;
+    color: var(--metin);
+
+    /* Sabit başlığın altında kalmaması için üstte pay var. */
+    padding-block: calc(var(--b8) + var(--b6)) var(--b7);
+  }
+
+  .ic {
+    width: 100%;
+  }
+
+  .satir > span {
+    /* Türkçe'de ğ ve ş harflerinin alt kuyruğu satır kutusunun dışına
+       taşıyor ve maskeleme onları kesiyor. Alta bir pay bırakıp aynı
+       kadar yukarı çekiyoruz. */
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+  }
+
+  .alt {
+    margin-top: var(--b5);
+    color: var(--metin);
+    animation: giris-belir var(--temel) var(--egri) 240ms both;
+  }
+
+  .urunler {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--b3) var(--b5);
+    margin-top: var(--b7);
+    padding-top: var(--b4);
+    border-top: 1px solid var(--cizgi);
+    animation: giris-belir var(--temel) var(--egri) 360ms both;
+  }
+
+  .adlar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--b3) var(--b5);
+    margin: 0;
+  }
+
+  .ad {
+    font-variation-settings: 'wdth' 108;
+    font-weight: 500;
+    font-size: clamp(1.125rem, 2.4vw, 1.5rem);
+    letter-spacing: -0.01em;
+    color: var(--metin);
+  }
+
+  @keyframes giris-belir {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .alt,
+    .urunler {
+      animation: none;
+    }
+  }
+
+  @media (min-width: 62rem) {
+    .urunler {
+      gap: var(--b3) var(--b6);
+    }
+
+    .adlar {
+      gap: var(--b3) var(--b6);
+    }
+  }
+</style>

@@ -1,0 +1,26 @@
+---
+/* İşler.
+
+   Üç ürün, üç bölüm, üç zemin rengi. Başlık taşımıyor: bölümün ne
+   olduğunu ürünlerin kendisi söylüyor. Ayrı bir "seçili çalışmalar"
+   başlığı koymak sayfaya bir katman daha ekler ve hiçbir şey anlatmaz.
+
+   Sıralama içerik dosyalarındaki sira alanından geliyor. */
+
+import UrunBolumu from './UrunBolumu.astro'
+import { type Dil } from '../lib/diller'
+import type { Icerik } from '../icerik'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  dil: Dil
+  icerik: Icerik
+  isler: CollectionEntry<'isler'>[]
+}
+
+const { dil, icerik, isler } = Astro.props
+---
+
+<div id="isler">
+  {isler.map((is, sira) => <UrunBolumu is={is} dil={dil} icerik={icerik} sira={sira} />)}
+</div>

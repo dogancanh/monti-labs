@@ -1,8 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Monti Labs">
   <title>Monti Labs</title>
-  <rect width="512" height="512" fill="#263BAA"/>
-  <!-- İşaret 891x546. 0.53 ölçekle 472x289 olur, kare içinde ortalanır. -->
-  <g fill="#FFF4D6" transform="translate(20, 111.5) scale(0.53)">
+  <rect width="512" height="512" fill="#1F2FA0"/>
+  <!-- İşaret 891x546. 0.53 ölçekle 472x289 olur, kare içinde ortalanır.
+       Geometri src/components/Isaret.astro ile birebir aynı. -->
+  <g fill="#FBF6EA" transform="translate(20, 111.5) scale(0.53)">
     <path d="M0 0 L451 428 L451 546 L348 546 L170 377 L170 546 L0 546 Z"/>
     <path d="M460 140 L891 546 L642 546 L460 373 Z"/>
   </g>

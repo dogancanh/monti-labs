@@ -1,0 +1,73 @@
+---
+/* Dil değiştirici.
+
+   İki dil de her zaman görünüyor, açılır liste yok. Etkin olan tam
+   opaklıkta, diğeri ikincil metin renginde. Tıklayınca aynı sayfanın
+   diğer dildeki karşılığına gidiyor, ana sayfaya atmıyor.
+
+   Yasal sayfalar yalnızca Türkçe yayınlandığı için orada değiştirici
+   gösterilmiyor; bileşen yalnızca iki dilde de karşılığı olan
+   sayfalarda kullanılıyor. */
+
+import { diller, dilAdlari, dilKodlari, sayfaYolu, type Dil } from '../lib/diller'
+import type { Icerik } from '../icerik'
+
+interface Props {
+  dil: Dil
+  icerik: Icerik
+  /** Dil önekinden arınmış sayfa yolu. Ana sayfa için '/'. */
+  sayfa?: string
+}
+
+const { dil, icerik, sayfa = '/' } = Astro.props
+---
+
+<nav class="dil" aria-label={icerik.gezinti.dilDegistir}>
+  {
+    diller.map((kod) => {
+      const etkin = kod === dil
+      return (
+        <a
+          href={sayfaYolu(sayfa, kod)}
+          hreflang={dilKodlari[kod]}
+          lang={dilKodlari[kod]}
+          class:list={['kod', { etkin }]}
+          aria-current={etkin ? 'true' : undefined}
+        >
+          {dilAdlari[kod]}
+        </a>
+      )
+    })
+  }
+</nav>
+
+<style>
+  .dil {
+    display: flex;
+    align-items: center;
+    gap: var(--b2);
+  }
+
+  .kod {
+    font-weight: 500;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-decoration: none;
+    color: var(--ikincil);
+    transition: color var(--hizli) var(--egri);
+  }
+
+  .kod + .kod::before {
+    content: '/';
+    margin-inline-end: var(--b2);
+    color: var(--ikincil);
+  }
+
+  .kod:hover {
+    color: var(--metin);
+  }
+
+  .etkin {
+    color: var(--metin);
+  }
+</style>

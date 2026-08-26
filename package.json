@@ -8,13 +8,14 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "gorseller": "node scripts/gorsel-uret.mjs"
+    "gorseller": "node scripts/gorsel-uret.mjs",
+    "kontrast": "node scripts/kontrast-dogrula.mjs",
+    "boyut": "node scripts/boyut-dogrula.mjs",
+    "dogrula": "npm run check && npm run kontrast && npm run boyut"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.0",
-    "@fontsource-variable/outfit": "^5.1.0",
-    "@fontsource/ibm-plex-mono": "^5.1.0",
-    "@fontsource/ibm-plex-sans": "^5.1.0",
+    "@fontsource-variable/archivo": "^5.3.0",
     "astro": "^5.0.0"
   },
   "devDependencies": {

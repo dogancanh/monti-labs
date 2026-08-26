@@ -1,0 +1,241 @@
+---
+/* Tek ürün bölümü.
+
+   Her ürün kendi zemin rengini alıyor ve sayfanın tam genişliğini
+   kaplıyor. Kart yok, çerçeve yok, gölge yok. Ürünü ayıran şey zemin
+   rengi ve ölçek.
+
+   Sahiplik ayrımı ayrı bölümle değil tek etiketle yapılıyor. İki kendi
+   ürün ve bir müşteri işi olması hikayeyi zaten anlatıyor.
+
+   Kompozisyon ürünün karakterine göre değişiyor:
+     Telefon ekranları  ana görsel büyük, yanındakiler kayık ve küçük
+     Geniş arayüz       ana görsel tam genişlikte, telefon önünde
+   Bu kararı sunum biçimi değil, görsellerin oranı veriyor. */
+
+import Resim from './Resim.astro'
+import { type Dil } from '../lib/diller'
+import type { Icerik } from '../icerik'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  is: CollectionEntry<'isler'>
+  dil: Dil
+  icerik: Icerik
+  /** Sayfadaki sırası. İlk ürünün ana görseli erken yükleniyor. */
+  sira: number
+}
+
+const { is, dil, icerik, sira } = Astro.props
+const { data } = is
+
+const kimlik = is.id.replace(/^\d+-/, '')
+const sahiplikEtiketi = icerik.isler.sahiplik[data.sahiplik]
+
+const ana = data.gorseller.find((g) => g.rol === 'ana')
+const yanlar = data.gorseller.filter((g) => g.rol === 'yan')
+const ikon = data.gorseller.find((g) => g.rol === 'ikon')
+
+/* Ana görsel yatay ise geniş arayüz kompozisyonu, dikey ise telefon
+   kompozisyonu kullanılıyor. */
+const genisArayuz = ana ? ana.en > ana.boy : false
+---
+
+<section
+  class:list={['urun', genisArayuz ? 'genis' : 'telefon']}
+  data-tema={data.tema}
+  id={kimlik}
+  aria-labelledby={`${kimlik}-ad`}
+>
+  <div class="kabuk duzen">
+    <div class="yazi">
+      <p class="etiket sahiplik">{sahiplikEtiketi}</p>
+
+      <h2 class="urun-adi" id={`${kimlik}-ad`}>
+        {ikon && <Resim {...ikon} alt={ikon.alt[dil]} class="ikon" />}
+        <span>{data.ad}</span>
+      </h2>
+
+      <p class="metin tanim">{data.tanim[dil]}</p>
+
+      <p class="etiket ikincil kunye">{data.kunye[dil]}</p>
+
+      {
+        data.adres && (
+          <p class="cagri">
+            <a class="bag" href={data.adres} rel="noopener noreferrer" target="_blank">
+              {icerik.isler.adresCagri}
+            </a>
+          </p>
+        )
+      }
+    </div>
+
+    <div class="gorseller">
+      {
+        ana && (
+          <div class="acilim ana-kutu">
+            <Resim {...ana} alt={ana.alt[dil]} gecYukle={sira > 0} />
+          </div>
+        )
+      }
+      {
+        yanlar.length > 0 && (
+          <div class="yan-sira">
+            {yanlar.map((g) => (
+              <div class="acilim yan-kutu">
+                <Resim {...g} alt={g.alt[dil]} />
+              </div>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .urun {
+    position: relative;
+    color: var(--metin);
+    padding-block: var(--b7);
+  }
+
+  @media (min-width: 62rem) {
+    .urun {
+      padding-block: var(--b8);
+    }
+  }
+
+  .duzen {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--b6);
+    align-items: center;
+  }
+
+  @media (min-width: 62rem) {
+    .duzen {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: var(--b7);
+    }
+
+    /* Geniş arayüzler yatay olduğu için metne daha az yer bırakıyor. */
+    .genis .duzen {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    }
+  }
+
+  .sahiplik {
+    color: var(--vurgu);
+    margin-bottom: var(--b4);
+  }
+
+  .urun-adi {
+    display: flex;
+    align-items: center;
+    gap: var(--b3);
+  }
+
+  .urun-adi :global(.ikon) {
+    width: clamp(2.25rem, 5vw, 3.5rem);
+    flex: none;
+  }
+
+  .tanim {
+    margin-top: var(--b4);
+    color: var(--metin);
+  }
+
+  .kunye {
+    margin-top: var(--b5);
+  }
+
+  .cagri {
+    margin-top: var(--b4);
+  }
+
+  /* ---------- Görsel kompozisyonu ---------- */
+
+  .gorseller {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--b4);
+  }
+
+  /* Telefon ekranları: ana görsel büyük, yanındakiler küçük ve aşağı
+     kayık. Sıkı bir grid yerine hafif kaydırılmış bir düzen, ürünün
+     ekran görüntüsü olduğunu belli ediyor. */
+  .telefon .ana-kutu {
+    flex: 0 0 52%;
+  }
+
+  .telefon .yan-sira {
+    flex: 1 1 auto;
+    display: flex;
+    gap: var(--b4);
+    padding-bottom: var(--b6);
+  }
+
+  .telefon .yan-kutu {
+    flex: 1 1 0;
+  }
+
+  /* Geniş arayüz: ana görsel tüm satırı alıyor, telefon görünümü
+     altına ve sağa kayıyor. */
+  .genis .gorseller {
+    display: block;
+    position: relative;
+  }
+
+  .genis .yan-sira {
+    display: flex;
+    gap: var(--b4);
+    justify-content: flex-end;
+    margin-top: calc(var(--b6) * -1);
+    padding-inline-end: var(--b5);
+  }
+
+  .genis .yan-kutu {
+    flex: 0 0 clamp(6rem, 16%, 10rem);
+  }
+
+  /* Mobilde görsel metnin üstünde ve tek sıra. Kaydırma boyunu uzatmamak
+     için yan görseller gizleniyor; ana görsel ürünü zaten anlatıyor. */
+  @media (max-width: 62rem) {
+    .duzen {
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    .gorseller {
+      width: 100%;
+    }
+
+    .telefon .ana-kutu {
+      flex: 0 0 62%;
+    }
+
+    .telefon .yan-sira {
+      padding-bottom: var(--b5);
+    }
+
+    .telefon .yan-kutu:nth-child(n + 2) {
+      display: none;
+    }
+
+    .genis .yan-sira {
+      margin-top: calc(var(--b5) * -1);
+      padding-inline-end: var(--b3);
+    }
+  }
+
+  /* Açılım gecikmeleri: ana görsel önce, yanlar arkasından. */
+  .yan-sira .acilim {
+    transition-delay: 120ms;
+  }
+
+  .yan-sira .acilim:nth-child(2) {
+    transition-delay: 200ms;
+  }
+</style>

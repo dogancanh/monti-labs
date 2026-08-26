@@ -29,8 +29,10 @@ const cikti = join(kok, 'public')
 const MARKA_KLASORU = '/Users/dogancanh/Downloads/monti-labs-brand/assets/logo'
 const YATAY_LOGO = join(MARKA_KLASORU, 'monti-logo-yatay-kobalt.png')
 
-const KOBALT = { r: 0x26, g: 0x3b, b: 0xaa }
-const KREM = { r: 0xff, g: 0xf4, b: 0xd6 }
+/* Yeniden tasarımın paleti. src/styles/temel.css ile aynı olmalı.
+   Eski marka paketindeki #263BAA ve #FBF6EA değerleri bırakıldı. */
+const KOBALT = { r: 0x1f, g: 0x2f, b: 0xa0 }
+const KREM = { r: 0xfb, g: 0xf6, b: 0xea }
 
 /**
  * Kobalt logoyu şeffaf zeminli, istenen renkte bir PNG'ye çevirir.
@@ -80,10 +82,14 @@ async function uret() {
   const kilitKrem = await logoyuBoya(360, KREM)
   await sharp(kilitKrem.veri).toFile(join(cikti, 'logo-yatay-krem.png'))
 
-  /* ---- Paylaşım görseli: kobalt zemin, ortalanmış krem kilit ---- */
+  /* ---- Paylaşım görseli ----
+     Kilit ortalanmış değil, sitedeki gibi sola ve alta hizalı.
+     Ortalanmış logo her şirkette aynı görünüyor; sola hizalı kilit
+     sitenin kendi kompozisyonunu paylaşım kartında da sürdürüyor. */
   const OG_G = 1200
   const OG_Y = 630
-  const ogLogo = await logoyuBoya(680, KREM)
+  const OG_KENAR = 88
+  const ogLogo = await logoyuBoya(560, KREM)
 
   await sharp({
     create: {
@@ -96,15 +102,15 @@ async function uret() {
     .composite([
       {
         input: ogLogo.veri,
-        left: Math.round((OG_G - ogLogo.genislik) / 2),
-        top: Math.round((OG_Y - ogLogo.yukseklik) / 2),
+        left: OG_KENAR,
+        top: OG_Y - OG_KENAR - ogLogo.yukseklik,
       },
     ])
     .png({ compressionLevel: 9 })
     .toFile(join(cikti, 'og.png'))
 
   /* ---- Uygulama ikonları: kare, kobalt zemin, krem işaret ---- */
-  const isaretSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 891 546" width="891" height="546"><g fill="#FFF4D6"><path d="M0 0 L451 428 L451 546 L348 546 L170 377 L170 546 L0 546 Z"/><path d="M460 140 L891 546 L642 546 L460 373 Z"/></g></svg>`
+  const isaretSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 891 546" width="891" height="546"><g fill="#FBF6EA"><path d="M0 0 L451 428 L451 546 L348 546 L170 377 L170 546 L0 546 Z"/><path d="M460 140 L891 546 L642 546 L460 373 Z"/></g></svg>`
 
   for (const [dosya, boy, dolgu] of [
     ['icon-192.png', 192, 0.2],

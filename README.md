@@ -1,14 +1,12 @@
-# Monti Labs kurumsal sitesi
+# Monti Labs sitesi
 
-Astro 5 ile kurulmuş, tek sayfalık kurumsal site. Türkçe.
+İşletmeler için dijital ürünler tasarlayan ve geliştiren bir teknoloji
+şirketinin kurumsal sitesi. Türkçe ve İngilizce.
 
-Marka kimliği ve metinler `monti-labs-brand` paketinden gelir. Renkler, logo
-kuralları, marka sesi ve sayfa yapısı o paketin şartlarına göre uygulanmıştır.
+Astro 5, statik çıktı, sunucu yok. GitHub Pages üzerinde
+`dogancanh.github.io/monti-labs` adresinde yayınlanıyor.
 
----
-
-**Yayın:** GitHub Pages, `main` dalına her gönderimde otomatik.
-Adres: `https://dogancanh.github.io/monti-labs/`
+Tasarım yönü: `docs/superpowers/specs/2026-08-26-monti-labs-yeniden-tasarim-design.md`
 
 ---
 
@@ -16,208 +14,180 @@ Adres: `https://dogancanh.github.io/monti-labs/`
 
 ```bash
 npm install
-npm run dev          # http://localhost:4321/monti-labs
+npm run dev        # geliştirme sunucusu
+npm run dogrula    # tip kontrolü, kontrast ve görsel boyutu
+npm run build      # dist/ üretir
+npm run preview    # üretilen çıktıyı sunar
 ```
 
-Derleme ve önizleme:
-
-```bash
-npm run build
-npm run preview
-```
-
-Site bir alt yolda yayınlandığı için yerel adres de `/monti-labs` ile
-başlar. Koddaki bütün mutlak yollar `src/lib/yol.ts` içindeki yardımcıdan
-geçer; elle yazılan `"/dosya.png"` yolları taban yolunu atlar ve yayında
-kırılır.
-
-Marka görsellerini yeniden üretmek için (logo, paylaşım görseli, ikonlar):
-
-```bash
-node scripts/gorsel-uret.mjs
-```
-
-Bu betik `monti-labs-brand/assets/logo/` klasörünü kaynak alır. Marka paketi
-başka bir yerdeyse betiğin içindeki `MARKA_KLASORU` sabiti güncellenir.
+`npm run dogrula` üç kapıyı birden çalıştırır. Üçü de temiz geçmeden
+yayına almayın.
 
 ---
 
-## Yayına almadan önce
+## Tasarımın çalışma mantığı
 
-Aşağıdaki üç iş tamamlanmadan site canlıya alınmamalıdır.
+### Zemin katmanı
 
-### 1. Şirket bilgileri
+Sayfanın arkasında tek bir sabit renk katmanı var
+(`src/components/ZeminKatmani.astro`). Bölümler saydam; görünen zemin
+o katman.
 
-`src/data/site.ts` içinde `DEGISTIR` ile işaretli alanlar var. Hepsi
-doldurulmalı. Eksik kalan alanlar sayfada gösterilmez, yani site kırılmaz,
-ama iletişim bilgisi olmayan bir site iş yapmaz.
+Her bölüm bir `data-tema` özniteliği taşıyor ve o temanın renklerini
+kendi üstünde tanımlıyor (`--zemin`, `--metin`, `--ikincil`, `--vurgu`,
+`--cizgi`). Kaydırırken bir IntersectionObserver etkin bölümü buluyor
+ve renklerini `:root` üstüne yazıyor. Katman geçişi yapıyor, sayfa oda
+değiştirmiş gibi oluyor.
 
-Kontrol için:
+Tetikleme, gelen bölümün üst kenarı görüş alanının en üst yüzde
+yirmisine girdiğinde. Böylece bölümün metni ekranın ortasına gelmeden
+zemin yerine oturuyor ve ara karelerde metin yanlış zeminde kalmıyor.
 
-```bash
-grep -n "DEGISTIR" src/data/site.ts
-```
+JavaScript kapalıyken her bölüm kendi zeminini kendisi basıyor ve sabit
+başlık statik hale geliyor. Site tam olarak çalışmaya devam ediyor,
+yalnızca geçiş animasyonu olmuyor.
 
-### 2. Yasal metinler
+### Tipografi
 
-`src/data/legal/` altındaki üç dosya **taslaktır**. Her birinin başında bu
-uyarı yazılı, ve sayfalar taslak olduğu sürece ekranda uyarı kutusu gösterir.
+Tek aile: Archivo değişken. Genişlik ekseni yalnızca başlıklarda
+açılıyor (`font-stretch: 106%` ile `118%` arası), metin normal
+genişlikte kalıyor. Tek aileyle iki ayrı ses üretmenin yolu bu.
+Mono font yok.
 
-İki iş gerekiyor:
+Font `scripts/font-altkume.sh` ile iki parçaya bölünmüş:
 
-- Köşeli parantezli alanların doldurulması (`[RESMİ UNVAN]`, `[ADRES]` gibi)
-- Hukuki inceleme
+| dosya | içerik | boyut |
+| --- | --- | --- |
+| `archivo-tr-en.woff2` | latin harfler, rakamlar, noktalama, Ç Ö Ü ç ö ü ı | 51 KB |
+| `archivo-tr-ek.woff2` | yalnızca Ğ ğ İ Ş ş | 6.6 KB |
 
-İnceleme tamamlandığında her dosyada `hukukiIncelemeGerekli: false` yapılır,
-uyarı kutusu kendiliğinden kalkar.
+`unicode-range` sayesinde İngilizce sayfa ek dosyayı hiç indirmiyor.
+Fontsource'un hazır altkümeleri aynı iş için 172 KB istiyordu.
 
-Kontrol için:
+Font yüzü `src/layouts/Temel.astro` içinde satır içi üretiliyor, ayrı
+bir CSS dosyasında değil. Nedeni taban yolu: düz CSS içinde
+`/monti-labs` önekini okumanın yolu yok.
 
-```bash
-grep -roh "\[[A-ZÇĞİÖŞÜ][A-ZÇĞİÖŞÜ /-]*\]" src/data/legal/*.ts | sort | uniq -c
-```
+### Renk ve erişilebilirlik
 
-### 3. Vaka çalışmaları
+Palet `src/styles/temel.css` içindeki tema bloklarında.
+`npm run kontrast` bütün metin ve zemin çiftlerini WCAG 2.1 formülüyle
+hesaplıyor ve AA altında kalan varsa derlemeyi durduruyor.
 
-`src/content/calismalar/` altında dört vaka var, hepsi `onayBekliyor: true`.
-Metinler projelerin bilinen kapsamından yazıldı; müşteri adı, marka adı ve
-canlı bağlantı hiçbirinde yok.
+Guardi ve EcceHome'un özgün marka renkleri açık zeminde metin olarak
+AA geçmiyor. Bu yüzden ikiye ayrıldılar: metin ve bağlantılar koyu
+varyantı kullanıyor, özgün renk yalnızca görsel içinde yaşıyor.
 
-Ayrıntılar ve doğrulanacak tek rakam için:
-`src/content/calismalar/OKUBENI.md`
-
-Onaylanan vakalarda `onayBekliyor: false` yapılır.
-
----
-
-## Yapı
-
-```
-src/
-├── content.config.ts        vaka çalışması şeması
-├── content/calismalar/      vaka içerikleri (markdown)
-├── data/
-│   ├── site.ts              şirket bilgisi, gezinti, meta
-│   ├── icerik.ts            tüm sayfa metinleri
-│   └── legal/               yasal metin taslakları
-├── styles/
-│   ├── tokens.css           marka token'ları
-│   └── global.css           temel stil katmanı
-├── components/
-│   ├── Isaret.astro         logo işareti (SVG)
-│   ├── SurecSeridi.astro    hero'daki süreç karşılaştırması
-│   ├── BolumBasi.astro      bölüm başlığı ve kama
-│   ├── KalemListesi.astro   ad + metin listesi
-│   ├── Yaklasim.astro       dört adımlı akış
-│   ├── Calismalar.astro     vaka kartları
-│   └── IletisimFormu.astro  form ve istemci mantığı
-├── layouts/
-│   ├── Temel.astro          head, başlık, alt bilgi
-│   └── Yasal.astro          yasal sayfa düzeni
-└── pages/
-    ├── index.astro
-    ├── kvkk.astro, gizlilik.astro, cerezler.astro
-    ├── 404.astro
-    ├── robots.txt.ts
-    └── api/iletisim.ts      form uç noktası (sunucuda çalışır)
-```
-
-Metinler koddan ayrıdır. İleride İngilizce sürüm eklenirse `src/data/` altına
-`icerik.en.ts` konur ve seçim yapılır; bileşenlerin değişmesi gerekmez.
+Palet değişirse `scripts/kontrast-dogrula.mjs` içindeki liste de
+değişmeli, yoksa doğrulama yanlış değerleri kontrol eder.
 
 ---
 
-## Yeni vaka eklemek
+## İki dil
 
-`src/content/calismalar/` altına bir `.md` dosyası koymak yeterli. Şema
-`src/content.config.ts` içinde tanımlı, alanlar `OKUBENI.md` içinde anlatılmış.
+Astro yerleşik i18n. Türkçe varsayılan ve önek almıyor, İngilizce
+`/en` altında.
 
-Ölçülmüş bir sonuç yoksa `sonuc` alanı hiç yazılmaz. Kart o satırı basmaz.
-Marka sesi doğrulanamayan sayı yazılmasını yasaklıyor.
+```
+/monti-labs/       Türkçe
+/monti-labs/en/    İngilizce
+```
 
----
+Metinler `src/icerik/tr.ts` ve `src/icerik/en.ts` içinde, ikisi de
+`src/icerik/tip.ts` içindeki `Icerik` tipini karşılamak zorunda. Bir
+dilde eksik kalan alan derlemede hata verir, yarım çevrilmiş bir sayfa
+yayına çıkamaz.
 
-## Form
+Sayfa bağlantıları `sayfaYolu()` üstünden, varlık yolları `yol()`
+üstünden üretilir. İkisini karıştırmayın: varlığa dil öneki takılırsa
+yayında 404 verir.
 
-GitHub Pages yalnızca statik dosya sunar, sunucu tarafı uç nokta çalışmaz.
-Bu yüzden form üçüncü taraf bir servise gönderilir.
+Tam adres üretirken iki yardımcı var:
 
-**Bağlamak için:** [web3forms.com](https://web3forms.com) adresine e-posta
-adresinizi yazın, gelen ücretsiz erişim anahtarını `src/data/site.ts`
-içindeki `FORM_SERVISI.anahtar` alanına yapıştırın. Hesap açmak gerekmiyor.
+| yardımcı | girdi | kullanım |
+| --- | --- | --- |
+| `tamAdres()` | taban yolu eklenmemiş | OG görseli gibi varlıklar |
+| `mutlak()` | taban yolu zaten eklenmiş | `sayfaYolu()` çıktısı |
 
-Anahtar boşken form devre dışı kalır ve üstünde bunu söyleyen bir not
-gösterilir. Not yalnızca alan boşken görünür.
+`sayfaYolu()` çıktısını `tamAdres()` içine verirseniz taban ikinci kez
+eklenir ve adres `/monti-labs/monti-labs/` olur.
 
-Doğrulama istemcide yapılır. Statik barındırmada bu bir güvenlik sınırı
-değildir; istenmeyen gönderimi asıl eleyen servisin kendi filtresi ve
-formdaki bal küpü alanıdır.
-
-### Sunucuya taşımak isterseniz
-
-Sunucu tarafı uç nokta silinmedi, `sunucu/iletisim-uc-noktasi.ts`
-dosyasında duruyor. Railway, Vercel veya herhangi bir Node ortamına
-geçerseniz:
-
-1. `@astrojs/node` (veya ilgili adaptör) kurulur
-2. Dosya `src/pages/api/iletisim.ts` konumuna geri taşınır
-3. `astro.config.mjs` içine adaptör eklenir
-4. Formun `data-adres` hedefi `/api/iletisim` yapılır
-5. `.env.example` içindeki değişkenler tanımlanır
-
-Uç nokta sunucu tarafı doğrulama, bal küpü ve iki kademeli hız sınırı
-içerir: beş gönderim ve altmış ham istek, on beş dakikalık pencerede.
-Doğrulama hataları gönderim sayılmaz, yani formu yanlış dolduran kullanıcı
-kilitlenmez.
+Yasal metinler yalnızca Türkçe yayınlanıyor. İngilizce sayfa da aynı
+adreslere bağlanıyor, alt bilgide dil notu gösteriliyor.
 
 ---
 
-## Tasarım kararları
+## İçerik
 
-**Fontlar.** Başlıklarda Outfit, gövdede IBM Plex Sans, etiket ve veride
-IBM Plex Mono. Outfit logodaki kelime markasıyla akraba geometrik bir grotesk.
-Üçünün de `latin` ve `latin-ext` altkümeleri yüklenir: `ı` latin içinde,
-`İ ğ Ğ ş Ş` latin-ext içindedir. İkisi birden yüklenmezse Türkçe metin bozulur.
+### Sayfa metinleri
 
-**Kelime markası.** Hiçbir yerde yeniden dizilmez. Başlıkta ve paylaşım
-görselinde marka paketindeki resmî yatay kilit kullanılır, yalnızca rengi
-değiştirilir. Kaynak PNG vektöre çevrildiğinde `logo-yatay.png` yerine SVG
-konabilir.
+`src/icerik/tr.ts` ve `src/icerik/en.ts`.
 
-**Renk dağılımı.** Sayfa kağıt renginde yaşar. Çalışmalar ve Ürünler krem
-zeminde, kapanış bölümü kobalt. Kobalt zemin sayfada yalnızca bir kez kullanılır,
-marka kuralı bunu şart koşuyor.
+Metin kuralları: kısa cümle, fiil önde, sıfat az, övgü yok. Uzun tire,
+ok işareti ve ticari ve işareti kullanılmıyor. İngilizce metin
+Türkçe'den çevrilmiyor, ayrı yazılıyor.
 
-**Diyagonal.** Logodaki 43.5 derecelik açı iki yerde yapısal öğe olarak
-kullanılır: bölüm başlıklarındaki kama ve süreç şeridi. Başka yerde yoktur.
+Yasaklı kalıplar: inovatif çözümler, dijital dönüşüm partneriniz, uçtan
+uca çözümler, yeni nesil teknoloji, çözüm ortağınız, işinizi geleceğe
+taşıyoruz, tutkulu ekip, müşteri odaklı.
 
-**İmza öğe.** Hero'daki süreç şeridi. Aynı işin elle ve sistemle yapılan iki
-hali, gerçek dakikalarla orantılı çizilir. Sayılar temsilîdir ve ekranda öyle
-etiketlenmiştir.
+### İşler
+
+`src/content/calismalar/` altında, her ürün bir markdown dosyası.
+Yeni ürün ekleme adımları o klasördeki `OKUBENI.md` içinde.
+
+### Şirket bilgileri
+
+`src/data/site.ts`. `DEGISTIR` ile başlayan alanlar arayüzde hiç
+görünmez. Yayına çıkmadan önce doldurulmalı.
 
 ---
 
 ## Yayın
 
-`main` dalına gönderim yapıldığında `.github/workflows/yayinla.yml`
-çalışır: bağımlılıkları kurar, tip denetimi yapar, derler ve GitHub
-Pages'e yükler. Ayrı bir gizli anahtar gerekmez.
-
-Adres ve taban yolu `actions/configure-pages` çıktısından gelir, bu yüzden
-depo adı değişirse yollar kendiliğinden güncellenir.
+`main` dalına her gönderimde `.github/workflows/` altındaki iş akışı
+siteyi derleyip GitHub Pages'e atıyor.
 
 ### Arama motorları
 
-Site şu anda **arama motorlarına kapalı**. İçerik taslak durumda olduğu
-için her sayfada `noindex, nofollow` etiketi var ve `robots.txt` tüm
-botlara kapalı üretiliyor. Adres çalışır, link paylaşabilirsiniz.
+`src/data/site.ts` içindeki `ARAMA_MOTORLARINA_ACIK` şu an `false`.
+Bu haldeyken her sayfaya `noindex, nofollow` basılıyor ve `robots.txt`
+tüm botlara kapalı üretiliyor. Adres çalışmaya devam ediyor, link
+paylaşılabiliyor, ama Google dizine almıyor.
 
-Açmak için `src/data/site.ts` içindeki `ARAMA_MOTORLARINA_ACIK` değerini
-`true` yapmak yeterli. Hem etiket hem `robots.txt` aynı değere bakıyor.
+İçerik ve şirket künyesi kesinleşince `true` yapın.
 
-### Kendi alan adınıza geçmek
+### Form
 
-1. `public/CNAME` dosyasına alan adını yazın
-2. `astro.config.mjs` içinde `TABAN` değerini `'/'` yapın
-3. DNS kayıtlarını GitHub Pages'e yönlendirin
-4. Depo ayarlarından özel alan adını tanımlayın
+Form Web3Forms'a istemci tarafından gönderiliyor. Erişim anahtarı
+boşken form hiç basılmıyor, yerine e-posta adresi kalıyor.
+
+Discord bildirimi `PUBLIC_DISCORD_WEBHOOK` ortam değişkeninden
+okunuyor. Adres depoda durmuyor, `scripts/yayinla.sh` enjekte ediyor.
+Ayrıntı ve risk notu `src/data/site.ts` içinde.
+
+### Kendi alan adına geçiş
+
+1. `astro.config.mjs` içinde `TABAN` değerini `'/'` yapın.
+2. `SITE_URL` değerini alan adınızla değiştirin.
+3. `public/CNAME` dosyasını ekleyin.
+
+Koddaki bütün yollar yardımcılardan üretildiği için başka değişiklik
+gerekmiyor.
+
+---
+
+## Betikler
+
+| komut | ne yapar |
+| --- | --- |
+| `npm run dogrula` | tip kontrolü, kontrast ve görsel boyutu |
+| `npm run check` | Astro tip kontrolü |
+| `npm run kontrast` | palet WCAG AA doğrulaması |
+| `npm run boyut` | içerikteki görsel boyutları dosyalarla uyuşuyor mu |
+| `npm run gorseller` | logo, OG ve uygulama ikonlarını üretir |
+| `node scripts/is-gorselleri.mjs` | ham yakalamaları AVIF ve WebP'ye çevirir |
+| `./scripts/font-altkume.sh` | Archivo alt kümelerini üretir (fonttools gerekir) |
+
+`_assetler/` ham yakalamaları tutuyor ve yayına girmiyor.
+`public/isler/` yayınlanan sürümleri tutuyor.

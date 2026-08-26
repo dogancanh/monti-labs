@@ -1,0 +1,29 @@
+---
+/* Marka işareti: iki keskin tepe. Hem M harfi hem dağ siluetı okunur.
+
+   Renk currentColor. Bölüm hangi temadaysa işaret o temanın metin
+   rengini alır, böylece her zeminde tek renk ve düz kalır.
+
+   Geometri public/favicon.svg ile birebir aynı. Biri değişirse
+   diğeri de değişmeli. */
+
+interface Props {
+  /** Yüksekliği em cinsinden. Yanındaki yazıyla ölçeklenir. */
+  yukseklik?: string
+  class?: string
+}
+
+const { yukseklik = '1em', class: sinif } = Astro.props
+---
+
+<svg
+  class={sinif}
+  viewBox="0 0 891 546"
+  fill="currentColor"
+  aria-hidden="true"
+  focusable="false"
+  style={`height:${yukseklik};width:auto`}
+>
+  <path d="M0 0 L451 428 L451 546 L348 546 L170 377 L170 546 L0 546 Z"></path>
+  <path d="M460 140 L891 546 L642 546 L460 373 Z"></path>
+</svg>

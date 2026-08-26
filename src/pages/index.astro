@@ -1,160 +1,30 @@
 ---
-import Temel from '../layouts/Temel.astro'
-import Vitrin from '../components/Vitrin.astro'
-import NeYapiyoruz from '../components/NeYapiyoruz.astro'
-import Manifesto from '../components/Manifesto.astro'
-import NasilCalisiyoruz from '../components/NasilCalisiyoruz.astro'
-import BizKimizOnizleme from '../components/BizKimizOnizleme.astro'
-import IletisimFormu from '../components/IletisimFormu.astro'
-import { icerik } from '../data/icerik'
-import { yol } from '../lib/yol'
+/* Türkçe ana sayfa. Varsayılan dil olduğu için adreste önek almıyor. */
 
-const c = icerik
+import { getCollection } from 'astro:content'
+
+import Temel from '../layouts/Temel.astro'
+import Giris from '../components/Giris.astro'
+import Isler from '../components/Isler.astro'
+import Durus from '../components/Durus.astro'
+import Monti from '../components/Monti.astro'
+import Iletisim from '../components/Iletisim.astro'
+
+import { icerikAl } from '../icerik'
+
+const dil = 'tr' as const
+const icerik = icerikAl(dil)
+
+/* Onay bekleyen içerik yayına çıkmıyor. */
+const isler = (await getCollection('isler', ({ data }) => !data.onayBekliyor)).sort(
+  (a, b) => a.data.sira - b.data.sira,
+)
 ---
 
-<Temel>
-  {/* 01 — Giriş. Tipografi ve iki çağrı. Mockup veya şema yok. */}
-  <section class="giris" aria-labelledby="giris-baslik">
-    <div class="kabuk">
-      <h1 class="hero-baslik" id="giris-baslik" data-acil>{c.hero.baslik}</h1>
-
-      <p class="giris-alt" data-acil style="--gecikme:120ms">{c.hero.altMetin}</p>
-
-      <div class="giris-eylemler" data-acil style="--gecikme:200ms">
-        <a class="dugme-birincil" href={yol(c.hero.birincilEylem.hedef)}>
-          {c.hero.birincilEylem.etiket}
-          <span class="ok" aria-hidden="true">→</span>
-        </a>
-        <a class="dugme-ikincil" href={yol(c.hero.ikincilEylem.hedef)}>
-          {c.hero.ikincilEylem.etiket}
-        </a>
-      </div>
-
-      <ul class="giris-alanlar" data-acil style="--gecikme:280ms">
-        {c.hero.alanlar.map((a) => <li class="kunye">{a}</li>)}
-      </ul>
-    </div>
-  </section>
-
-  {/* 02 — Seçili çalışmalar. Sayfanın merkezi. */}
-  <Vitrin />
-
-  {/* 03 — Ne yapıyoruz */}
-  <NeYapiyoruz />
-
-  {/* 04 — Manifesto */}
-  <Manifesto />
-
-  {/* 05 — Nasıl çalışıyoruz */}
-  <NasilCalisiyoruz />
-
-  {/* 06 — Biz kimiz */}
-  <BizKimizOnizleme />
-
-  {/* 07 — İletişim */}
-  <section class="kapanis ml-inverse" id="iletisim" aria-labelledby="kapanis-baslik">
-    <div class="kabuk">
-      <div class="kapanis-bas">
-        <p class="kunye kapanis-kunye" data-acil>{c.iletisim.kunye}</p>
-        <h2 class="ifade" id="kapanis-baslik" data-acil style="--gecikme:60ms">
-          {c.iletisim.baslik}
-        </h2>
-        <p class="kapanis-metin" data-acil style="--gecikme:120ms">{c.iletisim.metin}</p>
-      </div>
-
-      <div class="kapanis-form" data-acil style="--gecikme:180ms">
-        <IletisimFormu />
-      </div>
-    </div>
-  </section>
+<Temel dil={dil} icerik={icerik} sayfa="/">
+  <Giris dil={dil} icerik={icerik} isler={isler} />
+  <Isler dil={dil} icerik={icerik} isler={isler} />
+  <Durus icerik={icerik} />
+  <Monti icerik={icerik} />
+  <Iletisim icerik={icerik} />
 </Temel>
-
-<style>
-  /* ---------- Giriş ---------- */
-  .giris {
-    padding-block: clamp(3.5rem, 2rem + 6vw, 8rem) clamp(3rem, 2rem + 4vw, 6rem);
-  }
-
-  .hero-baslik {
-    max-width: 14ch;
-  }
-
-  .giris-alt {
-    margin-block-start: clamp(2rem, 1rem + 3vw, 3rem);
-    font-size: var(--ml-text-xl);
-    line-height: var(--ml-leading-snug);
-    color: var(--ml-ink-700);
-    max-width: 44ch;
-  }
-
-  .giris-eylemler {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--ml-space-4);
-    margin-block-start: clamp(2.5rem, 1.5rem + 3vw, 4rem);
-  }
-
-  /* Dar ekranda düğmeler alt alta düşüyor. İçeriğe göre farklı
-     genişliklerde durmaları düzensiz okunuyordu; eşitleniyorlar. */
-  @media (max-width: 479px) {
-    .giris-eylemler {
-      display: grid;
-      gap: var(--ml-space-3);
-    }
-  }
-
-  /* Alan şeridi. Girişi bir çizgiyle kapatıyor. */
-  .giris-alanlar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--ml-space-4) var(--ml-space-8);
-    margin-block-start: clamp(3.5rem, 2rem + 5vw, 6.5rem);
-    padding-block-start: var(--ml-space-5, 1.25rem);
-    border-block-start: 1px solid var(--ml-ink-100);
-  }
-
-  .giris-alanlar li {
-    color: var(--ml-ink-500);
-  }
-
-  /* ---------- İletişim ---------- */
-  .kapanis {
-    padding-block: clamp(5rem, 3rem + 9vw, 11rem);
-  }
-
-  .kapanis-kunye {
-    margin-block-end: var(--ml-space-6);
-    color: var(--ml-cobalt-200);
-  }
-
-  .kapanis-bas h2 {
-    max-width: 15ch;
-    color: var(--ml-cream-base);
-  }
-
-  .kapanis-metin {
-    margin-block-start: var(--ml-space-6);
-    font-size: var(--ml-text-lg);
-    line-height: var(--ml-leading-snug);
-    color: rgb(255 244 214 / 0.82);
-    max-width: 36ch;
-  }
-
-  .kapanis-form {
-    margin-block-start: clamp(3.5rem, 2rem + 5vw, 6rem);
-  }
-
-  @media (min-width: 1000px) {
-    .kapanis .kabuk {
-      display: grid;
-      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-      gap: var(--ml-space-16);
-      align-items: start;
-    }
-
-    .kapanis-form {
-      margin-block-start: 0;
-    }
-  }
-</style>

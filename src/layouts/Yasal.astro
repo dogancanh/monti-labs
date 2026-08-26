@@ -1,41 +1,49 @@
 ---
+/* Yasal sayfa kabuğu.
+
+   Metinler değişmedi, yalnızca sunumları yeni tasarıma taşındı.
+   Tek zemin (kağıt), tek sütun, uzun okuma için genişletilmiş satır
+   aralığı. Bu sayfalarda zemin geçişi yok; okurken renk değişmesi
+   dikkat dağıtır ve burada anlatılacak bir hikaye yok.
+
+   Yalnızca Türkçe yayınlanıyor. Dil değiştirici basılmıyor, çünkü
+   gidilecek bir İngilizce karşılığı yok. */
+
 import Temel from './Temel.astro'
+import { icerikAl } from '../icerik'
 import type { YasalMetin } from '../data/legal/tip'
 
 interface Props {
   metin: YasalMetin
+  /** Dil önekinden arınmış sayfa yolu. Kanonik adres için gerekli. */
+  sayfa: string
 }
 
-const { metin } = Astro.props
+const { metin, sayfa } = Astro.props
+const dil = 'tr' as const
+const icerik = icerikAl(dil)
 ---
 
-<Temel baslik={metin.baslik} aciklama={metin.ozet}>
-  <article class="yasal">
-    <div class="kabuk yasal-ic">
-      <header class="yasal-basi">
-        <h1>{metin.baslik}</h1>
-        <p class="yasal-ozet">{metin.ozet}</p>
-        <p class="kunye yasal-tarih">Son güncelleme: {metin.guncellenmeTarihi}</p>
-      </header>
-
-      {
-        metin.hukukiIncelemeGerekli && (
-          <aside class="uyari" role="note">
-            <p class="kunye uyari-baslik">Taslak metin</p>
-            <p>
-              Bu sayfa yayına hazır değildir. Metin hukuki inceleme almadan ve köşeli
-              parantez içindeki alanlar doldurulmadan canlıya alınmamalıdır.
-            </p>
-          </aside>
-        )
-      }
+<Temel
+  dil={dil}
+  icerik={icerik}
+  baslik={`${metin.baslik} · Monti Labs`}
+  aciklama={metin.ozet}
+  sayfa={sayfa}
+  tekDil
+>
+  <article class="bolum yasal" data-tema="kagit">
+    <div class="kabuk ic">
+      <h1 class="bolum-basligi">{metin.baslik}</h1>
+      <p class="metin ozet">{metin.ozet}</p>
+      <p class="etiket ikincil tarih">Son güncelleme: {metin.guncellenmeTarihi}</p>
 
       {
         metin.bolumler.map((bolum) => (
-          <section class="yasal-bolum">
-            <h2>{bolum.baslik}</h2>
+          <section class="parca">
+            <h2 class="alt-baslik">{bolum.baslik}</h2>
             {bolum.paragraflar.map((p) => (
-              <p>{p}</p>
+              <p class="metin">{p}</p>
             ))}
           </section>
         ))
@@ -46,65 +54,40 @@ const { metin } = Astro.props
 
 <style>
   .yasal {
-    padding-block: var(--ml-space-16) var(--ml-section-y);
+    color: var(--metin);
+    padding-block: calc(var(--b8) + var(--b5)) var(--b8);
   }
 
-  .yasal-ic {
-    max-width: 76ch;
+  .ic {
+    max-width: 62rem;
   }
 
-  .yasal-basi {
-    padding-block-end: var(--ml-space-8);
-    border-block-end: 1px solid var(--ml-border-strong);
+  .ozet {
+    margin-top: var(--b4);
+    max-width: 62ch;
   }
 
-  .yasal-basi h1 {
-    font-size: var(--ml-text-bolum);
+  .tarih {
+    margin-top: var(--b4);
+    padding-bottom: var(--b6);
+    border-bottom: 1px solid var(--cizgi);
   }
 
-  .yasal-ozet {
-    margin-block-start: var(--ml-space-4);
-    font-size: var(--ml-text-lg);
-    color: var(--ml-text-body);
+  .parca {
+    margin-top: var(--b6);
+    max-width: 68ch;
   }
 
-  .yasal-tarih {
-    margin-block-start: var(--ml-space-4);
+  .alt-baslik {
+    font-variation-settings: 'wdth' 106;
+    font-weight: 600;
+    font-size: clamp(1.125rem, 2vw, 1.375rem);
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    margin-bottom: var(--b3);
   }
 
-  /* Uyarı, bölüm başlıklarıyla aynı dili kullanır: üstten çekilen çizgi
-     ve mono künye. Krem zemin onu gövde metninden zaten ayırıyor. */
-  .uyari {
-    margin-block-start: var(--ml-space-8);
-    padding: var(--ml-space-4) var(--ml-space-6) var(--ml-space-6);
-    background-color: var(--ml-cream-base);
-    border-block-start: 2px solid var(--ml-warning);
-    font-size: var(--ml-text-sm);
-  }
-
-  .uyari-baslik {
-    color: var(--ml-warning);
-    font-weight: var(--ml-weight-medium);
-    margin-block-end: var(--ml-space-2);
-  }
-
-  .yasal-bolum {
-    margin-block-start: var(--ml-space-12);
-  }
-
-  .yasal-bolum h2 {
-    font-size: var(--ml-text-xl);
-    margin-block-end: var(--ml-space-4);
-  }
-
-  /* Veri dosyalarındaki paragraflar liste satırlarını \n ile ayırıyor. */
-  .yasal-bolum p {
-    white-space: pre-line;
-    margin-block-end: var(--ml-space-4);
-    color: var(--ml-text-body);
-  }
-
-  .yasal-bolum p:last-child {
-    margin-block-end: 0;
+  .parca .metin + .metin {
+    margin-top: var(--b3);
   }
 </style>

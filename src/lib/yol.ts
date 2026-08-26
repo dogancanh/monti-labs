@@ -30,8 +30,27 @@ export function yol(hedef: string): string {
   return taban + (hedef.startsWith('/') ? hedef : '/' + hedef)
 }
 
-/** Tam adres üretir. OG görseli ve kanonik bağlantı için gerekir. */
+/** Sitenin kökü. Ortam değişkeni verilmediyse GitHub Pages adresi. */
+const kok = (site: URL | undefined): string =>
+  (site?.origin ?? 'https://dogancanh.github.io').replace(/\/+$/, '')
+
+/**
+ * Taban yolu HENÜZ EKLENMEMİŞ bir yoldan tam adres üretir.
+ * OG görseli gibi varlıklar için.
+ *
+ *   tamAdres('/og.png') -> 'https://.../monti-labs/og.png'
+ */
 export function tamAdres(hedef: string, site: URL | undefined): string {
-  const kok = (site?.origin ?? 'https://dogancanh.github.io').replace(/\/+$/, '')
-  return kok + yol(hedef)
+  return kok(site) + yol(hedef)
+}
+
+/**
+ * Taban yolu ZATEN EKLENMİŞ bir yoldan tam adres üretir.
+ * sayfaYolu() çıktısı için bunu kullanın; tamAdres() kullanırsanız
+ * taban ikinci kez eklenir ve adres /monti-labs/monti-labs/ olur.
+ *
+ *   mutlak(sayfaYolu('/', 'en')) -> 'https://.../monti-labs/en/'
+ */
+export function mutlak(tabanliYol: string, site: URL | undefined): string {
+  return kok(site) + tabanliYol
 }

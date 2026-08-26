@@ -1,64 +1,68 @@
 import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
 
-/* Seçili çalışmalar.
+/* İşler.
 
-   Ana sayfada portfolyo vitrini olarak gösterilir: önce ürün görünür,
-   sonra tek cümlelik başlık. Uzun anlatı ana sayfada yer almaz;
-   ileride /calismalar/<slug> detay sayfasına taşınır.
+   Her ürün ana sayfada tam genişlikte kendi bölümünü alıyor. Kart yok,
+   çerçeve yok. Ürünü zemin rengi ve ölçek ayırıyor.
 
    Görseller gerçek üründen gelir. Temsilî kutu, akış şeması veya
-   uydurma arayüz kullanılmaz. Görseli olmayan proje vitrine girmez. */
+   uydurma arayüz kullanılmaz. Görseli olmayan ürün vitrine girmez. */
+
+/** İki dilde de yazılması zorunlu metin alanı. */
+const ciftDil = z.object({
+  tr: z.string(),
+  en: z.string(),
+})
 
 const gorsel = z.object({
-  /** public/ altına göre yol. */
+  /** public/ altına göre yol, uzantısız. Resim bileşeni avif ve webp ekler. */
   src: z.string(),
-  /** Ekran okuyucu için ne gösterdiği. Boş geçilemez. */
-  alt: z.string(),
+  /** Ekran okuyucu için ne gösterdiği. İki dilde de zorunlu. */
+  alt: ciftDil,
   en: z.number(),
   boy: z.number(),
   /** Kompozisyonda hangi rolü üstlendiği. */
   rol: z.enum(['ana', 'yan', 'ikon', 'logo']).default('yan'),
 })
 
-const calismalar = defineCollection({
+const isler = defineCollection({
   loader: glob({
     pattern: ['**/*.md', '!**/OKUBENI.md'],
     base: './src/content/calismalar',
   }),
   schema: z.object({
-    /** Ürün adı. Logo yoksa tipografi olarak gösterilir. */
+    /** Ürün adı. Sitenin kendi tipografisiyle diziliyor, logo kullanılmıyor. */
     ad: z.string(),
-    /** Tek kısa cümle. Ürünün ne olduğunu söyler, problem anlatmaz. */
-    baslik: z.string(),
-    /** Örnek: "B2B SaaS · Mobil ürün". Nokta ile ayrılır. */
-    kategori: z.string(),
+
+    /** Ürünün ne olduğunu söyleyen tek paragraf. Problem anlatmaz. */
+    tanim: ciftDil,
+
+    /** Künye satırı. Örnek: "iOS uygulaması, ürün tasarımı ve geliştirme". */
+    kunye: ciftDil,
 
     /**
-     * Sunum biçimi. Her ürün kendi karakterine göre sunulur,
-     * hepsine aynı kart uygulanmaz.
-     *   mobil  koyu zeminde telefon ekranları
-     *   ios    uygulama ikonu ve arayüz birlikte
-     *   web    geniş tarayıcı sunumu
+     * Ürün Monti'nin kendi ürünü mü, müşteri işi mi.
+     * Arayüzde tek etiketle gösteriliyor, ayrı bölüme ayrılmıyor.
      */
-    sunum: z.enum(['mobil', 'ios', 'web']),
+    sahiplik: z.enum(['monti', 'musteri']),
 
-    /** Ürünün kendi vurgu rengi. Kompozisyonda ölçülü kullanılır. */
-    vurguRengi: z.string().optional(),
-    /** Sunum zemini koyu mu. Inkstay gibi koyu ürünler için. */
-    koyuZemin: z.boolean().default(false),
+    /**
+     * Bölümün zemin teması. src/styles/temel.css içinde tanımlı
+     * tema bloklarından biri olmak zorunda.
+     */
+    tema: z.enum(['inkstay', 'guardi', 'eccehome', 'kagit', 'murekkep']),
 
     gorseller: z.array(gorsel).default([]),
 
     /** Varsa canlı adres. Yoksa bağlantı gösterilmez. */
     adres: z.string().optional(),
-    /** İleride detay sayfası açılırsa true yapılır. */
-    detayVar: z.boolean().default(false),
 
     sira: z.number().default(99),
+
     /** Yayına girmeden önce içerik onayı bekliyor mu. */
     onayBekliyor: z.boolean().default(true),
   }),
 })
 
-export const collections = { calismalar }
+export const collections = { isler }

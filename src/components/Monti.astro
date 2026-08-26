@@ -1,0 +1,97 @@
+---
+/* Monti.
+
+   Tek paragraf ve iki kurucu adı. Fotoğraf yok, biyografi yok,
+   unvan enflasyonu yok. İkisi de kurucu ortak; CEO ve CTO unvanı
+   iki kişilik bir şirkette bir şey anlatmaz.
+
+   Ayrı bir /biz-kimiz sayfası yok. O sayfa vardı ve tek yaptığı
+   aynı paragrafı ikinci kez göstermekti. */
+
+import type { Icerik } from '../icerik'
+
+interface Props {
+  icerik: Icerik
+}
+
+const { icerik } = Astro.props
+const { monti } = icerik
+---
+
+<section class="bolum" data-tema="kagit" id="monti" aria-labelledby="monti-kunye">
+  <div class="kabuk duzen">
+    <h2 class="etiket ikincil" id="monti-kunye">{monti.kunye}</h2>
+
+    <div class="govde">
+      <p class="bolum-basligi kayar">{monti.metin}</p>
+
+      <div class="kurucular kayar">
+        <p class="etiket ikincil">{monti.kurucularKunye}</p>
+        <ul class="liste">
+          {
+            monti.kurucular.map((kisi) => (
+              <li>
+                <span class="isim">{kisi.ad}</span>
+                <span class="metin ikincil unvan">{kisi.unvan}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .duzen {
+    display: grid;
+    gap: var(--b6);
+  }
+
+  @media (min-width: 62rem) {
+    .duzen {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 7fr);
+      gap: var(--b7);
+    }
+  }
+
+  .govde > * + * {
+    margin-top: var(--b7);
+  }
+
+  .govde .bolum-basligi {
+    max-width: 26ch;
+  }
+
+  .kurucular {
+    padding-top: var(--b4);
+    border-top: 1px solid var(--cizgi);
+    transition-delay: 120ms;
+  }
+
+  .liste {
+    display: grid;
+    gap: var(--b4);
+    margin-top: var(--b4);
+  }
+
+  @media (min-width: 40rem) {
+    .liste {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--b5);
+    }
+  }
+
+  .isim {
+    display: block;
+    font-variation-settings: 'wdth' 108;
+    font-weight: 500;
+    font-size: clamp(1.125rem, 2vw, 1.375rem);
+    letter-spacing: -0.01em;
+  }
+
+  .unvan {
+    display: block;
+    margin-top: var(--b1);
+  }
+</style>

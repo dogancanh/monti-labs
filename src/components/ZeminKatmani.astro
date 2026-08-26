@@ -1,0 +1,102 @@
+---
+/* Sabit zemin katmanı.
+
+   Sayfanın arkasında duran tek renk alanı. Bölümler saydam olduğu için
+   görünen zemin budur. Kaydırırken etkin bölümün rengini alıyor ve
+   geçişi yapıyor; sayfa oda değiştirmiş gibi oluyor.
+
+   Neden bölüm bazlı değil de tek katman: bölümlerin kendi zeminleri
+   olsaydı sınırda sert bir kesme olurdu ve geçiş hiç görünmezdi.
+
+   Geçiş süresi 640 ms. Tetikleme, gelen bölümün üst kenarı görüş
+   alanının en üst yüzde yirmisine girdiğinde oluyor. Böylece bölümün
+   metni ekranın ortasına gelmeden zemin yerine oturuyor; ara kareler
+   boyunca metin yanlış zeminde kalmıyor.
+
+   JavaScript kapalıyken bu katman ilk rengiyle duruyor ve bölümler
+   kendi zeminlerini kendileri basıyor. Bak: temel.css içindeki
+   html:not(.js) [data-tema] kuralı. */
+---
+
+<div class="zemin" aria-hidden="true"></div>
+
+<style>
+  .zemin {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--aktif-zemin);
+    transition: background-color var(--temel) var(--egri);
+
+    /* Renk geçişi sırasında kaydırma takılmasını önlemek için.
+       Düşük güçlü Android cihazlarda fark ediliyor. */
+    will-change: background-color;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .zemin {
+      transition-duration: 200ms;
+    }
+  }
+</style>
+
+<script>
+  /* Etkin bölümü bulup renklerini :root üstüne yazar.
+
+     Aynı gözlemci, kaydırma sırasında açılan parçaları da (.acilim ve
+     .kayar) görünür yapar. İki iş için iki ayrı gözlemci kurmak yerine
+     tek dosyada toplandı, böylece istemci JavaScript'i küçük kalıyor. */
+
+  const kok = document.documentElement
+
+  /* Bölüm temasının renklerini oku ve sayfaya uygula. */
+  const temaUygula = (bolum: Element) => {
+    const stil = getComputedStyle(bolum)
+    const zemin = stil.getPropertyValue('--zemin').trim()
+    const metin = stil.getPropertyValue('--metin').trim()
+    const ikincil = stil.getPropertyValue('--ikincil').trim()
+    if (zemin) kok.style.setProperty('--aktif-zemin', zemin)
+    if (metin) kok.style.setProperty('--aktif-metin', metin)
+    if (ikincil) kok.style.setProperty('--aktif-ikincil', ikincil)
+  }
+
+  const bolumler = document.querySelectorAll<HTMLElement>('[data-tema]')
+
+  if (bolumler.length > 0) {
+    /* Üst kenar görüş alanının ilk yüzde yirmisine girdiğinde tetiklenir. */
+    const temaGozlemcisi = new IntersectionObserver(
+      (girisler) => {
+        for (const giris of girisler) {
+          if (giris.isIntersecting) temaUygula(giris.target)
+        }
+      },
+      { rootMargin: '0px 0px -80% 0px', threshold: 0 },
+    )
+
+    for (const bolum of bolumler) temaGozlemcisi.observe(bolum)
+
+    /* Sayfa ortadan açıldığında (adres çubuğunda çapa varsa) doğru
+       tema hemen uygulansın. */
+    temaUygula(bolumler[0])
+  }
+
+  /* Kaydırma sırasında açılan parçalar. */
+  const acilanlar = document.querySelectorAll('.acilim, .kayar')
+
+  if (acilanlar.length > 0) {
+    const acilimGozlemcisi = new IntersectionObserver(
+      (girisler) => {
+        for (const giris of girisler) {
+          if (!giris.isIntersecting) continue
+          giris.target.classList.add('gorundu')
+          acilimGozlemcisi.unobserve(giris.target)
+        }
+      },
+      { rootMargin: '0px 0px -12% 0px', threshold: 0.1 },
+    )
+
+    for (const parca of acilanlar) acilimGozlemcisi.observe(parca)
+  }
+</script>

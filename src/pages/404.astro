@@ -1,41 +1,71 @@
 ---
-import Temel from '../layouts/Temel.astro'
-import { icerik } from '../data/icerik'
-import { yol } from '../lib/yol'
+/* 404.
 
-const b = icerik.bulunamadi
+   GitHub Pages tek bir 404 sayfası sunuyor ve hangi dilden gelindiğini
+   bilmiyor. Bu yüzden sayfa iki dili birlikte gösteriyor: Türkçe üstte,
+   İngilizce altında. Ziyaretçiye "yanlış dil" hissi vermeden çıkış
+   veriyor.
+
+   Arama motorlarına kapalı, kanonik adres basılmıyor. */
+
+import Temel from '../layouts/Temel.astro'
+import { icerikAl } from '../icerik'
+import { sayfaYolu } from '../lib/diller'
+
+const tr = icerikAl('tr')
+const en = icerikAl('en')
 ---
 
-<Temel baslik="Sayfa bulunamadı" aciklama={b.metin}>
-  <section class="bulunamadi">
-    <div class="kabuk bulunamadi-ic">
-      <p class="uste">404</p>
-      <h1>{b.baslik}</h1>
-      <p class="bulunamadi-metin">{b.metin}</p>
-      <a class="dugme-birincil" href={yol('/')}>
-        {b.buton}
-        <span class="ok" aria-hidden="true">→</span>
-      </a>
+<Temel dil="tr" icerik={tr} baslik="Sayfa bulunamadı · Monti Labs" aciklama={tr.bulunamadi.metin} sayfa="/404" tekDil>
+  <section class="bolum yok" data-tema="kobalt">
+    <div class="kabuk ic">
+      <p class="etiket ikincil">404</p>
+
+      <h1 class="goruntu baslik">{tr.bulunamadi.baslik}</h1>
+      <p class="metin-buyuk aciklama">{tr.bulunamadi.metin}</p>
+      <p class="cikis">
+        <a class="bag" href={sayfaYolu('/', 'tr')}>{tr.bulunamadi.buton}</a>
+      </p>
+
+      <div class="ikinci" lang="en">
+        <p class="metin ikincil">{en.bulunamadi.metin}</p>
+        <p class="cikis">
+          <a class="bag" href={sayfaYolu('/', 'en')}>{en.bulunamadi.buton}</a>
+        </p>
+      </div>
     </div>
   </section>
 </Temel>
 
 <style>
-  .bulunamadi {
-    padding-block: clamp(4rem, 2rem + 8vw, 9rem);
+  .yok {
+    display: flex;
+    align-items: center;
+    min-height: 100svh;
+    color: var(--metin);
+    padding-block: calc(var(--b8) + var(--b5)) var(--b8);
   }
 
-  .bulunamadi-ic {
-    max-width: 46ch;
+  .ic {
+    width: 100%;
   }
 
-  .bulunamadi h1 {
-    font-size: var(--ml-text-bolum);
+  .baslik {
+    margin-top: var(--b4);
+    max-width: 14ch;
   }
 
-  .bulunamadi-metin {
-    margin-block: var(--ml-space-4) var(--ml-space-8);
-    font-size: var(--ml-text-lg);
-    color: var(--ml-text-body);
+  .aciklama {
+    margin-top: var(--b5);
+  }
+
+  .cikis {
+    margin-top: var(--b4);
+  }
+
+  .ikinci {
+    margin-top: var(--b7);
+    padding-top: var(--b4);
+    border-top: 1px solid var(--cizgi);
   }
 </style>

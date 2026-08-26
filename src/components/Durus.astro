@@ -1,0 +1,85 @@
+---
+/* Duruş.
+
+   Üç ilke, her biri iki cümle. Numaralı adım yok, süreç şeması yok,
+   ikon yok. Süreç şeması her ajansta aynı ve hiçbir şey söylemiyor;
+   bu üç cümle söylüyor.
+
+   Üçüncü ilke ("kurduğumuz sistemi ekibinize devrederiz") markanın
+   ajans olmadığını en net anlatan cümle. Kısaltılmamalı. */
+
+import type { Icerik } from '../icerik'
+
+interface Props {
+  icerik: Icerik
+}
+
+const { icerik } = Astro.props
+const { durus } = icerik
+---
+
+<section class="bolum durus" data-tema="murekkep" id="durus" aria-labelledby="durus-kunye">
+  <div class="kabuk">
+    <h2 class="etiket ikincil kunye" id="durus-kunye">{durus.kunye}</h2>
+
+    <ol class="ilkeler">
+      {
+        durus.ilkeler.map((ilke) => (
+          <li class="kayar ilke">
+            <p class="bolum-basligi">{ilke.baslik}</p>
+            <p class="metin ikincil">{ilke.metin}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .kunye {
+    margin-bottom: var(--b6);
+  }
+
+  .ilkeler {
+    display: grid;
+    gap: var(--b6);
+    margin: 0;
+  }
+
+  /* Ölçü başlığın kendi üstünde. Kapsayıcıya ch cinsinden sınır
+     koymak yanlış sonuç veriyor: ch değeri kapsayıcının gövde
+     boyutundan hesaplanıyor ve 3rem'lik başlığı dört satıra
+     sıkıştırıyor. */
+  .ilke .bolum-basligi {
+    max-width: 17ch;
+  }
+
+  .ilke .metin {
+    margin-top: var(--b3);
+    max-width: 34ch;
+  }
+
+  /* Üç ilke geniş ekranda merdiven gibi kayıyor. Eşit üç sütun yerine
+     bu, okuma sırasını görünür kılıyor ve boşluğu tasarıma katıyor. */
+  @media (min-width: 62rem) {
+    .ilkeler {
+      gap: var(--b7);
+    }
+
+    .ilke:nth-child(2) {
+      margin-inline-start: 14%;
+    }
+
+    .ilke:nth-child(3) {
+      margin-inline-start: 28%;
+    }
+
+    .ilke:nth-child(2) {
+      transition-delay: 100ms;
+    }
+
+    .ilke:nth-child(3) {
+      transition-delay: 200ms;
+    }
+  }
+</style>

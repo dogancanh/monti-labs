@@ -16,6 +16,13 @@ import sitemap from '@astrojs/sitemap'
 const SITE_URL = process.env.SITE_URL ?? 'https://dogancanh.github.io'
 const TABAN = process.env.BASE_PATH ?? '/monti-labs'
 
+/* Türkçe varsayılan dil ve önek almıyor, İngilizce /en altında duruyor.
+   Alt yolla birlikte adresler şöyle çıkıyor:
+     /monti-labs/      Türkçe
+     /monti-labs/en/   İngilizce */
+const DILLER = ['tr', 'en']
+const VARSAYILAN_DIL = 'tr'
+
 export default defineConfig({
   site: SITE_URL,
   base: TABAN,
@@ -24,7 +31,28 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'ignore',
 
-  integrations: [sitemap()],
+  i18n: {
+    locales: DILLER,
+    defaultLocale: VARSAYILAN_DIL,
+    routing: {
+      prefixDefaultLocale: false,
+      // Tarayıcı diline göre otomatik yönlendirme yok. Statik sunumda
+      // yönlendirme sunucu tarafı gerektiriyor, ayrıca kullanıcının
+      // seçtiği dili ezmek istemiyoruz.
+      redirectToDefaultLocale: false,
+    },
+  },
+
+  integrations: [
+    sitemap({
+      // Yönlendirme sayfası dizine girmemeli, haritada da yeri yok.
+      filter: (adres) => !adres.includes('/biz-kimiz'),
+      i18n: {
+        defaultLocale: VARSAYILAN_DIL,
+        locales: { tr: 'tr-TR', en: 'en' },
+      },
+    }),
+  ],
 
   build: {
     inlineStylesheets: 'auto',

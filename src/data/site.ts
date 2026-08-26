@@ -125,28 +125,15 @@ export const DISCORD_BILDIRIM = {
   adres: import.meta.env.PUBLIC_DISCORD_WEBHOOK ?? '',
 }
 
-export const gezinti = [
-  { etiket: 'Yaklaşım', hedef: '#yaklasim' },
-  { etiket: 'Ne geliştiriyoruz', hedef: '#hizmetler' },
-  { etiket: 'Çalışmalar', hedef: '#calismalar' },
-  { etiket: 'İletişim', hedef: '#iletisim' },
-]
+/* Gezinti bağlantıları ve sayfa üst verisi artık burada durmuyor.
+   İki dilli oldukları için src/icerik/tr.ts ve src/icerik/en.ts
+   içine taşındılar. */
 
+/* Yasal metinler yalnızca Türkçe yayınlanıyor, bu yüzden tek liste.
+   İngilizce sayfa da bu adreslere bağlanır ve alt bilgide dil notu
+   gösterilir. */
 export const yasalSayfalar = [
   { etiket: 'KVKK Aydınlatma Metni', hedef: '/kvkk' },
   { etiket: 'Gizlilik Politikası', hedef: '/gizlilik' },
   { etiket: 'Çerez Politikası', hedef: '/cerezler' },
 ]
-
-export const meta = {
-  // Marka paketi bu başlıkta uzun tire kullanıyor. Ayraç, sitenin geri
-  // kalanıyla tutarlı olsun diye orta noktaya çevrildi. Paketteki haline
-  // dönmek isterseniz tireyi geri koymak yeterli.
-  baslik: 'Monti Labs · İş problemlerini yazılımla çözüyoruz',
-  aciklama:
-    'Monti Labs; süreç otomasyonu, sistem entegrasyonu ve özel yazılım geliştiren bir teknoloji şirketidir. Problemi anlıyor, çalışan çözümü kuruyoruz.',
-  ogBaslik: 'Monti Labs',
-  ogAciklama:
-    'Gerçek iş problemlerini yazılım, otomasyon ve entegrasyonla çözen teknoloji şirketi.',
-  dil: 'tr',
-}

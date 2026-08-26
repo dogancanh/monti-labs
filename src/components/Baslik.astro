@@ -1,0 +1,270 @@
+---
+/* Sabit başlık.
+
+   Kendi zemini yok. Blur yok, kenarlık yok, kaydırınca beliren bir
+   arka plan da yok. Altındaki bölümün metin rengini alıyor, o kadar.
+   Renk kaynağı --aktif-metin; ZeminKatmani içindeki gözlemci yazıyor.
+
+   Logo çözümü: başlıkta yalnızca işaret kullanılıyor, kelime markası
+   sitenin kendi tipografisiyle diziliyor. Tam logo kilidi alt bilgide
+   ve OG görselinde duruyor. Böylece başlıkta iki farklı font çakışmıyor.
+
+   JavaScript kapalıyken başlık sabit olmaktan çıkıyor, çünkü rengini
+   güncelleyecek bir şey kalmıyor ve açık bölümlerin üstünde okunmaz
+   hale gelirdi. */
+
+import Isaret from './Isaret.astro'
+import DilDegistirici from './DilDegistirici.astro'
+import { sayfaYolu, type Dil } from '../lib/diller'
+import type { Icerik } from '../icerik'
+
+interface Props {
+  dil: Dil
+  icerik: Icerik
+  sayfa?: string
+  /**
+   * Sayfanın diğer dilde karşılığı yoksa true.
+   * Yasal metinler yalnızca Türkçe yayınlanıyor; oralarda dil
+   * değiştirici basılmıyor, çünkü basılsa gidilecek adres 404 verir.
+   */
+  tekDil?: boolean
+}
+
+const { dil, icerik, sayfa = '/', tekDil = false } = Astro.props
+const { gezinti } = icerik
+---
+
+<header class="baslik">
+  <a class="atla" href="#icerik">{gezinti.icerigeAtla}</a>
+
+  <div class="kabuk sira">
+    <a class="marka" href={sayfaYolu('/', dil)}>
+      <Isaret yukseklik="0.72em" />
+      <span class="ad">Monti Labs</span>
+    </a>
+
+    <nav class="genis" aria-label={icerik.isler.kunye}>
+      <ul class="baglantilar">
+        {
+          gezinti.baglantilar.map((b) => (
+            <li>
+              <a class="bag" href={sayfaYolu(b.hedef, dil)}>
+                {b.etiket}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      {!tekDil && <DilDegistirici dil={dil} icerik={icerik} sayfa={sayfa} />}
+    </nav>
+
+    <button class="dar acma" type="button" aria-expanded="false" aria-controls="menu">
+      <span class="ac">{gezinti.menuAc}</span>
+      <span class="kapa">{gezinti.menuKapat}</span>
+    </button>
+  </div>
+
+  <div class="panel" id="menu" hidden>
+    <nav class="kabuk panel-ic" aria-label={gezinti.menuAc}>
+      <ul class="panel-baglantilar">
+        {
+          gezinti.baglantilar.map((b) => (
+            <li>
+              <a href={sayfaYolu(b.hedef, dil)}>{b.etiket}</a>
+            </li>
+          ))
+        }
+      </ul>
+      {!tekDil && <DilDegistirici dil={dil} icerik={icerik} sayfa={sayfa} />}
+    </nav>
+  </div>
+</header>
+
+<style>
+  .baslik {
+    position: fixed;
+    inset-inline: 0;
+    top: 0;
+    z-index: 20;
+
+    /* Başlığın kendi bölümü olmadığı için tema değişkenlerini etkin
+       bölümden devralıyor. Alt bileşenler (dil değiştirici) yine
+       --metin ve --ikincil okuyor, o yüzden ikisi de yeniden bağlandı. */
+    --metin: var(--aktif-metin);
+    --ikincil: var(--aktif-ikincil);
+    color: var(--aktif-metin);
+
+    padding-block: var(--b4);
+    transition: color var(--temel) var(--egri);
+  }
+
+  html:not(.js) .baslik {
+    position: static;
+  }
+
+  .sira {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--b5);
+  }
+
+  .marka {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    text-decoration: none;
+    font-variation-settings: 'wdth' 112;
+    font-weight: 600;
+    font-size: 1.0625rem;
+    letter-spacing: -0.015em;
+  }
+
+  .ad {
+    line-height: 1;
+  }
+
+  .genis {
+    display: flex;
+    align-items: center;
+    gap: var(--b6);
+  }
+
+  .baglantilar {
+    display: flex;
+    align-items: center;
+    gap: var(--b5);
+    margin: 0;
+  }
+
+  .baglantilar .bag {
+    color: inherit;
+    font-size: 0.9375rem;
+  }
+
+  /* Başlıktaki bağlantıların altı boşta durmuyor, üzerine gelince çiziliyor.
+     Renk zaten metin rengi, vurgu rengi değil. */
+
+  .acma {
+    font-weight: 500;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: inherit;
+  }
+
+  .acma .kapa {
+    display: none;
+  }
+
+  .acma[aria-expanded='true'] .ac {
+    display: none;
+  }
+
+  .acma[aria-expanded='true'] .kapa {
+    display: inline;
+  }
+
+  .panel {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--aktif-zemin);
+    display: flex;
+    align-items: center;
+  }
+
+  .panel[hidden] {
+    display: none;
+  }
+
+  .panel-ic {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--b6);
+  }
+
+  .panel-baglantilar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--b3);
+    margin: 0;
+  }
+
+  .panel-baglantilar a {
+    font-variation-settings: 'wdth' 118;
+    font-weight: 600;
+    font-size: clamp(2.25rem, 9vw, 3.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-decoration: none;
+  }
+
+  /* Geniş ekranda menü düğmesi, dar ekranda bağlantı satırı gizli. */
+  .dar {
+    display: none;
+  }
+
+  @media (max-width: 48rem) {
+    .genis {
+      display: none;
+    }
+
+    .dar {
+      display: inline-block;
+    }
+  }
+
+  /* JavaScript kapalıyken menü düğmesi hiçbir işe yaramaz, gizlenir ve
+     bağlantılar her genişlikte görünür kalır. */
+  html:not(.js) .dar {
+    display: none;
+  }
+
+  html:not(.js) .genis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--b4);
+  }
+</style>
+
+<script>
+  /* Mobil panel. Açıkken sayfa kaydırması kilitleniyor, Escape kapatıyor,
+     odak panelin içinde kalıyor. */
+
+  const dugme = document.querySelector<HTMLButtonElement>('.acma')
+  const panel = document.querySelector<HTMLElement>('.panel')
+
+  if (dugme && panel) {
+    const durumYaz = (acik: boolean) => {
+      dugme.setAttribute('aria-expanded', String(acik))
+      panel.hidden = !acik
+      document.body.style.overflow = acik ? 'hidden' : ''
+    }
+
+    dugme.addEventListener('click', () => {
+      durumYaz(dugme.getAttribute('aria-expanded') !== 'true')
+    })
+
+    /* Panel içindeki bir bağlantıya basınca panel kapansın, yoksa
+       hedef bölüm panelin arkasında kalır. */
+    panel.addEventListener('click', (olay) => {
+      if ((olay.target as HTMLElement).closest('a')) durumYaz(false)
+    })
+
+    document.addEventListener('keydown', (olay) => {
+      if (olay.key === 'Escape' && !panel.hidden) {
+        durumYaz(false)
+        dugme.focus()
+      }
+    })
+
+    /* Ekran genişlerken panel açık kaldıysa kapat, yoksa geniş ekranda
+       görünmez bir katman sayfayı kilitli tutar. */
+    const genisEkran = window.matchMedia('(min-width: 48.0625rem)')
+    genisEkran.addEventListener('change', (olay) => {
+      if (olay.matches && !panel.hidden) durumYaz(false)
+    })
+  }
+</script>

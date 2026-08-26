@@ -31,6 +31,11 @@ const hedef = join(kok, 'public', 'isler')
  * genislik: üretilecek piksel genişliği. Gösterim boyutunun iki katı
  * seçildi ki retina ekranda da keskin dursun.
  */
+/* Guardi pazarlama şablonundaki cihaz çerçevesinin konumu, kaynak
+   görselin genişlik ve yüksekliğine oranla. Sabit piksel yerine oran
+   kullanılıyor ki farklı çözünürlükte yakalama gelirse de çalışsın. */
+const CIHAZ = { x: 0.203, y: 0.2268, en: 0.597, boy: 0.5615 }
+
 const isler = [
   // ---- Inkstay: koyu zeminde mobil ürün ----
   { kaynak: 'inkstay/inkstay-urun-bugun.png', ad: 'inkstay-bugun', genislik: 840 },
@@ -38,10 +43,18 @@ const isler = [
   { kaynak: 'inkstay/inkstay-shot-plan.png', ad: 'inkstay-plan', genislik: 720 },
   { kaynak: 'inkstay/inkstay-icon.png', ad: 'inkstay-ikon', genislik: 180, ikon: true },
 
-  // ---- Guardi: uygulama ikonu ve arayüz ----
-  { kaynak: 'guardi/guardi-ekran-01-combo.png', ad: 'guardi-ana', genislik: 840 },
-  { kaynak: 'guardi/guardi-ekran-06-lookup.png', ad: 'guardi-sorgu', genislik: 720 },
-  { kaynak: 'guardi/guardi-ekran-02-sms.png', ad: 'guardi-sms', genislik: 720 },
+  /* ---- Guardi: uygulama ikonu ve arayüz ----
+
+     Kaynaklar App Store pazarlama kompozisyonları: üstlerinde kendi
+     başlık tipografileri, altlarında mor bir degrade var. Site bu iki
+     şeyi de kullanmıyor, bu yüzden görseller cihaz çerçevesine
+     kırpılıyor ve geriye yalnızca gerçek arayüz kalıyor.
+
+     Kırpma oranları şablonun kendisinden geliyor; üç görsel de aynı
+     şablonla üretildiği için aynı oran hepsinde çalışıyor. */
+  { kaynak: 'guardi/guardi-ekran-01-combo.png', ad: 'guardi-ana', genislik: 840, kirp: CIHAZ },
+  { kaynak: 'guardi/guardi-ekran-06-lookup.png', ad: 'guardi-sorgu', genislik: 720, kirp: CIHAZ },
+  { kaynak: 'guardi/guardi-ekran-02-sms.png', ad: 'guardi-sms', genislik: 720, kirp: CIHAZ },
   { kaynak: 'guardi/guardi-icon-yeni-keskin-1024.png', ad: 'guardi-ikon', genislik: 256, ikon: true },
 
   // ---- EcceHome: geniş tarayıcı sunumu ----
@@ -70,7 +83,19 @@ async function uret() {
     }
     hamToplam += bilgi.size
 
-    const temel = sharp(girdi).resize({
+    let kaynakBoru = sharp(girdi)
+
+    if (is.kirp) {
+      const olcek = await sharp(girdi).metadata()
+      kaynakBoru = kaynakBoru.extract({
+        left: Math.round(olcek.width * is.kirp.x),
+        top: Math.round(olcek.height * is.kirp.y),
+        width: Math.round(olcek.width * is.kirp.en),
+        height: Math.round(olcek.height * is.kirp.boy),
+      })
+    }
+
+    const temel = kaynakBoru.resize({
       width: is.genislik,
       withoutEnlargement: true,
       kernel: 'lanczos3',

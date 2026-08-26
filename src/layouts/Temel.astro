@@ -1,335 +1,160 @@
 ---
-import '../styles/tokens.css'
-import '../styles/global.css'
+/* Sayfa kabuğu.
 
-/* Fontlar self-host edilir. Türkçe için hem latin hem latin-ext gerekir:
-   ı (U+0131) latin altkümesinde, İ ğ Ğ ş Ş (U+0130, U+011E-011F, U+015E-015F)
-   latin-ext altkümesindedir. İkisi de yüklenmezse Türkçe metin bozulur. */
-import '@fontsource-variable/outfit'
-import '@fontsource/ibm-plex-sans/latin-400.css'
-import '@fontsource/ibm-plex-sans/latin-ext-400.css'
-import '@fontsource/ibm-plex-sans/latin-500.css'
-import '@fontsource/ibm-plex-sans/latin-ext-500.css'
-import '@fontsource/ibm-plex-sans/latin-600.css'
-import '@fontsource/ibm-plex-sans/latin-ext-600.css'
-import '@fontsource/ibm-plex-mono/latin-400.css'
-import '@fontsource/ibm-plex-mono/latin-ext-400.css'
-import '@fontsource/ibm-plex-mono/latin-500.css'
-import '@fontsource/ibm-plex-mono/latin-ext-500.css'
+   Font yüzü burada satır içi üretiliyor, ayrı bir CSS dosyasında değil.
+   Nedeni taban yolu: site /monti-labs altında duruyor ve düz CSS içinde
+   bu değeri okumanın yolu yok. yol() yardımcısı yalnızca bileşen
+   içinde çalışıyor.
 
-/* İlk boyamada gereken iki font dosyası önceden yüklenir. */
-import outfitLatin from '@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2?url'
-import plexSansLatin from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2?url'
+   Font iki parçaya bölünmüş. Ana dosya latin harfleri, rakamları ve
+   noktalamayı taşıyor. Ek dosya yalnızca Ğ ğ İ Ş ş karakterlerini
+   taşıyor, 6.6 KB. unicode-range sayesinde İngilizce sayfa ek dosyayı
+   hiç indirmiyor. Üretimi: scripts/font-altkume.sh */
 
-import Gezinti from '../components/Gezinti.astro'
-import { sirket, yasalSayfalar, meta, ARAMA_MOTORLARINA_ACIK } from '../data/site'
-import { icerik } from '../data/icerik'
-import { yol, tamAdres } from '../lib/yol'
+import '../styles/temel.css'
+
+import ZeminKatmani from '../components/ZeminKatmani.astro'
+import Baslik from '../components/Baslik.astro'
+import AltBilgi from '../components/AltBilgi.astro'
+
+import { yol, tamAdres, mutlak } from '../lib/yol'
+import { diller, dilKodlari, sayfaYolu, varsayilanDil, type Dil } from '../lib/diller'
+import { ARAMA_MOTORLARINA_ACIK } from '../data/site'
+import type { Icerik } from '../icerik'
 
 interface Props {
+  dil: Dil
+  icerik: Icerik
   baslik?: string
   aciklama?: string
+  /** Dil önekinden arınmış sayfa yolu. hreflang ve dil değiştirici kullanır. */
+  sayfa?: string
+  /** Yasal sayfalar gibi tek dilli sayfalarda başlık ve alt bilgi sadeleşir. */
+  tekDil?: boolean
 }
 
-const { baslik, aciklama } = Astro.props
+const {
+  dil,
+  icerik,
+  baslik = icerik.meta.baslik,
+  aciklama = icerik.meta.aciklama,
+  sayfa = '/',
+  tekDil = false,
+} = Astro.props
 
-const sayfaBasligi = baslik ? `${baslik} · ${sirket.ad}` : meta.baslik
-const sayfaAciklamasi = aciklama ?? meta.aciklama
+const anaFont = yol('/fontlar/archivo-tr-en.woff2')
+const ekFont = yol('/fontlar/archivo-tr-ek.woff2')
 
-const kanonik = new URL(Astro.url.pathname, Astro.site ?? 'https://dogancanh.github.io')
+/* Alt küme betiğinde tanımlanan aralıkların birebir karşılığı.
+   scripts/font-altkume.sh değişirse burası da değişmeli. */
+const anaAralik =
+  'U+0020-007E,U+00A0,U+00A9,U+00AB,U+00AE,U+00B7,U+00BB,U+00C7,U+00D6,U+00DC,U+00E7,U+00F6,U+00FC,U+0131,U+2010-2015,U+2018-201A,U+201C-201E,U+2022,U+2026,U+2039,U+203A,U+20AC'
+const ekAralik = 'U+011E,U+011F,U+0130,U+015E,U+015F'
+
+const fontYuzu = `
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('${anaFont}') format('woff2-variations');
+  unicode-range: ${anaAralik};
+}
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('${ekFont}') format('woff2-variations');
+  unicode-range: ${ekAralik};
+}
+`.trim()
+
+const kanonik = mutlak(sayfaYolu(sayfa, dil), Astro.site)
 const ogGorsel = tamAdres('/og.png', Astro.site)
-const anaAdres = tamAdres('/', Astro.site)
 const yil = new Date().getFullYear()
-const epostaBelli = !sirket.eposta.startsWith('DEGISTIR')
-
-const kurulusVerisi = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: sirket.ad,
-  url: anaAdres,
-  logo: tamAdres('/favicon.svg', Astro.site),
-  description: meta.aciklama,
-}
-
-const siteVerisi = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: sirket.ad,
-  url: anaAdres,
-  inLanguage: 'tr-TR',
-}
 ---
 
 <!doctype html>
-<html lang="tr">
+<html lang={dilKodlari[dil]}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    {/* Belirme animasyonlarının gizleme kuralı bu sınıfa bağlı.
-        Betik çalışmazsa sınıf eklenmez ve içerik gizlenmeden görünür. */}
+    <!-- Kaydırma sırasında açılan parçalar yalnızca JavaScript açıkken
+         gizli başlıyor. Bu satır head'in en başında duruyor ki içerik
+         boyanmadan önce sınıf yerine otursun ve titreme olmasın. -->
     <script is:inline>
       document.documentElement.classList.add('js')
     </script>
 
-    <title>{sayfaBasligi}</title>
-    <meta name="description" content={sayfaAciklamasi} />
-    <link rel="canonical" href={kanonik.toString()} />
+    <title>{baslik}</title>
+    <meta name="description" content={aciklama} />
 
     {
-      /* İçerik taslak olduğu sürece arama motorlarına kapalı.
-         src/data/site.ts içindeki ARAMA_MOTORLARINA_ACIK ile açılır. */
-      !ARAMA_MOTORLARINA_ACIK && <meta name="robots" content="noindex, nofollow" />
+      ARAMA_MOTORLARINA_ACIK ? null : (
+        <meta name="robots" content="noindex, nofollow" />
+      )
     }
 
-    <link rel="preload" href={outfitLatin} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={plexSansLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="canonical" href={kanonik} />
+
+    {
+      !tekDil &&
+        diller.map((kod) => (
+          <link
+            rel="alternate"
+            hreflang={dilKodlari[kod]}
+            href={mutlak(sayfaYolu(sayfa, kod), Astro.site)}
+          />
+        ))
+    }
+    {
+      !tekDil && (
+        <link
+          rel="alternate"
+          hreflang="x-default"
+          href={mutlak(sayfaYolu(sayfa, varsayilanDil), Astro.site)}
+        />
+      )
+    }
+
+    <link rel="preload" href={anaFont} as="font" type="font/woff2" crossorigin />
+    {
+      dil === 'tr' && (
+        <link rel="preload" href={ekFont} as="font" type="font/woff2" crossorigin />
+      )
+    }
+
+    <style is:inline set:html={fontYuzu}></style>
 
     <link rel="icon" href={yol('/favicon.svg')} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={yol('/apple-touch-icon.png')} />
     <link rel="manifest" href={yol('/site.webmanifest')} />
-    <meta name="theme-color" content="#FFFBF0" />
+    <meta name="theme-color" content="#1F2FA0" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content={sirket.ad} />
-    <meta property="og:locale" content="tr_TR" />
-    <meta property="og:title" content={baslik ? sayfaBasligi : meta.ogBaslik} />
-    <meta property="og:description" content={aciklama ?? meta.ogAciklama} />
-    <meta property="og:url" content={kanonik.toString()} />
+    <meta property="og:site_name" content="Monti Labs" />
+    <meta property="og:locale" content={dil === 'tr' ? 'tr_TR' : 'en_US'} />
+    <meta property="og:title" content={icerik.meta.ogBaslik} />
+    <meta property="og:description" content={icerik.meta.ogAciklama} />
+    <meta property="og:url" content={kanonik} />
     <meta property="og:image" content={ogGorsel} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={baslik ? sayfaBasligi : meta.ogBaslik} />
-    <meta name="twitter:description" content={aciklama ?? meta.ogAciklama} />
-    <meta name="twitter:image" content={ogGorsel} />
 
-    <script type="application/ld+json" set:html={JSON.stringify(kurulusVerisi)} is:inline />
-    <script type="application/ld+json" set:html={JSON.stringify(siteVerisi)} is:inline />
+    <link rel="sitemap" href={yol('/sitemap-index.xml')} />
   </head>
 
   <body>
-    <a class="atla" href="#ana">İçeriğe geç</a>
+    <ZeminKatmani />
+    <Baslik dil={dil} icerik={icerik} sayfa={sayfa} tekDil={tekDil} />
 
-    <Gezinti />
-
-    <main id="ana">
+    <main id="icerik">
       <slot />
     </main>
 
-    <footer class="dip">
-      <div class="kabuk">
-        <div class="dip-ust">
-          <div class="dip-marka">
-            <a href={yol('/')} aria-label={`${sirket.ad} ana sayfa`}>
-              <img
-                src={yol('/logo-yatay-krem.png')}
-                alt="Monti Labs"
-                width="177"
-                height="26"
-                loading="lazy"
-                decoding="async"
-              />
-            </a>
-            <p class="dip-tanim">{icerik.footer.kisaTanim}</p>
-          </div>
-
-          <nav class="dip-gezinti" aria-label="Alt bilgi gezintisi">
-            {icerik.footer.baglantilar.map((o) => <a href={yol(o.hedef)}>{o.etiket}</a>)}
-          </nav>
-
-          <div class="dip-iletisim">
-            {
-              epostaBelli && (
-                <a class="dip-eposta" href={`mailto:${sirket.eposta}`}>
-                  {sirket.eposta}
-                </a>
-              )
-            }
-            {
-              sirket.linkedin && (
-                <a href={sirket.linkedin} rel="me noopener">
-                  LinkedIn
-                </a>
-              )
-            }
-          </div>
-        </div>
-
-        <div class="dip-alt">
-          <p class="dip-telif">{icerik.footer.telifSablonu.replace('{yil}', String(yil))}</p>
-          <ul class="dip-yasal">
-            {
-              yasalSayfalar.map((s) => (
-                <li>
-                  <a href={yol(s.hedef)}>{s.etiket}</a>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-      </div>
-    </footer>
-
-    <script is:inline>
-      // Görünüre giren öğeler kademeli belirir.
-      ;(function () {
-        var ogeler = document.querySelectorAll('[data-acil]')
-        if (!ogeler.length) return
-
-        var azHareket = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        if (azHareket || !('IntersectionObserver' in window)) {
-          ogeler.forEach(function (o) {
-            o.dataset.gorunur = 'evet'
-          })
-          return
-        }
-
-        var gozlemci = new IntersectionObserver(
-          function (girisler) {
-            girisler.forEach(function (giris) {
-              if (giris.isIntersecting) {
-                giris.target.dataset.gorunur = 'evet'
-                gozlemci.unobserve(giris.target)
-              }
-            })
-          },
-          { rootMargin: '0px 0px -12% 0px', threshold: 0.15 },
-        )
-
-        ogeler.forEach(function (o) {
-          gozlemci.observe(o)
-        })
-      })()
-    </script>
+    <AltBilgi dil={dil} icerik={icerik} yil={yil} />
   </body>
 </html>
-
-<style>
-  /* ---------- Alt bilgi ----------
-     Tek satırlık, çok kolonlu kurumsal footer değil. */
-  .dip {
-    background-color: var(--ml-ink-900);
-    color: rgb(255 244 214 / 0.72);
-    padding-block: var(--ml-space-16) var(--ml-space-8);
-  }
-
-  .dip-ust {
-    display: grid;
-    gap: var(--ml-space-10, 2.5rem);
-    padding-block-end: var(--ml-space-12);
-  }
-
-  .dip-marka img {
-    height: 26px;
-    width: auto;
-  }
-
-  .dip-tanim {
-    margin-block-start: var(--ml-space-4);
-    max-width: 34ch;
-    color: rgb(255 244 214 / 0.7);
-    font-size: var(--ml-text-sm);
-    line-height: var(--ml-leading-relaxed);
-  }
-
-  .dip-gezinti {
-    display: grid;
-    gap: var(--ml-space-3);
-    align-content: start;
-    justify-items: start;
-  }
-
-  .dip-gezinti a {
-    color: rgb(255 244 214 / 0.7);
-    font-size: var(--ml-text-sm);
-    text-decoration: none;
-    border-block-end: 1px solid transparent;
-    transition:
-      color var(--ml-duration-fast) var(--ml-ease-standard),
-      border-color var(--ml-duration-fast) var(--ml-ease-standard);
-  }
-
-  .dip-gezinti a:hover {
-    color: var(--ml-cream-base);
-    border-block-end-color: var(--ml-cream-base);
-  }
-
-  .dip-iletisim {
-    display: grid;
-    gap: var(--ml-space-2);
-    align-content: start;
-  }
-
-  .dip-iletisim a {
-    color: var(--ml-cream-base);
-    font-size: var(--ml-text-sm);
-    text-decoration: none;
-    justify-self: start;
-    border-block-end: 1px solid transparent;
-    transition: border-color var(--ml-duration-fast) var(--ml-ease-standard);
-  }
-
-  .dip-iletisim a:hover {
-    border-block-end-color: var(--ml-cream-base);
-  }
-
-  /* E-posta alt bilginin asıl çağrısı, o yüzden gerçek bir basamak
-     yukarıda duruyor. Bir tık büyütmek vurgu olarak okunmuyordu,
-     yalnızca tutarsız görünüyordu. Özgüllük sıralamayla çözülüyor,
-     !important gerekmiyor. */
-  .dip-iletisim .dip-eposta {
-    font-size: var(--ml-text-lg);
-    font-weight: var(--ml-weight-medium);
-  }
-
-  .dip-alt {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--ml-space-4) var(--ml-space-8);
-    justify-content: space-between;
-    align-items: center;
-    padding-block-start: var(--ml-space-8);
-    border-block-start: 1px solid rgb(255 244 214 / 0.16);
-  }
-
-  .dip-telif {
-    font-family: var(--ml-font-mono);
-    font-size: var(--ml-text-xs);
-    letter-spacing: var(--ml-tracking-wide);
-    color: rgb(255 244 214 / 0.55);
-  }
-
-  .dip-yasal {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--ml-space-6);
-  }
-
-  /* Yasal bağlantılar tıklanan öğeler, künye değil. Telif satırıyla
-     aynı puntoda durmaları ikisini de aynı işi yapıyormuş gibi
-     gösteriyordu. Gövde puntosuna alındılar; telif satırı tek başına
-     xs'te kalıyor ve orada asıl ayrımı mono dokusu taşıyor. */
-  /* Dokunma hedefi 24 pikselin altına düşmesin (WCAG 2.5.8). */
-  .dip-yasal a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 24px;
-    color: rgb(255 244 214 / 0.7);
-    font-size: var(--ml-text-sm);
-    text-decoration: none;
-    transition: color var(--ml-duration-fast) var(--ml-ease-standard);
-  }
-
-  .dip-yasal a:hover {
-    color: var(--ml-cream-base);
-  }
-
-  @media (min-width: 820px) {
-    .dip-ust {
-      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr);
-      gap: var(--ml-space-12);
-    }
-  }
-</style>

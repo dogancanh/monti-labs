@@ -1,0 +1,458 @@
+/* ============================================================
+   MONTI LABS TEMEL STİL
+
+   Bu dosya sitenin bütün görsel sistemini taşıyor: sıfırlama,
+   belirteçler, tema blokları, tipografi ölçeği ve yardımcı sınıflar.
+   Bileşenler kendi içinde yalnızca yerleşim yapar, renk ve tipografi
+   kararı vermez.
+
+   TEMA MANTIĞI
+   Sayfanın arkasında tek bir sabit zemin katmanı var. Bölümler saydam.
+   Her bölüm bir data-tema özniteliği taşıyor ve o temanın renklerini
+   kendi üstünde tanımlıyor. Bölüm içindeki her şey var(--metin),
+   var(--ikincil), var(--vurgu) kullanıyor.
+
+   Kaydırırken JavaScript etkin bölümü buluyor ve o bölümün zemin ile
+   metin rengini :root üstüne yazıyor. Zemin katmanı bu değeri geçişle
+   alıyor, sayfa oda değiştirmiş gibi oluyor.
+
+   JavaScript kapalıyken bölümler kendi zeminlerini kendileri basıyor
+   ve başlık sabit olmaktan çıkıyor. Site tam olarak çalışmaya devam
+   ediyor, yalnızca geçiş animasyonu olmuyor.
+
+   Font yüzü burada değil. Taban yolu (/monti-labs) gerektiği için
+   Temel.astro içinde satır içi üretiliyor.
+   ============================================================ */
+
+/* ---------- Sıfırlama ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100svh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+}
+
+/* ---------- Marka belirteçleri ---------- */
+
+:root {
+  /* Marka renkleri. Değerler docs/superpowers/specs içindeki tasarım
+     yönüyle ve scripts/kontrast-dogrula.mjs ile birebir aynı olmalı. */
+  --kobalt: #1f2fa0;
+  --kagit: #fbf6ea;
+  --murekkep: #0d1128;
+
+  /* Ölçü ve ritim. Dört piksel tabanlı, eşit aralıklı değil. */
+  --b1: 0.25rem;
+  --b2: 0.5rem;
+  --b3: 0.75rem;
+  --b4: 1.25rem;
+  --b5: 2rem;
+  --b6: 3.25rem;
+  --b7: 5.25rem;
+  --b8: 8.5rem;
+
+  --kenar: clamp(1.25rem, 5vw, 6rem);
+  --icerik-en: 90rem;
+
+  /* Hareket. Üç süre, tek eğri. */
+  --hizli: 260ms;
+  --temel: 640ms;
+  --yavas: 900ms;
+  --egri: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Etkin bölümün renkleri. Başlangıç değeri giriş bölümünün teması.
+     Kaydırırken JavaScript güncelliyor. Sabit başlık bunları kullanıyor,
+     çünkü kendi zemini yok ve altındaki bölümün rengini almak zorunda.
+
+     Değerler tema bloklarındaki hexlerin birebir kopyası olduğu için
+     npm run kontrast doğrulaması başlık için de geçerli. */
+  --aktif-zemin: var(--kobalt);
+  --aktif-metin: var(--kagit);
+  --aktif-ikincil: #b9bad4;
+
+  /* Bölüm içinde tema tanımlanmadıysa devreye giren varsayılan. */
+  --zemin: var(--kobalt);
+  --metin: var(--kagit);
+  --ikincil: #b9bad4;
+  --vurgu: var(--kagit);
+  --cizgi: rgb(251 246 234 / 0.22);
+  --alan-kenar: #8d92c5;
+}
+
+/* ---------- Temalar ----------
+   Her tema kendi zemininde WCAG AA'yı geçiyor. Değerler
+   npm run kontrast ile doğrulanıyor. */
+
+[data-tema='kobalt'] {
+  --zemin: #1f2fa0;
+  --metin: #fbf6ea;
+  --ikincil: #b9bad4;
+  --vurgu: #fbf6ea;
+  --cizgi: rgb(251 246 234 / 0.22);
+  --alan-kenar: #8d92c5;
+}
+
+[data-tema='murekkep'] {
+  --zemin: #0d1128;
+  --metin: #fbf6ea;
+  --ikincil: #9fa0ae;
+  --vurgu: #fbf6ea;
+  --cizgi: rgb(251 246 234 / 0.18);
+  --alan-kenar: #8d92c5;
+}
+
+[data-tema='kagit'] {
+  --zemin: #fbf6ea;
+  --metin: #0d1128;
+  --ikincil: #676872;
+  --vurgu: #1f2fa0;
+  --cizgi: rgb(13 17 40 / 0.16);
+  --alan-kenar: #78787f;
+}
+
+[data-tema='inkstay'] {
+  --zemin: #16130f;
+  --metin: #f2ede2;
+  --ikincil: #9a9488;
+  --vurgu: #c9a961;
+  --cizgi: rgb(242 237 226 / 0.16);
+  --alan-kenar: #78787f;
+}
+
+[data-tema='guardi'] {
+  --zemin: #edeef6;
+  --metin: #0d1128;
+  --ikincil: #63656f;
+  --vurgu: #4a5fcc;
+  --cizgi: rgb(13 17 40 / 0.14);
+  --alan-kenar: #78787f;
+}
+
+[data-tema='eccehome'] {
+  --zemin: #fbf6ea;
+  --metin: #0d1128;
+  --ikincil: #676872;
+  --vurgu: #8a6218;
+  --cizgi: rgb(13 17 40 / 0.16);
+  --alan-kenar: #78787f;
+}
+
+/* ---------- Tipografi ----------
+   Tek aile: Archivo değişken. Genişlik ekseni yalnızca başlıklarda
+   açılıyor, metin normal genişlikte kalıyor. Tek aileyle iki ayrı
+   ses üretmenin yolu bu. */
+
+body {
+  font-family: 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-variation-settings: 'wdth' 100;
+  font-weight: 400;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--metin);
+  background-color: var(--kobalt);
+}
+
+.goruntu {
+  font-variation-settings: 'wdth' 118;
+  font-weight: 600;
+  font-size: clamp(2.75rem, 7.5vw, 7rem);
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  text-transform: none;
+}
+
+.bolum-basligi {
+  font-variation-settings: 'wdth' 110;
+  font-weight: 600;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.urun-adi {
+  font-variation-settings: 'wdth' 118;
+  font-weight: 600;
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+}
+
+.metin {
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  max-width: 58ch;
+}
+
+.metin-buyuk {
+  font-size: clamp(1.0625rem, 1.6vw, 1.375rem);
+  line-height: 1.5;
+  max-width: 52ch;
+
+  /* İki cümlelik giriş metninin ikinci cümlesi tek kelimeyle alt
+     satıra düşmesin. */
+  text-wrap: balance;
+}
+
+.etiket {
+  font-variation-settings: 'wdth' 100;
+  font-weight: 500;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ikincil {
+  color: var(--ikincil);
+}
+
+.vurgu {
+  color: var(--vurgu);
+}
+
+/* Türkçe uzun kelimelerin bölünmesini istemiyoruz. Başlık taşarsa
+   satır sonu içerik dosyasında elle veriliyor. */
+:lang(tr) {
+  hyphens: none;
+}
+
+/* ---------- Yerleşim ---------- */
+
+.kabuk {
+  width: 100%;
+  max-width: var(--icerik-en);
+  margin-inline: auto;
+  padding-inline: var(--kenar);
+}
+
+.kafes {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--b5);
+}
+
+@media (max-width: 62rem) {
+  .kafes {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--b5);
+  }
+}
+
+.bolum {
+  position: relative;
+  color: var(--metin);
+  padding-block: var(--b7);
+}
+
+@media (min-width: 62rem) {
+  .bolum {
+    padding-block: var(--b8);
+  }
+}
+
+/* JavaScript kapalıyken her bölüm kendi zeminini basıyor, böylece
+   metin her zaman doğru zeminin üstünde kalıyor. */
+html:not(.js) [data-tema] {
+  background-color: var(--zemin);
+}
+
+/* ---------- Bağlantılar ---------- */
+
+.bag {
+  display: inline-block;
+  position: relative;
+  color: var(--vurgu);
+  text-decoration: none;
+  padding-bottom: 0.15em;
+}
+
+.bag::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--hizli) var(--egri);
+}
+
+.bag:hover::after,
+.bag:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Zaten altı çizili duran, üzerine gelince silinen tersi davranış. */
+.bag-acik::after {
+  transform: scaleX(1);
+}
+
+.bag-acik:hover::after {
+  transform-origin: right;
+  transform: scaleX(0);
+}
+
+/* ---------- Odak ----------
+   Halka rengi bölümün metin rengiyle aynı. Metin rengi her temada
+   zeminine karşı AA geçtiği için halka da her zaman görünür. */
+
+:focus-visible {
+  outline: 2px solid var(--metin);
+  outline-offset: 3px;
+}
+
+.atla {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: var(--b3) var(--b4);
+  background-color: var(--murekkep);
+  color: var(--kagit);
+}
+
+.atla:focus {
+  left: var(--kenar);
+  top: var(--b3);
+}
+
+/* ---------- Hareket ----------
+   Giriş başlığı sayfa açılışında satır satır beliriyor, bu yüzden
+   JavaScript'e bağlı değil. Kaydırma sırasında açılan parçalar
+   .acilim sınıfını kullanıyor ve yalnızca JavaScript açıkken gizli
+   başlıyor. */
+
+.satir {
+  display: block;
+  overflow: hidden;
+}
+
+.satir > span {
+  display: block;
+  animation: satir-yukari var(--temel) var(--egri) both;
+}
+
+@keyframes satir-yukari {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+html.js .acilim {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path var(--temel) var(--egri);
+}
+
+html.js .acilim.gorundu {
+  clip-path: inset(0 0 0 0);
+}
+
+html.js .kayar {
+  opacity: 0;
+  transform: translateY(var(--b4));
+  transition:
+    opacity var(--temel) var(--egri),
+    transform var(--temel) var(--egri);
+}
+
+html.js .kayar.gorundu {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .satir > span {
+    animation: none;
+  }
+
+  html.js .acilim,
+  html.js .kayar {
+    clip-path: none;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Yardımcılar ---------- */
+
+.gorsel-gizli {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.cizgi {
+  border: 0;
+  border-top: 1px solid var(--cizgi);
+}

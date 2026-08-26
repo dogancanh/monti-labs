@@ -1,0 +1,61 @@
+---
+/* Ürün görseli.
+
+   Kaynaklar public/isler/ altında uzantısız yolla veriliyor, bileşen
+   .avif ve .webp uzantılarını kendisi ekliyor. AVIF önce sunuluyor,
+   desteklemeyen tarayıcı WebP'ye düşüyor.
+
+   Taban yolu (/monti-labs) burada ekleniyor. İçerik dosyalarında
+   yollar tabansız duruyor, böylece alan adı değiştiğinde markdown
+   dosyalarına dokunmak gerekmiyor.
+
+   Genişlik ve yükseklik her zaman basılıyor; oran rezervasyonu
+   olmadan görsel yüklenirken sayfa zıplıyor.
+
+   Tek boyut sunuluyor, srcset yok. Kaynak görseller zaten sunum
+   ölçeğinde üretilmiş durumda (scripts/gorsel-uret.mjs) ve ikinci
+   bir boyut üretmek dosya sayısını iki katına çıkarırken gözle
+   görülür bir kazanç vermiyor. */
+
+import { yol } from '../lib/yol'
+
+interface Props {
+  src: string
+  alt: string
+  en: number
+  boy: number
+  /** İlk ekranda görünen görseller için false yapılır. */
+  gecYukle?: boolean
+  class?: string
+}
+
+const { src, alt, en, boy, gecYukle = true, class: sinif } = Astro.props
+
+const avif = yol(`${src}.avif`)
+const webp = yol(`${src}.webp`)
+---
+
+<picture>
+  <source srcset={avif} type="image/avif" />
+  <source srcset={webp} type="image/webp" />
+  <img
+    src={webp}
+    alt={alt}
+    width={en}
+    height={boy}
+    loading={gecYukle ? 'lazy' : 'eager'}
+    decoding="async"
+    class={sinif}
+  />
+</picture>
+
+<style>
+  picture {
+    display: block;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+</style>

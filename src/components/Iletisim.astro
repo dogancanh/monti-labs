@@ -1,0 +1,345 @@
+---
+/* İletişim.
+
+   E-posta adresi başlık ölçeğinde ve formun üstünde. Nedeni basit:
+   iş konuşmak için yazan biri forma değil e-postaya gidiyor. Form
+   yine de duruyor, çünkü ne yazacağını bilmeyen için alan başlıkları
+   yol gösteriyor.
+
+   Site statik olduğu için gönderim istemci tarafından yapılıyor.
+   Erişim anahtarı boşken form hiç basılmıyor, yerine e-posta kalıyor. */
+
+import { sirket, FORM_SERVISI, DISCORD_BILDIRIM } from '../data/site'
+import { yol } from '../lib/yol'
+import type { Icerik } from '../icerik'
+
+interface Props {
+  icerik: Icerik
+}
+
+const { icerik } = Astro.props
+const { iletisim } = icerik
+
+const formAcik = FORM_SERVISI.anahtar.trim().length > 0
+const altMetin = iletisim.altMetin.replace('{sure}', sirket.formDonusSuresi)
+const basari = iletisim.basariMesaji.replace('{sure}', sirket.formDonusSuresi)
+const hata = iletisim.hataMesaji.replace('{eposta}', sirket.eposta)
+---
+
+<section class="bolum" data-tema="kobalt" id="iletisim" aria-labelledby="iletisim-baslik">
+  <div class="kabuk duzen">
+    <div class="sol">
+      <p class="etiket ikincil">{iletisim.kunye}</p>
+      <h2 class="bolum-basligi baslik" id="iletisim-baslik">{iletisim.baslik}</h2>
+
+      <p class="etiket ikincil eposta-kunye">{iletisim.epostaOncesi}</p>
+      <a class="eposta" href={`mailto:${sirket.eposta}`}>{sirket.eposta}</a>
+
+      <p class="metin ikincil alt">{altMetin}</p>
+    </div>
+
+    {
+      formAcik ? (
+        <form
+          class="form"
+          data-adres={FORM_SERVISI.adres}
+          data-anahtar={FORM_SERVISI.anahtar}
+          data-discord={DISCORD_BILDIRIM.adres}
+          data-basari={basari}
+          data-hata={hata}
+          data-gonderiliyor={iletisim.gonderiliyor}
+          data-gonder={iletisim.gonderButonu}
+          novalidate
+        >
+          <p class="alan">
+            <label for="ad">{iletisim.alanlar.adSoyad}</label>
+            <input id="ad" name="ad" type="text" autocomplete="name" required />
+          </p>
+
+          <p class="alan">
+            <label for="eposta">{iletisim.alanlar.eposta}</label>
+            <input id="eposta" name="eposta" type="email" autocomplete="email" required />
+          </p>
+
+          <p class="alan">
+            <label for="sirket">
+              {iletisim.alanlar.sirket}
+              <span class="ikincil opsiyonel">{iletisim.opsiyonelEtiketi}</span>
+            </label>
+            <input id="sirket" name="sirket" type="text" autocomplete="organization" />
+          </p>
+
+          <p class="alan">
+            <label for="mesaj">{iletisim.alanlar.mesaj}</label>
+            <textarea id="mesaj" name="mesaj" rows="4" required />
+          </p>
+
+          {/* Etiket parçaları arada boşluk oluşmadan birleştiriliyor.
+              Ayrı satırlara yazılırsa bağlantıdan sonra gelen nokta
+              bir boşlukla ayrı düşüyor. */}
+          <p class="onay">
+            <input id="kvkk" name="kvkk" type="checkbox" required />
+            <label for="kvkk"
+              >{iletisim.kvkkOnayOncesi}<a class="bag bag-acik" href={yol('/kvkk')}
+                >{iletisim.kvkkOnayBaglantiEtiketi}</a
+              >{iletisim.kvkkOnaySonrasi}</label
+            >
+          </p>
+
+          <button class="gonder" type="submit">
+            {iletisim.gonderButonu}
+          </button>
+
+          <p class="durum" role="status" aria-live="polite" />
+        </form>
+      ) : (
+        <p class="metin ikincil kapali">{iletisim.formKapali}</p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .duzen {
+    display: grid;
+    gap: var(--b7);
+  }
+
+  @media (min-width: 62rem) {
+    .duzen {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: var(--b8);
+      align-items: start;
+    }
+  }
+
+  .baslik {
+    margin-top: var(--b3);
+    max-width: 16ch;
+  }
+
+  .eposta-kunye {
+    margin-top: var(--b7);
+  }
+
+  .eposta {
+    display: inline-block;
+    margin-top: var(--b3);
+    font-variation-settings: 'wdth' 112;
+    font-weight: 600;
+    font-size: clamp(1.375rem, 3.4vw, 2.5rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-decoration: none;
+    border-bottom: 1px solid var(--cizgi);
+    padding-bottom: 0.08em;
+    transition: border-color var(--hizli) var(--egri);
+
+    /* Uzun adres dar ekranda taşmasın. */
+    overflow-wrap: anywhere;
+  }
+
+  .eposta:hover,
+  .eposta:focus-visible {
+    border-color: currentColor;
+  }
+
+  .alt {
+    margin-top: var(--b5);
+  }
+
+  /* ---------- Form ----------
+     Kutu yok, dolgu yok. Alanlar tek çizgiyle tanımlı. Gölge ve
+     yuvarlatma kullanılmıyor. */
+
+  .alan {
+    display: grid;
+    gap: var(--b2);
+  }
+
+  .alan + .alan {
+    margin-top: var(--b5);
+  }
+
+  label {
+    font-weight: 500;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ikincil);
+  }
+
+  .opsiyonel {
+    margin-inline-start: var(--b2);
+    text-transform: none;
+    letter-spacing: 0.04em;
+  }
+
+  input[type='text'],
+  input[type='email'],
+  textarea {
+    width: 100%;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--alan-kenar);
+    border-radius: 0;
+    padding: var(--b2) 0;
+    font-size: 1.0625rem;
+    color: var(--metin);
+    transition: border-color var(--hizli) var(--egri);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 5.5rem;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    border-bottom-color: var(--metin);
+    border-bottom-width: 2px;
+    padding-bottom: calc(var(--b2) - 1px);
+  }
+
+  .onay {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--b3);
+    align-items: start;
+    margin-top: var(--b6);
+  }
+
+  .onay input {
+    margin-top: 0.3em;
+    accent-color: var(--metin);
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .onay label {
+    font-size: 0.8125rem;
+    letter-spacing: 0;
+    text-transform: none;
+    line-height: 1.5;
+  }
+
+  .gonder {
+    margin-top: var(--b5);
+    padding: var(--b3) var(--b5);
+    background-color: var(--metin);
+    color: var(--zemin);
+    font-weight: 500;
+    font-size: 0.9375rem;
+    border-radius: 0;
+    transition: opacity var(--hizli) var(--egri);
+  }
+
+  .gonder:hover {
+    opacity: 0.86;
+  }
+
+  .gonder[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  .durum {
+    margin-top: var(--b4);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--metin);
+  }
+
+  .durum:empty {
+    display: none;
+  }
+
+  .kapali {
+    align-self: start;
+  }
+</style>
+
+<script>
+  /* Form gönderimi.
+
+     Site statik olduğu için istek doğrudan tarayıcıdan gidiyor.
+     Web3Forms asıl alıcı; Discord bildirimi varsa ek olarak
+     gönderiliyor ve başarısız olursa kullanıcıya yansıtılmıyor,
+     çünkü mesaj zaten e-postayla ulaşmış oluyor. */
+
+  const form = document.querySelector<HTMLFormElement>('.form')
+
+  if (form) {
+    const dugme = form.querySelector<HTMLButtonElement>('.gonder')!
+    const durum = form.querySelector<HTMLParagraphElement>('.durum')!
+
+    const {
+      adres = '',
+      anahtar = '',
+      discord = '',
+      basari = '',
+      hata = '',
+      gonderiliyor = '',
+      gonder = '',
+    } = form.dataset
+
+    form.addEventListener('submit', async (olay) => {
+      olay.preventDefault()
+
+      /* novalidate elle konuldu ki tarayıcı balonu yerine kendi
+         akışımız çalışsın, ama kontrolü yine tarayıcıya yaptırıyoruz. */
+      if (!form.checkValidity()) {
+        form.reportValidity()
+        return
+      }
+
+      dugme.disabled = true
+      dugme.textContent = gonderiliyor
+      durum.textContent = ''
+
+      const veri = new FormData(form)
+      const ad = String(veri.get('ad') ?? '')
+      const eposta = String(veri.get('eposta') ?? '')
+      const sirketAdi = String(veri.get('sirket') ?? '')
+      const mesaj = String(veri.get('mesaj') ?? '')
+
+      try {
+        const yanit = await fetch(adres, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            access_key: anahtar,
+            subject: `Monti Labs sitesinden mesaj: ${ad}`,
+            from_name: 'Monti Labs sitesi',
+            name: ad,
+            email: eposta,
+            company: sirketAdi,
+            message: mesaj,
+          }),
+        })
+
+        if (!yanit.ok) throw new Error(String(yanit.status))
+
+        durum.textContent = basari
+        form.reset()
+
+        if (discord) {
+          const satirlar = [`**${ad}** <${eposta}>`, sirketAdi && `Şirket: ${sirketAdi}`, '', mesaj]
+          void fetch(discord, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: satirlar.filter(Boolean).join('\n').slice(0, 1900) }),
+          }).catch(() => {
+            /* Bildirim düşmezse kullanıcıyı ilgilendirmiyor. */
+          })
+        }
+      } catch {
+        durum.textContent = hata
+      } finally {
+        dugme.disabled = false
+        dugme.textContent = gonder
+      }
+    })
+  }
+</script>

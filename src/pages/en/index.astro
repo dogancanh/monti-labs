@@ -1,0 +1,31 @@
+---
+/* English home page. Same structure as the Turkish one; only the
+   language and the copy set differ. Section markup lives in the
+   components, so the two pages cannot drift apart. */
+
+import { getCollection } from 'astro:content'
+
+import Temel from '../../layouts/Temel.astro'
+import Giris from '../../components/Giris.astro'
+import Isler from '../../components/Isler.astro'
+import Durus from '../../components/Durus.astro'
+import Monti from '../../components/Monti.astro'
+import Iletisim from '../../components/Iletisim.astro'
+
+import { icerikAl } from '../../icerik'
+
+const dil = 'en' as const
+const icerik = icerikAl(dil)
+
+const isler = (await getCollection('isler', ({ data }) => !data.onayBekliyor)).sort(
+  (a, b) => a.data.sira - b.data.sira,
+)
+---
+
+<Temel dil={dil} icerik={icerik} sayfa="/">
+  <Giris dil={dil} icerik={icerik} isler={isler} />
+  <Isler dil={dil} icerik={icerik} isler={isler} />
+  <Durus icerik={icerik} />
+  <Monti icerik={icerik} />
+  <Iletisim icerik={icerik} />
+</Temel>

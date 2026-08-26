@@ -1,227 +1,38 @@
 ---
-/* Biz kimiz.
+/* Eski /biz-kimiz adresi.
 
-   Ana sayfadan ayrı bir sayfa. Şirket anlatısı ve kurucular burada.
-   Uydurma biyografi yok: kurucular için yalnızca ad ve unvan var,
-   içerik geldiğinde src/data/kurucular.ts doldurulacak. */
+   Sayfa kaldırıldı; içeriği ana sayfadaki Monti bölümüne indi. Adres
+   paylaşılmış veya dizine girmiş olabileceği için 404'e düşürmek yerine
+   yönlendiriliyor.
 
-import Temel from '../layouts/Temel.astro'
-import { kurucular, portreVar } from '../data/kurucular'
-import { icerik } from '../data/icerik'
-import { sirket } from '../data/site'
-import { yol } from '../lib/yol'
+   Statik sunumda sunucu tarafı yönlendirme yok, bu yüzden meta refresh
+   ve canonical birlikte kullanılıyor. Betik kapalıysa da bağlantı elle
+   tıklanabiliyor. */
 
-const s = icerik.bizKimizSayfasi
-const portreli = portreVar()
-const epostaBelli = !sirket.eposta.startsWith('DEGISTIR')
+import { yol, mutlak } from '../lib/yol'
+import { sayfaYolu } from '../lib/diller'
+import { icerikAl } from '../icerik'
+
+const hedef = sayfaYolu('/#monti', 'tr')
+const hedefKanonik = sayfaYolu('/', 'tr')
+const icerik = icerikAl('tr')
 ---
 
-<Temel baslik="Biz kimiz" aciklama={s.ozet}>
-  <article>
-    {/* Sayfa başı */}
-    <header class="bas">
-      <div class="kabuk">
-        <h1 class="ifade" data-acil>{s.baslik}</h1>
-        <p class="bas-ozet" data-acil style="--gecikme:100ms">{s.ozet}</p>
-      </div>
-    </header>
-
-    {/* Kurucular */}
-    <section class="bolum" aria-labelledby="kurucular-baslik">
-      <div class="kabuk">
-        <p class="kunye uste" id="kurucular-baslik" data-acil>{s.kurucularKunye}</p>
-
-        <ul class="kurucular" role="list">
-          {
-            kurucular.map((k, i) => (
-              <li class="kurucu" data-acil style={`--gecikme:${i * 90}ms`}>
-                {portreli && k.gorsel && (
-                  <img
-                    class="kurucu-portre"
-                    src={yol(k.gorsel)}
-                    alt={k.gorselAlt ?? ''}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                )}
-
-                <h2 class="kurucu-ad">{k.ad}</h2>
-                <p class="kurucu-unvan">{k.unvan}</p>
-
-                {k.uzunTanim && <p class="kurucu-tanim">{k.uzunTanim}</p>}
-
-                {k.odakAlanlari && k.odakAlanlari.length > 0 && (
-                  <ul class="kurucu-odak" role="list">
-                    {k.odakAlanlari.map((o) => (
-                      <li class="kunye">{o}</li>
-                    ))}
-                  </ul>
-                )}
-
-                {(k.linkedin || k.github) && (
-                  <p class="kurucu-baglantilar">
-                    {k.linkedin && (
-                      <a href={k.linkedin} rel="noopener">
-                        LinkedIn
-                      </a>
-                    )}
-                    {k.github && (
-                      <a href={k.github} rel="noopener">
-                        GitHub
-                      </a>
-                    )}
-                  </p>
-                )}
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-    </section>
-
-    {/* Yaklaşım */}
-    <section class="yaklasim bolum" aria-labelledby="yaklasim-baslik">
-      <div class="kabuk yaklasim-ic">
-        <p class="kunye uste" id="yaklasim-baslik" data-acil>{s.yaklasimKunye}</p>
-        <div>
-          <h2 class="bolum-baslik" data-acil style="--gecikme:60ms">{s.yaklasimBaslik}</h2>
-          <p class="yaklasim-metin" data-acil style="--gecikme:120ms">{s.yaklasimMetin}</p>
-        </div>
-      </div>
-    </section>
-
-    {/* Kapanış */}
-    <section class="kapanis ml-inverse" aria-labelledby="kapanis-baslik">
-      <div class="kabuk">
-        <h2 class="ifade" id="kapanis-baslik" data-acil>{s.cagriBaslik}</h2>
-        <div class="kapanis-eylemler" data-acil style="--gecikme:100ms">
-          <a class="dugme-birincil" href={yol('/#iletisim')}>
-            {s.cagri}
-            <span class="ok" aria-hidden="true">→</span>
-          </a>
-          {
-            epostaBelli && (
-              <a class="baglanti-ok" href={`mailto:${sirket.eposta}`}>
-                {sirket.eposta}
-              </a>
-            )
-          }
-        </div>
-      </div>
-    </section>
-  </article>
-</Temel>
-
-<style>
-  .bas {
-    padding-block: clamp(3.5rem, 2rem + 6vw, 7rem) clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
-  }
-
-  .bas h1 {
-    max-width: 14ch;
-  }
-
-  .bas-ozet {
-    margin-block-start: clamp(1.75rem, 1rem + 2vw, 2.5rem);
-    max-width: 48ch;
-    font-size: var(--ml-text-xl);
-    line-height: var(--ml-leading-snug);
-    color: var(--ml-ink-700);
-  }
-
-  .kurucular {
-    display: grid;
-    gap: clamp(2.5rem, 1.5rem + 3vw, 4rem);
-  }
-
-  .kurucu {
-    padding-block-start: var(--ml-space-6);
-    border-block-start: 1px solid var(--ml-border);
-  }
-
-  .kurucu-portre {
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    margin-block-end: var(--ml-space-6);
-    border-radius: var(--ml-radius-sm);
-  }
-
-  .kurucu-ad {
-    font-size: clamp(1.375rem, 1.1rem + 1.2vw, 1.875rem);
-    line-height: var(--ml-leading-tight);
-    letter-spacing: var(--ml-tracking-tight);
-  }
-
-  .kurucu-unvan {
-    margin-block-start: var(--ml-space-2);
-    font-family: var(--ml-font-mono);
-    font-size: var(--ml-text-xs);
-    letter-spacing: var(--ml-tracking-wide);
-    text-transform: uppercase;
-    color: var(--ml-text-muted);
-  }
-
-  .kurucu-tanim {
-    margin-block-start: var(--ml-space-4);
-    max-width: 46ch;
-    color: var(--ml-text-body);
-  }
-
-  .kurucu-odak {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--ml-space-2) var(--ml-space-6);
-    margin-block-start: var(--ml-space-4);
-  }
-
-  .kurucu-baglantilar {
-    display: flex;
-    gap: var(--ml-space-6);
-    margin-block-start: var(--ml-space-4);
-    font-size: var(--ml-text-sm);
-  }
-
-  .yaklasim-metin {
-    margin-block-start: var(--ml-space-6);
-    max-width: 52ch;
-    font-size: var(--ml-text-lg);
-    color: var(--ml-text-body);
-  }
-
-  .kapanis {
-    padding-block: clamp(4.5rem, 3rem + 7vw, 9rem);
-  }
-
-  .kapanis h2 {
-    max-width: 15ch;
-    color: var(--ml-cream-base);
-  }
-
-  .kapanis-eylemler {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--ml-space-6) var(--ml-space-8);
-    margin-block-start: clamp(2.5rem, 1.5rem + 3vw, 3.5rem);
-  }
-
-  @media (min-width: 700px) {
-    .kurucular {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: 860px) {
-    .yaklasim-ic {
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 8fr);
-      gap: clamp(2rem, 5vw, 6rem);
-      align-items: start;
-    }
-
-    .yaklasim-ic .uste {
-      margin-block-end: 0;
-    }
-  }
-</style>
+<!doctype html>
+<html lang="tr-TR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Monti Labs</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta http-equiv="refresh" content={`0; url=${hedef}`} />
+    <link rel="canonical" href={mutlak(hedefKanonik, Astro.site)} />
+    <link rel="icon" href={yol('/favicon.svg')} type="image/svg+xml" />
+  </head>
+  <body>
+    <p><a href={hedef}>{icerik.monti.kunye}</a></p>
+    <script is:inline define:vars={{ hedef }}>
+      window.location.replace(hedef)
+    </script>
+  </body>
+</html>
