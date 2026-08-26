@@ -2,6 +2,12 @@
 
 import { useState } from 'react';
 
+// U+FE0E (text presentation selector) forces iOS Safari to render these arrows
+// as plain glyphs instead of colour emoji.
+const ARROW_UR = '↗︎'; // ↗
+const ARROW_DOWN = '↓︎'; // ↓
+const COPY_MARK = '©︎'; // ©
+
 const copy = {
   tr: {
     nav: ['Ürünler', 'Çözümler', 'Biz kimiz'],
@@ -152,10 +158,10 @@ export default function Home() {
             <p>{text.intro}</p>
             <div className="hero-actions">
               <a className="button button-primary" href="#contact">
-                {text.primary}<span aria-hidden="true">↗</span>
+                {text.primary}<span aria-hidden="true">{ARROW_UR}</span>
               </a>
               <a className="text-link" href="#work">
-                {text.secondary}<span aria-hidden="true">↓</span>
+                {text.secondary}<span aria-hidden="true">{ARROW_DOWN}</span>
               </a>
             </div>
           </div>
@@ -198,7 +204,7 @@ export default function Home() {
                     <p>{text.work[0][0]}</p>
                   </div>
                   <span className="project-action">{text.work[0][1]}</span>
-                  <span className="card-arrow" aria-hidden="true">↗</span>
+                  <span className="card-arrow" aria-hidden="true">{ARROW_UR}</span>
                 </a>
                 <article className="project-card project-guardi">
                   <div className="project-meta"><span>02</span><span>iOS Product</span></div>
@@ -207,7 +213,7 @@ export default function Home() {
                     <p>{text.work[1][0]}</p>
                   </div>
                   <span className="project-action">{text.work[1][1]}</span>
-                  <span className="card-arrow" aria-hidden="true">↗</span>
+                  <span className="card-arrow" aria-hidden="true">{ARROW_UR}</span>
                 </article>
                 <a
                   className="project-card project-ecce"
@@ -222,7 +228,7 @@ export default function Home() {
                     <p>{text.work[2][0]}</p>
                   </div>
                   <span className="project-action">{text.work[2][1]}</span>
-                  <span className="card-arrow" aria-hidden="true">↗</span>
+                  <span className="card-arrow" aria-hidden="true">{ARROW_UR}</span>
                 </a>
               </div>
             ))}
@@ -243,7 +249,7 @@ export default function Home() {
               <span>{number}</span>
               <h3>{title}</h3>
               <p>{description}</p>
-              <i aria-hidden="true">↗</i>
+              <i aria-hidden="true">{ARROW_UR}</i>
             </article>
           ))}
         </div>
@@ -276,7 +282,9 @@ export default function Home() {
             <div><h3>İsmail Semih Pehlivan</h3><p>{text.founderRole}</p></div>
           </article>
           <article>
-            <div className="founder-monogram">DH</div>
+            <div className="founder-photo">
+              <img src="/dogancan-hirdavatcioglu.png" alt="Doğancan Hırdavatçıoğlu" />
+            </div>
             <div><h3>Doğancan Hırdavatçıoğlu</h3><p>{text.founderRole}</p></div>
           </article>
         </div>
@@ -296,7 +304,7 @@ export default function Home() {
           <label><span>{text.company}</span><input name="company" autoComplete="organization" /></label>
           <label><span>{text.message}</span><textarea name="message" rows={4} required /></label>
           <div className="form-footer">
-            <button className="button form-submit" type="submit">{text.send}<span aria-hidden="true">↗</span></button>
+            <button className="button form-submit" type="submit">{text.send}<span aria-hidden="true">{ARROW_UR}</span></button>
             <small>{text.formNote}</small>
           </div>
         </form>
@@ -305,7 +313,7 @@ export default function Home() {
       <footer className="site-footer">
         <a className="wordmark footer-wordmark" href="#top" aria-label="Monti Labs ana sayfa"><img src="/monti-mark-cream.png" alt="" /><span>Monti Labs</span></a>
         <p>{text.footerLine}</p>
-        <div><span>© {new Date().getFullYear()}</span><a href="mailto:hello@montilabs.co">hello@montilabs.co ↗</a></div>
+        <div><span>{COPY_MARK} {new Date().getFullYear()}</span><a href="mailto:hello@montilabs.co">hello@montilabs.co <span aria-hidden="true">{ARROW_UR}</span></a></div>
       </footer>
 
     </main>
