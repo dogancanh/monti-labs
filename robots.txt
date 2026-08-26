@@ -1,0 +1,4 @@
+# Site henüz yayına hazır değil, içerik taslak durumda.
+# Açmak için src/data/site.ts icindeki ARAMA_MOTORLARINA_ACIK degerini true yapin.
+User-agent: *
+Disallow: /

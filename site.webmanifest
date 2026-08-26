@@ -1,0 +1,35 @@
+{
+  "name": "Monti Labs",
+  "short_name": "Monti",
+  "lang": "tr",
+  "dir": "ltr",
+  "theme_color": "#1F2FA0",
+  "background_color": "#FBF6EA",
+  "display": "standalone",
+  "start_url": "/monti-labs/",
+  "scope": "/monti-labs/",
+  "icons": [
+    {
+      "src": "/monti-labs/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/monti-labs/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/monti-labs/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/monti-labs/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
