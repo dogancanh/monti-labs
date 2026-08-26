@@ -260,7 +260,9 @@ export default function Home() {
         </div>
         <div className="founders">
           <article>
-            <div className="founder-monogram">İS</div>
+            <div className="founder-photo">
+              <img src="/ismail-semih-pehlivan.png" alt="İsmail Semih Pehlivan" />
+            </div>
             <div><h3>İsmail Semih Pehlivan</h3><p>{text.founderRole}</p></div>
           </article>
           <article>
