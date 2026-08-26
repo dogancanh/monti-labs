@@ -13,15 +13,15 @@ const copy = {
       'Kendi dijital ürünlerimizi ve şirketlere özel web, mobil, SaaS ve otomasyon çözümlerini tasarlıyor, geliştiriyor ve büyütüyoruz.',
     primary: 'Görüşme planla',
     secondary: 'Ürünleri keşfet',
-    workLabel: 'Monti Labs seçkisi',
+    workLabel: 'MONTI LABS SEÇKİSİ',
     workTitle: 'Gerçek problemler. Çalışan ürünler.',
     work: [
-      ['Tattoo bakımını stüdyoya özel, kişisel bir deneyime dönüştüren B2B SaaS.', 'Projeyi incele'],
-      ['İstenmeyen arama ve mesajları telefona ulaşmadan eleyen iPhone uygulaması.', 'Yakında'],
-      ['Bir showroomu uçtan uca dijital mağazaya dönüştüren e-ticaret deneyimi.', 'Canlı site'],
+      ['Dövme bakımını stüdyoya özel, kişisel bir deneyime dönüştüren B2B SaaS.', 'PROJEYİ İNCELE'],
+      ['İstenmeyen arama ve mesajları telefona ulaşmadan eleyen iPhone uygulaması.', 'YAKINDA'],
+      ['Bir showroomu uçtan uca dijital mağazaya dönüştüren e-ticaret deneyimi.', 'CANLI SİTE'],
     ],
-    nextShift: 'Next Shift · Yeni sürüm yakında',
-    solutionsLabel: 'Ne geliştiriyoruz',
+    nextShift: 'NEXT SHIFT · Yeni sürüm yakında',
+    solutionsLabel: 'NE GELİŞTİRİYORUZ',
     solutionsTitle: 'İhtiyaca göre teknoloji. Her işte ürün aklı.',
     solutionsIntro:
       'Hazır bir kalıba değil, çözülmesi gereken probleme bakıyoruz. Sonuç; kullanışlı, ölçeklenebilir ve işinize gerçekten oturan bir dijital sistem.',
@@ -29,24 +29,24 @@ const copy = {
       ['01', 'Web & SaaS', 'Operasyonu tek yerde toplayan platformlar, paneller ve ölçeklenebilir B2B ürünler.'],
       ['02', 'Mobil ürünler', 'Fikirden mağaza yayınına; hızlı, sezgisel ve kalıcı mobil deneyimler.'],
       ['03', 'Otomasyon', 'Tekrarlanan işleri ortadan kaldıran, sistemleri birbirine bağlayan akışlar.'],
-      ['04', 'Internal tools', 'Ekibinizin çalışma biçimine özel CRM, dashboard ve operasyon araçları.'],
+      ['04', 'İç operasyon araçları', 'Ekibinizin çalışma biçimine özel CRM, yönetim paneli ve operasyon araçları.'],
     ],
-    principleKicker: 'The Monti way',
+    principleKicker: 'THE MONTI WAY',
     principleTitle: 'Sadece teslim etmiyoruz. Sahipleniyoruz.',
     principleText:
       'Ürün stratejisini, operasyonu ve teknolojiyi aynı masada çözüyoruz. Çünkü iyi yazılım yalnızca çalışmaz; işi ileri taşır.',
-    aboutLabel: 'Biz kimiz',
+    aboutLabel: 'BİZ KİMİZ',
     aboutTitle: 'İki kurucu. Tek ürün zihniyeti.',
     aboutText:
       'Monti Labs; ürün geliştirmeyi, mühendisliği ve iş süreçlerini birlikte düşünen iki yazılım mühendisi tarafından kuruldu.',
-    founderRole: 'Co-Founder',
-    contactLabel: 'Yeni bir şey başlatalım',
+    founderRole: 'CO-FOUNDER',
+    contactLabel: 'YENİ BİR ŞEY BAŞLATALIM',
     contactTitle: 'Aklınızdaki işi çalışan bir ürüne dönüştürelim.',
     contactText: 'Kısaca ihtiyacınızı anlatın. En doğru ilk adımla size dönelim.',
-    name: 'Adınız',
-    email: 'İş e-postanız',
-    company: 'Şirket',
-    message: 'Ne geliştirmek istiyorsunuz?',
+    name: 'ADINIZ',
+    email: 'İŞ E-POSTANIZ',
+    company: 'ŞİRKET',
+    message: 'NE GELİŞTİRMEK İSTİYORSUNUZ?',
     send: 'Talebi gönder',
     formNote: 'Genellikle 1–2 iş günü içinde dönüş yaparız.',
     footerLine: 'Digital products. Built with intent.',
@@ -62,15 +62,15 @@ const copy = {
       'We design, build and grow our own digital products — and bespoke web, mobile, SaaS and automation solutions for ambitious companies.',
     primary: 'Start a conversation',
     secondary: 'Explore our work',
-    workLabel: 'Selected by Monti Labs',
+    workLabel: 'SELECTED BY MONTI LABS',
     workTitle: 'Real problems. Working products.',
     work: [
-      ['B2B SaaS turning tattoo aftercare into a personal, studio-branded experience.', 'View project'],
-      ['An iPhone app that filters unwanted calls and texts before they reach you.', 'Coming soon'],
-      ['An end-to-end digital storefront built from the showroom up.', 'Live site'],
+      ['B2B SaaS turning tattoo aftercare into a personal, studio-branded experience.', 'VIEW PROJECT'],
+      ['An iPhone app that filters unwanted calls and texts before they reach you.', 'COMING SOON'],
+      ['An end-to-end digital storefront built from the showroom up.', 'LIVE SITE'],
     ],
-    nextShift: 'Next Shift · New release coming soon',
-    solutionsLabel: 'What we build',
+    nextShift: 'NEXT SHIFT · New release coming soon',
+    solutionsLabel: 'WHAT WE BUILD',
     solutionsTitle: 'The right technology. A product mindset, every time.',
     solutionsIntro:
       'We start with the problem, not a predefined stack. The result is a useful, scalable digital system that fits the way your business actually works.',
@@ -80,22 +80,22 @@ const copy = {
       ['03', 'Automation', 'Connected workflows that remove repetitive work and operational drag.'],
       ['04', 'Internal tools', 'Purpose-built CRM, dashboards and operation tools shaped around your team.'],
     ],
-    principleKicker: 'The Monti way',
+    principleKicker: 'THE MONTI WAY',
     principleTitle: 'We do not just deliver. We take ownership.',
     principleText:
       'We solve product strategy, operations and technology at the same table. Because good software does more than run — it moves the business forward.',
-    aboutLabel: 'Who we are',
+    aboutLabel: 'WHO WE ARE',
     aboutTitle: 'Two founders. One product mindset.',
     aboutText:
       'Monti Labs was founded by two software engineers who think about product, engineering and business operations as one system.',
-    founderRole: 'Co-Founder',
-    contactLabel: 'Start something new',
+    founderRole: 'CO-FOUNDER',
+    contactLabel: 'START SOMETHING NEW',
     contactTitle: 'Let’s turn what you have in mind into a working product.',
     contactText: 'Tell us what you need. We will come back with the clearest first step.',
-    name: 'Your name',
-    email: 'Work email',
-    company: 'Company',
-    message: 'What would you like to build?',
+    name: 'YOUR NAME',
+    email: 'WORK EMAIL',
+    company: 'COMPANY',
+    message: 'WHAT WOULD YOU LIKE TO BUILD?',
     send: 'Send inquiry',
     formNote: 'We usually respond within 1–2 business days.',
     footerLine: 'Digital products. Built with intent.',
@@ -111,9 +111,17 @@ const palettes = [
   { id: 'ink', label: 'Ink', color: '#161616' },
 ];
 
+const typeSystems = [
+  { id: 'studio', label: 'Studio' },
+  { id: 'swiss', label: 'Swiss' },
+  { id: 'editorial', label: 'Editorial' },
+  { id: 'mono', label: 'Mono' },
+];
+
 export default function Home() {
   const [language, setLanguage] = useState<'tr' | 'en'>('tr');
   const [palette, setPalette] = useState('cobalt');
+  const [typeSystem, setTypeSystem] = useState('studio');
   const text = copy[language];
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -127,7 +135,7 @@ export default function Home() {
   };
 
   return (
-    <main className="site-shell" data-palette={palette}>
+    <main className="site-shell" data-palette={palette} data-type={typeSystem}>
       <header className="site-header">
         <a className="wordmark" href="#top" aria-label="Monti Labs ana sayfa">
           <img src="/monti-logo-horizontal.png" alt="Monti Labs" />
@@ -190,33 +198,51 @@ export default function Home() {
           <h2>{text.workTitle}</h2>
         </div>
         <div className="work-rail" aria-label="Seçilmiş projeler">
-          <a className="project-card project-inkstay" href="https://inkstay.app" target="_blank" rel="noreferrer">
-            <div className="project-meta"><span>01</span><span>B2B SaaS</span></div>
-            <div>
-              <h3>Inkstay</h3>
-              <p>{text.work[0][0]}</p>
-            </div>
-            <span className="project-action">{text.work[0][1]}</span>
-            <span className="card-arrow" aria-hidden="true">↗</span>
-          </a>
-          <article className="project-card project-guardi">
-            <div className="project-meta"><span>02</span><span>iOS Product</span></div>
-            <div>
-              <h3>Guardi</h3>
-              <p>{text.work[1][0]}</p>
-            </div>
-            <span className="project-action">{text.work[1][1]}</span>
-            <span className="card-arrow" aria-hidden="true">↗</span>
-          </article>
-          <a className="project-card project-ecce" href="https://eccehome.com.tr/magaza" target="_blank" rel="noreferrer">
-            <div className="project-meta"><span>03</span><span>Commerce</span></div>
-            <div>
-              <h3>Ecce Home</h3>
-              <p>{text.work[2][0]}</p>
-            </div>
-            <span className="project-action">{text.work[2][1]}</span>
-            <span className="card-arrow" aria-hidden="true">↗</span>
-          </a>
+          <div className="work-track">
+            {[0, 1].map((setIndex) => (
+              <div className="work-set" aria-hidden={setIndex === 1 || undefined} key={setIndex}>
+                <a
+                  className="project-card project-inkstay"
+                  href="https://inkstay.app"
+                  target="_blank"
+                  rel="noreferrer"
+                  tabIndex={setIndex === 1 ? -1 : undefined}
+                >
+                  <div className="project-meta"><span>01</span><span>B2B SaaS</span></div>
+                  <div className="project-content">
+                    <h3>Inkstay</h3>
+                    <p>{text.work[0][0]}</p>
+                  </div>
+                  <span className="project-action">{text.work[0][1]}</span>
+                  <span className="card-arrow" aria-hidden="true">↗</span>
+                </a>
+                <article className="project-card project-guardi">
+                  <div className="project-meta"><span>02</span><span>iOS Product</span></div>
+                  <div className="project-content">
+                    <h3>Guardi</h3>
+                    <p>{text.work[1][0]}</p>
+                  </div>
+                  <span className="project-action">{text.work[1][1]}</span>
+                  <span className="card-arrow" aria-hidden="true">↗</span>
+                </article>
+                <a
+                  className="project-card project-ecce"
+                  href="https://eccehome.com.tr/magaza"
+                  target="_blank"
+                  rel="noreferrer"
+                  tabIndex={setIndex === 1 ? -1 : undefined}
+                >
+                  <div className="project-meta"><span>03</span><span>Commerce</span></div>
+                  <div className="project-content">
+                    <h3>Ecce Home</h3>
+                    <p>{text.work[2][0]}</p>
+                  </div>
+                  <span className="project-action">{text.work[2][1]}</span>
+                  <span className="card-arrow" aria-hidden="true">↗</span>
+                </a>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="next-shift"><span className="live-dot" />{text.nextShift}</div>
       </section>
@@ -298,23 +324,44 @@ export default function Home() {
         <div><span>© {new Date().getFullYear()}</span><a href="mailto:hello@montilabs.co">hello@montilabs.co ↗</a></div>
       </footer>
 
-      <aside className="palette-lab" aria-label="Tasarım paleti seçici">
-        <span>Palette lab</span>
-        <div>
-          {palettes.map((item) => (
-            <button
-              aria-label={`${item.label} paletini seç`}
-              aria-pressed={palette === item.id}
-              className={palette === item.id ? 'active' : ''}
-              key={item.id}
-              onClick={() => setPalette(item.id)}
-              style={{
-                '--swatch': item.color,
-                '--swatch-secondary': 'secondary' in item ? item.secondary : item.color,
-              } as React.CSSProperties}
-              type="button"
-            />
-          ))}
+      <aside className="design-lab" aria-label="Tasarım seçenekleri">
+        <div className="lab-group palette-group">
+          <span>Color</span>
+          <div>
+            {palettes.map((item) => (
+              <button
+                aria-label={`${item.label} paletini seç`}
+                aria-pressed={palette === item.id}
+                className={palette === item.id ? 'active' : ''}
+                key={item.id}
+                onClick={() => setPalette(item.id)}
+                style={{
+                  '--swatch': item.color,
+                  '--swatch-secondary': 'secondary' in item ? item.secondary : item.color,
+                } as React.CSSProperties}
+                type="button"
+              />
+            ))}
+          </div>
+        </div>
+        <span className="lab-divider" aria-hidden="true" />
+        <div className="lab-group type-group">
+          <span>Type</span>
+          <div>
+            {typeSystems.map((item, index) => (
+              <button
+                aria-label={`${item.label} tipografisini seç`}
+                aria-pressed={typeSystem === item.id}
+                className={`type-${item.id} ${typeSystem === item.id ? 'active' : ''}`}
+                key={item.id}
+                onClick={() => setTypeSystem(item.id)}
+                title={item.label}
+                type="button"
+              >
+                A{index + 1}
+              </button>
+            ))}
+          </div>
         </div>
         <small>Preview only</small>
       </aside>
