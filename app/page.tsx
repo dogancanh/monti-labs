@@ -16,7 +16,7 @@ const copy = {
     workLabel: 'MONTI LABS SEÇKİSİ',
     workTitle: 'Gerçek problemler. Çalışan ürünler.',
     work: [
-      ['Dövme bakımını stüdyoya özel, kişisel bir deneyime dönüştüren B2B SaaS.', 'PROJEYİ İNCELE'],
+      ['Stüdyoların QR ile kişisel bakım planı gönderdiği, adımları ve hatırlatmaları otomatik takip eden B2B SaaS.', 'PROJEYİ İNCELE'],
       ['İstenmeyen arama ve mesajları telefona ulaşmadan eleyen iPhone uygulaması.', 'YAKINDA'],
       ['Bir showroomu uçtan uca dijital mağazaya dönüştüren e-ticaret deneyimi.', 'CANLI SİTE'],
     ],
@@ -65,7 +65,7 @@ const copy = {
     workLabel: 'SELECTED BY MONTI LABS',
     workTitle: 'Real problems. Working products.',
     work: [
-      ['B2B SaaS turning tattoo aftercare into a personal, studio-branded experience.', 'VIEW PROJECT'],
+      ['B2B SaaS for studios to deliver personal aftercare plans by QR and automate every step and reminder — no customer account required.', 'VIEW PROJECT'],
       ['An iPhone app that filters unwanted calls and texts before they reach you.', 'COMING SOON'],
       ['An end-to-end digital storefront built from the showroom up.', 'LIVE SITE'],
     ],
