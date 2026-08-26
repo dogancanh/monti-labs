@@ -129,10 +129,7 @@ export default function Home() {
     <main className="site-shell" data-palette={palette}>
       <header className="site-header">
         <a className="wordmark" href="#top" aria-label="Monti Labs ana sayfa">
-          <span className="wordmark-mark" aria-hidden="true">
-            M
-          </span>
-          <span>Monti Labs</span>
+          <img src="/monti-logo-horizontal.png" alt="Monti Labs" />
         </a>
 
         <nav className="main-nav" aria-label="Ana menü">
@@ -177,7 +174,7 @@ export default function Home() {
           <div className="orbit orbit-two" />
           <div className="orbit-core">
             <span>BUILD</span>
-            <strong>M/L</strong>
+            <img src="/monti-mark-cobalt.png" alt="" />
             <span>SHIP</span>
           </div>
           <p className="orbit-note note-one">PRODUCTS</p>
@@ -242,7 +239,7 @@ export default function Home() {
       </section>
 
       <section className="principle">
-        <div className="principle-orbit" aria-hidden="true"><span>M/L</span></div>
+        <div className="principle-orbit" aria-hidden="true"><img src="/monti-mark-cream.png" alt="" /></div>
         <div className="principle-copy">
           <p>{text.principleKicker}</p>
           <h2>{text.principleTitle}</h2>
@@ -293,7 +290,7 @@ export default function Home() {
       </section>
 
       <footer className="site-footer">
-        <a className="wordmark footer-wordmark" href="#top"><span className="wordmark-mark">M</span><span>Monti Labs</span></a>
+        <a className="wordmark footer-wordmark" href="#top" aria-label="Monti Labs ana sayfa"><img src="/monti-mark-cream.png" alt="" /><span>Monti Labs</span></a>
         <p>{text.footerLine}</p>
         <div><span>© {new Date().getFullYear()}</span><a href="mailto:hello@montilabs.co">hello@montilabs.co ↗</a></div>
       </footer>
