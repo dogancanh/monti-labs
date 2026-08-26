@@ -5,7 +5,7 @@ import { useState } from 'react';
 const copy = {
   tr: {
     nav: ['Ürünler', 'Çözümler', 'Biz kimiz'],
-    badge: 'Bağımsız teknoloji şirketi · Türkiye → Global',
+    badge: 'Digital products · Business systems',
     titleA: 'Fikirleri',
     titleB: 'çalışan sistemlere',
     titleC: 'dönüştürüyoruz.',
@@ -54,7 +54,7 @@ const copy = {
   },
   en: {
     nav: ['Products', 'Solutions', 'About'],
-    badge: 'Independent technology company · Türkiye → Global',
+    badge: 'Digital products · Business systems',
     titleA: 'We turn ideas',
     titleB: 'into systems',
     titleC: 'that work.',
