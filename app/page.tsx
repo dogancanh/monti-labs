@@ -103,25 +103,8 @@ const copy = {
   },
 };
 
-const palettes = [
-  { id: 'cobalt', label: 'Cobalt', color: '#5147f5' },
-  { id: 'monti', label: 'Monti', color: '#263BAA', secondary: '#ECEFF1' },
-  { id: 'ember', label: 'Ember', color: '#ff5a36' },
-  { id: 'forest', label: 'Forest', color: '#1c6b52' },
-  { id: 'ink', label: 'Ink', color: '#161616' },
-];
-
-const typeSystems = [
-  { id: 'studio', label: 'Studio' },
-  { id: 'swiss', label: 'Swiss' },
-  { id: 'editorial', label: 'Editorial' },
-  { id: 'mono', label: 'Mono' },
-];
-
 export default function Home() {
   const [language, setLanguage] = useState<'tr' | 'en'>('tr');
-  const [palette, setPalette] = useState('cobalt');
-  const [typeSystem, setTypeSystem] = useState('studio');
   const text = copy[language];
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -135,7 +118,7 @@ export default function Home() {
   };
 
   return (
-    <main className="site-shell" data-palette={palette} data-type={typeSystem}>
+    <main className="site-shell">
       <header className="site-header">
         <a className="wordmark" href="#top" aria-label="Monti Labs ana sayfa">
           <img src="/monti-logo-horizontal.png" alt="Monti Labs" />
@@ -325,47 +308,6 @@ export default function Home() {
         <div><span>© {new Date().getFullYear()}</span><a href="mailto:hello@montilabs.co">hello@montilabs.co ↗</a></div>
       </footer>
 
-      <aside className="design-lab" aria-label="Tasarım seçenekleri">
-        <div className="lab-group palette-group">
-          <span>Color</span>
-          <div>
-            {palettes.map((item) => (
-              <button
-                aria-label={`${item.label} paletini seç`}
-                aria-pressed={palette === item.id}
-                className={palette === item.id ? 'active' : ''}
-                key={item.id}
-                onClick={() => setPalette(item.id)}
-                style={{
-                  '--swatch': item.color,
-                  '--swatch-secondary': 'secondary' in item ? item.secondary : item.color,
-                } as React.CSSProperties}
-                type="button"
-              />
-            ))}
-          </div>
-        </div>
-        <span className="lab-divider" aria-hidden="true" />
-        <div className="lab-group type-group">
-          <span>Type</span>
-          <div>
-            {typeSystems.map((item, index) => (
-              <button
-                aria-label={`${item.label} tipografisini seç`}
-                aria-pressed={typeSystem === item.id}
-                className={`type-${item.id} ${typeSystem === item.id ? 'active' : ''}`}
-                key={item.id}
-                onClick={() => setTypeSystem(item.id)}
-                title={item.label}
-                type="button"
-              >
-                A{index + 1}
-              </button>
-            ))}
-          </div>
-        </div>
-        <small>Preview only</small>
-      </aside>
     </main>
   );
 }
