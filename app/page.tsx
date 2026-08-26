@@ -5,7 +5,7 @@ import { useState } from 'react';
 const copy = {
   tr: {
     nav: ['Ürünler', 'Çözümler', 'Biz kimiz'],
-    badge: 'Digital products · Business systems',
+    badge: 'DIGITAL PRODUCTS · BUSINESS SYSTEMS',
     titleA: 'Fikirleri',
     titleB: 'çalışan sistemlere',
     titleC: 'dönüştürüyoruz.',
@@ -54,7 +54,7 @@ const copy = {
   },
   en: {
     nav: ['Products', 'Solutions', 'About'],
-    badge: 'Digital products · Business systems',
+    badge: 'DIGITAL PRODUCTS · BUSINESS SYSTEMS',
     titleA: 'We turn ideas',
     titleB: 'into systems',
     titleC: 'that work.',
@@ -105,6 +105,7 @@ const copy = {
 
 const palettes = [
   { id: 'cobalt', label: 'Cobalt', color: '#5147f5' },
+  { id: 'monti', label: 'Monti', color: '#263BAA', secondary: '#FFF4D6' },
   { id: 'ember', label: 'Ember', color: '#ff5a36' },
   { id: 'forest', label: 'Forest', color: '#1c6b52' },
   { id: 'ink', label: 'Ink', color: '#161616' },
@@ -305,7 +306,10 @@ export default function Home() {
               className={palette === item.id ? 'active' : ''}
               key={item.id}
               onClick={() => setPalette(item.id)}
-              style={{ '--swatch': item.color } as React.CSSProperties}
+              style={{
+                '--swatch': item.color,
+                '--swatch-secondary': 'secondary' in item ? item.secondary : item.color,
+              } as React.CSSProperties}
               type="button"
             />
           ))}
