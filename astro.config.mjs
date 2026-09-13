@@ -2,19 +2,25 @@
 import { defineConfig } from 'astro/config'
 import sitemap from '@astrojs/sitemap'
 
-/* GitHub Pages yapılandırması.
+/* İki yayın hedefi.
 
-   Site kullanıcı sayfası değil proje sayfası olarak yayınlanıyor, bu yüzden
-   adres bir alt yolda duruyor: https://dogancanh.github.io/monti-labs/
-   `base` bu yüzden zorunlu. Koddaki mutlak yollar src/lib/yol.ts içindeki
-   yardımcıyla üretilir; elle yazılan "/..." yolları taban yolunu atlar ve
-   yayında kırılır.
+   montilabs.co (Vercel): site kökte duruyor, taban yolu yok. Vercel
+   derleme ortamında VERCEL=1 ve VERCEL_PROJECT_PRODUCTION_URL tanımlı;
+   ikisi de kendiliğinden okunuyor, panelde ayar gerekmiyor.
 
-   Kendi alan adınıza geçtiğinizde: TABAN değerini '/' yapın, SITE_URL'i
-   alan adınızla değiştirin ve public/CNAME dosyasını ekleyin. */
+   dogancanh.github.io/monti-labs (GitHub Pages): proje sayfası olduğu
+   için adres bir alt yolda duruyor ve `base` zorunlu. Koddaki mutlak
+   yollar src/lib/yol.ts içindeki yardımcıyla üretilir; elle yazılan
+   "/..." yolları taban yolunu atlar ve alt yolda kırılır.
 
-const SITE_URL = process.env.SITE_URL ?? 'https://dogancanh.github.io'
-const TABAN = process.env.BASE_PATH ?? '/monti-labs'
+   SITE_URL ve BASE_PATH ortam değişkenleri ikisini de ezer. */
+
+const VERCEL = process.env.VERCEL === '1'
+const VERCEL_ALAN = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? 'montilabs.co'
+
+const SITE_URL =
+  process.env.SITE_URL ?? (VERCEL ? `https://${VERCEL_ALAN}` : 'https://dogancanh.github.io')
+const TABAN = process.env.BASE_PATH ?? (VERCEL ? '/' : '/monti-labs')
 
 /* Türkçe varsayılan dil ve önek almıyor, İngilizce /en altında duruyor.
    Alt yolla birlikte adresler şöyle çıkıyor:
