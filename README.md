@@ -151,10 +151,9 @@ taşıyoruz, tutkulu ekip, müşteri odaklı.
 `src/content/calismalar/` altında, her ürün bir markdown dosyası.
 Yeni ürün ekleme adımları o klasördeki `OKUBENI.md` içinde.
 
-Vitrinde üç iş var: EcceHome, Montipass, NextShift. Inkstay ve Guardi
+Vitrinde üç iş var: EcceHome, Montipass, Next Shift. Inkstay ve Guardi
 dosyaları ve görselleri duruyor, `onayBekliyor: true` ile yayın dışı.
-Montipass ve NextShift'in ekran görseli henüz yok; kart görsel alanını
-boş cam panel olarak basıyor.
+Görsel kaynakları ve kırpma notları `scripts/is-gorselleri.mjs` içinde.
 
 ### Şirket bilgileri
 

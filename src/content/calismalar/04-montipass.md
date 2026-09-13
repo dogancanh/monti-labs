@@ -14,7 +14,12 @@ kart: kobalt
 adres: https://montipass.com
 sira: 2
 onayBekliyor: false
-# Ekran görseli henüz yok. Kart, görsel alanını boş cam panel olarak
-# basıyor. Görsel eklenince rol: ana ile buraya girin.
-gorseller: []
+gorseller:
+  - src: /isler/montipass-panel
+    alt:
+      tr: Montipass işletme paneli. Günün özeti, ödüle yakın müşteri sayısı, son hareketler ve canlı cüzdan kartı önizlemesi.
+      en: The Montipass business panel. Summary for the day, customers close to a reward, recent activity and a live wallet pass preview.
+    en: 1548
+    boy: 1069
+    rol: ana
 ---

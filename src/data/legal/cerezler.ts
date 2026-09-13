@@ -74,7 +74,7 @@ export const cerezler: YasalMetin = {
       baslik: 'İletişim',
       paragraflar: [
         'Bu politika hakkında sorunuz varsa bize yazabilirsiniz.',
-        'E-posta: merhaba@montilabs.com\nAdres: [ADRES]',
+        'E-posta: info@montilabs.co\nAdres: [ADRES]',
       ],
     },
   ],

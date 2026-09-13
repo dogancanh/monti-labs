@@ -1,8 +1,8 @@
 ---
-ad: NextShift
+ad: Next Shift
 tanim:
-  tr: Vardiyalı çalışanlar için iOS uygulaması. Vardiya takvimi, hatırlatmalar ve aylık çalışma özeti tek ekranda.
-  en: An iOS app for shift workers. Shift calendar, reminders and a monthly summary on one screen.
+  tr: Vardiyalı çalışanlar için iOS uygulaması. Bir sonraki vardiyaya canlı geri sayım; uygulamada, kilit ekranında ve Dynamic Island'da.
+  en: An iOS app for shift workers. A live countdown to the next shift, in the app, on the Lock Screen and in the Dynamic Island.
 kunye:
   tr: iOS uygulaması, ürün tasarımı ve geliştirme
   en: iOS app, product design and development
@@ -11,9 +11,22 @@ platform:
   en: iOS
 sahiplik: monti
 kart: cam
+adres: https://apps.apple.com/tr/app/next-shift-work-countdown/id6805859767
 sira: 3
 onayBekliyor: false
-# Ekran görseli henüz yok. Kart, görsel alanını boş cam panel olarak
-# basıyor. Görsel eklenince rol: ana ile buraya girin.
-gorseller: []
+gorseller:
+  - src: /isler/nextshift-takvim
+    alt:
+      tr: Next Shift takvim görünümü. Ağustos 2026, vardiya günleri renkli çizgiyle işaretli.
+      en: The Next Shift calendar view. August 2026, shift days marked with a coloured line.
+    en: 1090
+    boy: 980
+    rol: ana
+  - src: /isler/nextshift-ikon
+    alt:
+      tr: Next Shift uygulama ikonu
+      en: The Next Shift app icon
+    en: 256
+    boy: 256
+    rol: ikon
 ---

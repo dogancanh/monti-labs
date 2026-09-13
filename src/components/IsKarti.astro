@@ -33,8 +33,17 @@ const ustEtiket = `${icerik.isler.sahiplik[data.sahiplik]} · ${data.platform[di
 const ana = data.gorseller.find((g) => g.rol === 'ana')
 
 /* Bağlantı metni adresin kendisi, "siteyi aç" değil. Ziyaretçi nereye
-   gideceğini görüyor. */
-const alanAdi = data.adres ? new URL(data.adres).hostname.replace(/^www\./, '') : null
+   gideceğini görüyor. App Store bağlantısında alan adı bir şey
+   söylemediği için mağazanın adı yazılıyor. */
+const alanAdi = (() => {
+  if (!data.adres) return null
+  const sunucu = new URL(data.adres).hostname.replace(/^www\./, '')
+  return sunucu === 'apps.apple.com' ? 'App Store' : sunucu
+})()
+
+/* Dikey görsel (telefon ekranı) üstten ortalanarak, yatay görsel sol
+   üstten kırpılıyor. */
+const dikey = ana ? ana.boy > ana.en : false
 ---
 
 <article
@@ -58,7 +67,7 @@ const alanAdi = data.adres ? new URL(data.adres).hostname.replace(/^www\./, '') 
     }
   </div>
 
-  <div class="gorsel">
+  <div class:list={['gorsel', { dikey }]}>
     {ana && <Resim {...ana} alt={ana.alt[dil]} gecYukle={sira > 0} />}
   </div>
 </article>
@@ -146,6 +155,10 @@ const alanAdi = data.adres ? new URL(data.adres).hostname.replace(/^www\./, '') 
   .gorsel :global(img) {
     object-fit: cover;
     object-position: left top;
+  }
+
+  .gorsel.dikey :global(img) {
+    object-position: center top;
   }
 
   /* ---------- Geniş kart ----------

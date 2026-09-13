@@ -18,7 +18,7 @@ export const kvkk: YasalMetin = {
       baslik: 'Veri sorumlusunun kimliği',
       paragraflar: [
         'Kişisel verileriniz, 6698 sayılı Kişisel Verilerin Korunması Kanunu uyarınca veri sorumlusu sıfatıyla aşağıda bilgileri yer alan şirket tarafından işlenmektedir.',
-        'Unvan: [RESMİ UNVAN]\nAdres: [ADRES]\nE-posta: merhaba@montilabs.com\nTelefon: [TELEFON]\nVergi dairesi ve numarası: [VERGİ DAİRESİ / NO]\nMERSİS numarası: [MERSİS NO]',
+        'Unvan: [RESMİ UNVAN]\nAdres: [ADRES]\nE-posta: info@montilabs.co\nTelefon: [TELEFON]\nVergi dairesi ve numarası: [VERGİ DAİRESİ / NO]\nMERSİS numarası: [MERSİS NO]',
       ],
     },
     {
@@ -78,7 +78,7 @@ export const kvkk: YasalMetin = {
       baslik: 'Başvuru yolu',
       paragraflar: [
         'Haklarınıza ilişkin taleplerinizi, Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ\'de belirtilen usullere uygun olarak iletebilirsiniz.',
-        'E-posta: merhaba@montilabs.com\nPosta: [ADRES]',
+        'E-posta: info@montilabs.co\nPosta: [ADRES]',
         'Başvurunuz, talebin niteliğine göre en kısa sürede ve en geç otuz gün içinde sonuçlandırılır. İşlemin ayrıca bir maliyet gerektirmesi hâlinde Kurulca belirlenen tarifedeki ücret alınabilir.',
       ],
     },

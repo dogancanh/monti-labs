@@ -67,7 +67,7 @@ export const gizlilik: YasalMetin = {
       baslik: 'Ne kadar saklıyoruz',
       paragraflar: [
         'İletişim formundan gelen mesajlar [SAKLAMA SÜRESİ] süreyle saklanır, sonrasında silinir.',
-        'Daha erken silinmesini isterseniz merhaba@montilabs.com adresine yazmanız yeterlidir.',
+        'Daha erken silinmesini isterseniz info@montilabs.co adresine yazmanız yeterlidir.',
       ],
     },
     {
@@ -82,7 +82,7 @@ export const gizlilik: YasalMetin = {
       baslik: 'Haklarınız',
       paragraflar: [
         'Kişisel verilerinize ilişkin haklarınız 6698 sayılı Kanun\'un 11. maddesinde düzenlenmiştir. Hakların tam listesi ve başvuru yolu KVKK Aydınlatma Metni sayfasında yer alır.',
-        'Başvurularınızı merhaba@montilabs.com adresine iletebilirsiniz.',
+        'Başvurularınızı info@montilabs.co adresine iletebilirsiniz.',
       ],
     },
     {
@@ -101,7 +101,7 @@ export const gizlilik: YasalMetin = {
       baslik: 'İletişim',
       paragraflar: [
         'Bu politika hakkında sorunuz varsa bize yazabilirsiniz.',
-        'E-posta: merhaba@montilabs.com\nAdres: [ADRES]',
+        'E-posta: info@montilabs.co\nAdres: [ADRES]',
       ],
     },
   ],

@@ -57,10 +57,43 @@ const isler = [
   { kaynak: 'guardi/guardi-ekran-02-sms.png', ad: 'guardi-sms', genislik: 720, kirp: CIHAZ },
   { kaynak: 'guardi/guardi-icon-yeni-keskin-1024.png', ad: 'guardi-ikon', genislik: 256, ikon: true },
 
-  // ---- EcceHome: geniş tarayıcı sunumu ----
+  /* ---- EcceHome: geniş tarayıcı sunumu ----
+
+     Yakalama 1800 x 1125 görüş alanında. Not: sitenin logo fontu
+     (Handel Gothic) Chromium'da OTS hatasıyla düşüyor ve logo yedek
+     fonta iniyor; yakalama sırasında font onarılıp sayfaya enjekte
+     edildi. Kalıcı çözüm eccehome-web tarafında (font dosyasının cmap
+     dil kimlikleri sıfırlanmalı). */
   { kaynak: 'eccehome/eccehome-vitrin-masaustu.png', ad: 'eccehome-vitrin', genislik: 1800 },
   { kaynak: 'eccehome/eccehome-vitrin-mobil.png', ad: 'eccehome-mobil', genislik: 600 },
   { kaynak: 'eccehome/eccehome-logo.png', ad: 'eccehome-logo', genislik: 478, ikon: true },
+
+  /* ---- Montipass: işletme paneli ----
+
+     montipass.com/demo, 1800 x 1125. Üst şerit ve sol menü kırpılıyor,
+     geriye panelin kendisi kalıyor: özet kartları, hareketler ve canlı
+     cüzdan kartı. */
+  {
+    kaynak: 'montipass/montipass-panel-masaustu.png',
+    ad: 'montipass-panel',
+    genislik: 1548,
+    kirp: { x: 252 / 1800, y: 56 / 1125, en: 1548 / 1800, boy: 1069 / 1125 },
+  },
+
+  /* ---- Next Shift: App Store görseli ----
+
+     Kaynak App Store pazarlama kompozisyonu (1284 x 2778): üstte
+     başlık, altta telefon ve önde 2 derece eğik duran takvim kartı.
+     Kart önce düzleştirildi (nextshift-ekran-04-duz.png; PIL ile
+     rotate(-2)), sonra yalnızca kartın içi kırpılıyor. Başlık, telefon
+     çerçevesi ve bej zemin dışarıda kalıyor. */
+  {
+    kaynak: 'nextshift/nextshift-ekran-04-duz.png',
+    ad: 'nextshift-takvim',
+    genislik: 1090,
+    kirp: { x: 90 / 1284, y: 1095 / 2778, en: 1090 / 1284, boy: 980 / 2778 },
+  },
+  { kaynak: 'nextshift/nextshift-ikon-1024.png', ad: 'nextshift-ikon', genislik: 256, ikon: true },
 ]
 
 const kb = (n) => (n / 1024).toFixed(0) + 'KB'
