@@ -186,14 +186,19 @@ Discord bildirimi `PUBLIC_DISCORD_WEBHOOK` ortam değişkeninden
 okunuyor. Adres depoda durmuyor, `scripts/yayinla.sh` enjekte ediyor.
 Ayrıntı ve risk notu `src/data/site.ts` içinde.
 
-### Kendi alan adına geçiş
+### montilabs.co (Vercel)
 
-1. `astro.config.mjs` içinde `TABAN` değerini `'/'` yapın.
-2. `SITE_URL` değerini alan adınızla değiştirin.
-3. `public/CNAME` dosyasını ekleyin.
+Asıl adres. Vercel projesi bu depoya bağlı olduğunda `main`'e her
+gönderim yayına çıkar. `astro.config.mjs` Vercel ortamını (`VERCEL=1`)
+kendisi tanıyor: taban yolu `/`, site adresi
+`VERCEL_PROJECT_PRODUCTION_URL`. Panelde ortam değişkeni gerekmiyor.
 
-Koddaki bütün yollar yardımcılardan üretildiği için başka değişiklik
-gerekmiyor.
+GitHub Pages adresi (`dogancanh.github.io/monti-labs`) alt yolda
+duruyor ve `scripts/yayinla.sh` ile yayınlanıyor; Actions iş akışı
+faturalama nedeniyle çalışmıyor.
+
+Koddaki bütün yollar yardımcılardan üretildiği için iki hedef için de
+başka değişiklik gerekmiyor.
 
 ---
 
