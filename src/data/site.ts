@@ -129,11 +129,6 @@ export const DISCORD_BILDIRIM = {
    İki dilli oldukları için src/icerik/tr.ts ve src/icerik/en.ts
    içine taşındılar. */
 
-/* Yasal metinler yalnızca Türkçe yayınlanıyor, bu yüzden tek liste.
-   İngilizce sayfa da bu adreslere bağlanır ve alt bilgide dil notu
-   gösterilir. */
-export const yasalSayfalar = [
-  { etiket: 'KVKK Aydınlatma Metni', hedef: '/kvkk' },
-  { etiket: 'Gizlilik Politikası', hedef: '/gizlilik' },
-  { etiket: 'Çerez Politikası', hedef: '/cerezler' },
-]
+/* Yasal sayfa bağlantıları da içerik dosyalarında (altBilgi.yasal).
+   Sayfalar yalnızca Türkçe yayınlanıyor ama alt bilgideki etiketleri
+   sayfanın diline uyuyor; İngilizce sayfada dil notu gösteriliyor. */

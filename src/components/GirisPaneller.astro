@@ -1,0 +1,410 @@
+---
+/* Girişteki yüzen paneller.
+
+   Üç cam panel, üç iş adımı: solda tasarım (tel çizim), ortada yayında
+   olan ürün, sağda mühendislik (yazılan kod). Orta panelin parçaları
+   sayfa açılırken sırayla yerine oturuyor; küçük parçalar halinde
+   yayına alma fikrinin görseli bu. Bir kez oynuyor, sonra duruyor.
+   Yüzme döngüsü sürüyor; üç panel farklı fazda.
+
+   Gerçek arayüz değil, temsil. Bu yüzden yalnızca çizgi ve kutu var,
+   metin yok. Köşe etiketleri okunur ve dile bağlı.
+
+   Ölçüler iki takım: geniş ekran ve dar ekran. Dönüşüm yerine değişken
+   kullanılıyor ki etiketler okunmaz boyuta inmesin. */
+
+interface Props {
+  etiketler: {
+    tasarim: string
+    yayinda: string
+    muhendislik: string
+  }
+}
+
+const { etiketler } = Astro.props
+---
+
+<div class="kume" aria-hidden="true">
+  <div class="panel sol">
+    <span class="p-etiket">{etiketler.tasarim}</span>
+    <div class="tel">
+      <span class="tel-cizgi" style="width:45%"></span>
+      <span class="tel-cizgi soluk" style="width:75%"></span>
+      <div class="tel-alan">
+        <svg viewBox="0 0 40 40" preserveAspectRatio="none">
+          <line x1="0" y1="0" x2="40" y2="40"></line>
+          <line x1="40" y1="0" x2="0" y2="40"></line>
+        </svg>
+      </div>
+      <span class="tel-hap" style="width:55%"></span>
+    </div>
+  </div>
+
+  <div class="panel orta">
+    <div class="p-ust">
+      <span class="p-etiket">{etiketler.yayinda}</span>
+      <span class="surum"><i class="nokta"></i>v1.4</span>
+    </div>
+    <span class="parca bar dolu" style="width:50%"></span>
+    <span class="parca bar yari" style="width:80%;--g:1"></span>
+    <div class="parca blok" style="--g:2">
+      <span class="bar ince" style="width:60%;grid-column:span 2"></span>
+      <span class="kutu"></span>
+      <span class="kutu"></span>
+    </div>
+    <span class="parca hap" style="--g:3"></span>
+  </div>
+
+  <div class="panel sag">
+    <span class="p-etiket">{etiketler.muhendislik}</span>
+    <div class="kod">
+      <div class="satir">
+        <span class="kod-bar kobalt" style="width:18%"></span>
+        <span class="kod-bar yazi yari" style="--w:40%;--g:0"></span>
+      </div>
+      <div class="satir ic">
+        <span class="kod-bar soluk" style="width:30%"></span>
+        <span class="kod-bar yazi dolu" style="--w:28%;--g:1"></span>
+      </div>
+      <div class="satir ic">
+        <span class="kod-bar soluk" style="width:22%"></span>
+        <span class="kod-bar yazi kobalt" style="--w:45%;--g:2"></span>
+      </div>
+      <div class="satir">
+        <span class="kod-bar yari" style="width:12%"></span>
+      </div>
+    </div>
+    <div class="p-alt"><span>main</span><i class="nokta"></i></div>
+  </div>
+</div>
+
+<style>
+  /* Geniş ekran ölçüleri. Mockup'taki 880 x 320 küme. */
+  .kume {
+    --kume-en: 55rem;
+    --kume-boy: 20rem;
+    --sol-en: 15rem;
+    --sol-boy: 12.5rem;
+    --orta-en: 21.25rem;
+    --orta-boy: 18.75rem;
+    --sag-en: 13.75rem;
+    --sag-boy: 11.25rem;
+    --dolgu: 1.25rem;
+    --orta-dolgu: 1.5rem;
+    --etiket: 0.625rem;
+    --kose: 1.5rem;
+    --orta-kose: 1.75rem;
+    --sol-x: 0px;
+    --sol-y: 0px;
+    --orta-y: -2.5rem;
+    --sag-x: 0px;
+    --sag-y: 1.25rem;
+
+    position: relative;
+    width: min(100%, var(--kume-en));
+    height: var(--kume-boy);
+    margin-inline: auto;
+    color: var(--metin);
+  }
+
+  @media (max-width: 48rem) {
+    .kume {
+      --kume-boy: 16.25rem;
+      --sol-en: 6.5rem;
+      --sol-boy: 9.375rem;
+      --orta-en: 11.875rem;
+      --orta-boy: 14.375rem;
+      --sag-en: 6.5rem;
+      --sag-boy: 8.75rem;
+      --dolgu: 0.75rem;
+      --orta-dolgu: 1rem;
+      --etiket: 0.5rem;
+      --kose: 1.125rem;
+      --orta-kose: 1.375rem;
+      --sol-x: 0.5rem;
+      --sol-y: 1.25rem;
+      --orta-y: -1.875rem;
+      --sag-x: 0.5rem;
+      --sag-y: 1.875rem;
+    }
+  }
+
+  .panel {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--dolgu) * 0.5);
+    padding: var(--dolgu);
+    border-radius: var(--kose);
+    background-color: var(--cam);
+    border: 1px solid var(--cam-cizgi);
+    will-change: transform;
+    animation: yuz var(--yuzme) ease-in-out infinite;
+  }
+
+  .sol {
+    left: var(--sol-x);
+    bottom: var(--sol-y);
+    width: var(--sol-en);
+    height: var(--sol-boy);
+  }
+
+  .orta {
+    left: 50%;
+    bottom: var(--orta-y);
+    width: var(--orta-en);
+    height: var(--orta-boy);
+    margin-left: calc(var(--orta-en) / -2);
+    padding: var(--orta-dolgu);
+    gap: calc(var(--orta-dolgu) * 0.5);
+    border-radius: var(--orta-kose);
+    background-color: rgb(251 246 234 / 0.08);
+    border-color: rgb(251 246 234 / 0.25);
+    box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.35);
+    animation-delay: 0.8s;
+    z-index: 1;
+  }
+
+  .sag {
+    right: var(--sag-x);
+    bottom: var(--sag-y);
+    width: var(--sag-en);
+    height: var(--sag-boy);
+    animation-delay: 1.6s;
+  }
+
+  /* Köşe etiketleri */
+  .p-etiket {
+    font-size: var(--etiket);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ikincil);
+    line-height: 1.2;
+  }
+
+  .p-ust,
+  .p-alt {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--etiket);
+    color: var(--ikincil);
+  }
+
+  .surum {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .nokta {
+    display: inline-block;
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 50%;
+    background-color: var(--metin);
+  }
+
+  /* Sol panel: tel çizim */
+  .tel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--dolgu) * 0.4);
+    padding: calc(var(--dolgu) * 0.5);
+    border: 1.5px dashed rgb(251 246 234 / 0.35);
+    border-radius: calc(var(--kose) * 0.42);
+    min-height: 0;
+  }
+
+  .tel-cizgi {
+    height: 0.375rem;
+    border: 1px solid rgb(251 246 234 / 0.4);
+    border-radius: 3px;
+  }
+
+  .tel-cizgi.soluk {
+    border-color: rgb(251 246 234 / 0.25);
+  }
+
+  .tel-alan {
+    flex: 1;
+    position: relative;
+    border: 1px dashed rgb(251 246 234 / 0.25);
+    border-radius: calc(var(--kose) * 0.25);
+    min-height: 0;
+  }
+
+  .tel-alan svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.35;
+  }
+
+  .tel-alan line {
+    stroke: var(--metin);
+    stroke-width: 0.6;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .tel-hap {
+    height: 1.25rem;
+    border: 1px solid rgb(251 246 234 / 0.4);
+    border-radius: 999px;
+  }
+
+  @media (max-width: 48rem) {
+    .tel-cizgi.soluk {
+      display: none;
+    }
+
+    .tel-hap {
+      height: 0.875rem;
+    }
+  }
+
+  /* Orta panel: yayındaki ürün, parçaları sırayla oturur */
+  .bar {
+    display: block;
+    height: 0.625rem;
+    border-radius: 5px;
+    background-color: var(--metin);
+  }
+
+  .bar.yari {
+    height: 0.5rem;
+    background-color: rgb(251 246 234 / 0.3);
+  }
+
+  .bar.ince {
+    height: 0.5rem;
+    background-color: rgb(251 246 234 / 0.5);
+  }
+
+  .blok {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    align-content: start;
+    padding: calc(var(--orta-dolgu) * 0.6);
+    border-radius: calc(var(--orta-kose) * 0.5);
+    background-color: var(--kobalt);
+    min-height: 0;
+  }
+
+  .kutu {
+    height: 2.125rem;
+    border-radius: 0.5rem;
+    background-color: rgb(251 246 234 / 0.12);
+  }
+
+  .hap {
+    display: block;
+    height: 2.375rem;
+    border-radius: 999px;
+    background-color: var(--metin);
+  }
+
+  @media (max-width: 48rem) {
+    .blok {
+      display: block;
+    }
+
+    .blok > * {
+      display: none;
+    }
+
+    .hap {
+      height: 1.875rem;
+    }
+  }
+
+  .parca {
+    --g: 0;
+    animation: belir var(--temel) var(--egri) both;
+    animation-delay: calc(400ms + var(--g) * 350ms);
+  }
+
+  /* Sağ panel: yazılan kod */
+  .kod {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5625rem;
+    min-height: 0;
+  }
+
+  .satir {
+    display: flex;
+    gap: 0.375rem;
+  }
+
+  .satir.ic {
+    padding-left: 0.75rem;
+  }
+
+  .kod-bar {
+    display: block;
+    height: 0.375rem;
+    border-radius: 3px;
+    background-color: rgb(251 246 234 / 0.25);
+  }
+
+  .kod-bar.kobalt {
+    background-color: #4a5fcc;
+  }
+
+  .kod-bar.yari {
+    background-color: rgb(251 246 234 / 0.45);
+  }
+
+  .kod-bar.dolu {
+    background-color: var(--metin);
+  }
+
+  .kod-bar.yazi {
+    --g: 0;
+    width: var(--w);
+    animation: yaz 1.2s steps(12) both;
+    animation-delay: calc(600ms + var(--g) * 300ms);
+  }
+
+  @keyframes yaz {
+    from {
+      width: 0;
+    }
+    to {
+      width: var(--w);
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .kod {
+      gap: 0.4375rem;
+    }
+
+    .kod-bar {
+      height: 0.3125rem;
+    }
+
+    .satir:last-child {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panel {
+      animation: none;
+    }
+
+    .parca,
+    .kod-bar.yazi {
+      animation: none;
+    }
+  }
+</style>

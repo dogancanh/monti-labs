@@ -1,17 +1,19 @@
 ---
 /* Sabit başlık.
 
-   Kendi zemini yok. Blur yok, kenarlık yok, kaydırınca beliren bir
-   arka plan da yok. Altındaki bölümün metin rengini alıyor, o kadar.
-   Renk kaynağı --aktif-metin; ZeminKatmani içindeki gözlemci yazıyor.
+   Solda işaret ve kelime markası, ortada hap biçimli menü, sağda dil
+   değiştirici. Menünün son öğesi (İletişim) dolu düğme.
+
+   Başlık en üstteyken saydam. Sayfa kaydıkça arkasına zeminin
+   yarı saydam bir kopyası ve bulanıklık geliyor; yoksa kağıt renkli
+   iş kartının üstünden geçerken yazı kaybolur. Renk kaynağı
+   --aktif-zemin ve --aktif-metin; ZeminKatmani içindeki gözlemci
+   yazıyor. Yasal sayfalarda bu sayede kağıt renginde durur.
 
    Logo çözümü: başlıkta yalnızca işaret kullanılıyor, kelime markası
-   sitenin kendi tipografisiyle diziliyor. Tam logo kilidi alt bilgide
-   ve OG görselinde duruyor. Böylece başlıkta iki farklı font çakışmıyor.
+   sitenin kendi tipografisiyle diziliyor. Tam logo kilidi alt bilgide.
 
-   JavaScript kapalıyken başlık sabit olmaktan çıkıyor, çünkü rengini
-   güncelleyecek bir şey kalmıyor ve açık bölümlerin üstünde okunmaz
-   hale gelirdi. */
+   JavaScript kapalıyken başlık sabit olmaktan çıkıyor. */
 
 import Isaret from './Isaret.astro'
 import DilDegistirici from './DilDegistirici.astro'
@@ -39,33 +41,36 @@ const { gezinti } = icerik
 
   <div class="kabuk sira">
     <a class="marka" href={sayfaYolu('/', dil)}>
-      <Isaret yukseklik="0.72em" />
+      <Isaret yukseklik="1em" />
       <span class="ad">Monti Labs</span>
     </a>
 
-    <nav class="genis" aria-label={icerik.isler.kunye}>
-      <ul class="baglantilar">
+    <nav class="genis" aria-label={gezinti.anaMenu}>
+      <ul class="hap">
         {
           gezinti.baglantilar.map((b) => (
             <li>
-              <a class="bag" href={sayfaYolu(b.hedef, dil)}>
+              <a class="oge" href={sayfaYolu(b.hedef, dil)}>
                 {b.etiket}
               </a>
             </li>
           ))
         }
       </ul>
-      {!tekDil && <DilDegistirici dil={dil} icerik={icerik} sayfa={sayfa} />}
     </nav>
 
-    <button class="dar acma" type="button" aria-expanded="false" aria-controls="menu">
-      <span class="ac">{gezinti.menuAc}</span>
-      <span class="kapa">{gezinti.menuKapat}</span>
-    </button>
+    <div class="sag">
+      {!tekDil && <DilDegistirici dil={dil} icerik={icerik} sayfa={sayfa} class="genis" />}
+
+      <button class="dar acma" type="button" aria-expanded="false" aria-controls="menu">
+        <span class="ac">{gezinti.menuAc}</span>
+        <span class="kapa">{gezinti.menuKapat}</span>
+      </button>
+    </div>
   </div>
 
   <div class="panel" id="menu" hidden>
-    <nav class="kabuk panel-ic" aria-label={gezinti.menuAc}>
+    <nav class="kabuk panel-ic" aria-label={gezinti.anaMenu}>
       <ul class="panel-baglantilar">
         {
           gezinti.baglantilar.map((b) => (
@@ -88,14 +93,28 @@ const { gezinti } = icerik
     z-index: 20;
 
     /* Başlığın kendi bölümü olmadığı için tema değişkenlerini etkin
-       bölümden devralıyor. Alt bileşenler (dil değiştirici) yine
-       --metin ve --ikincil okuyor, o yüzden ikisi de yeniden bağlandı. */
+       bölümden devralıyor. */
+    --zemin: var(--aktif-zemin);
     --metin: var(--aktif-metin);
     --ikincil: var(--aktif-ikincil);
-    color: var(--aktif-metin);
+    color: var(--metin);
 
     padding-block: var(--b4);
-    transition: color var(--temel) var(--egri);
+    transition:
+      color var(--temel) var(--egri),
+      background-color var(--temel) var(--egri),
+      padding var(--hizli) var(--egri),
+      border-color var(--temel) var(--egri);
+    border-bottom: 1px solid transparent;
+  }
+
+  /* Kaydırınca cam zemin. */
+  .baslik.kaydi {
+    padding-block: var(--b3);
+    background-color: color-mix(in srgb, var(--zemin) 78%, transparent);
+    border-bottom-color: var(--cizgi);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
   }
 
   html:not(.js) .baslik {
@@ -106,50 +125,67 @@ const { gezinti } = icerik
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--b5);
+    gap: var(--b4);
   }
 
   .marka {
     display: inline-flex;
     align-items: center;
-    gap: 0.55em;
+    gap: 0.6em;
     text-decoration: none;
-    font-variation-settings: 'wdth' 112;
     font-weight: 600;
-    font-size: 1.0625rem;
-    letter-spacing: -0.015em;
+    font-size: 0.9375rem;
+    letter-spacing: -0.01em;
   }
 
   .ad {
     line-height: 1;
   }
 
-  .genis {
+  /* Hap menü */
+  .hap {
     display: flex;
-    align-items: center;
-    gap: var(--b6);
-  }
-
-  .baglantilar {
-    display: flex;
-    align-items: center;
-    gap: var(--b5);
+    gap: 0.375rem;
+    padding: 0.375rem;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--metin) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--metin) 12%, transparent);
     margin: 0;
   }
 
-  .baglantilar .bag {
-    color: inherit;
-    font-size: 0.9375rem;
+  .oge {
+    display: inline-block;
+    padding: 0.375rem 0.875rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    text-decoration: none;
+    color: var(--metin);
+    transition:
+      background-color var(--hizli) var(--egri),
+      color var(--hizli) var(--egri);
   }
 
-  /* Başlıktaki bağlantıların altı boşta durmuyor, üzerine gelince çiziliyor.
-     Renk zaten metin rengi, vurgu rengi değil. */
+  .oge:hover {
+    background-color: color-mix(in srgb, var(--metin) 10%, transparent);
+  }
+
+  .hap li:last-child .oge {
+    background-color: var(--metin);
+    color: var(--zemin);
+  }
+
+  .hap li:last-child .oge:hover {
+    opacity: 0.88;
+  }
+
+  .sag {
+    display: flex;
+    align-items: center;
+    gap: var(--b4);
+  }
 
   .acma {
-    font-weight: 500;
-    font-size: 0.6875rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    font-size: 0.875rem;
     color: inherit;
   }
 
@@ -165,11 +201,12 @@ const { gezinti } = icerik
     display: inline;
   }
 
+  /* Mobil panel */
   .panel {
     position: fixed;
     inset: 0;
     z-index: -1;
-    background-color: var(--aktif-zemin);
+    background-color: var(--zemin);
     display: flex;
     align-items: center;
   }
@@ -193,21 +230,22 @@ const { gezinti } = icerik
   }
 
   .panel-baglantilar a {
-    font-variation-settings: 'wdth' 118;
+    font-variation-settings: 'wdth' 110;
     font-weight: 600;
     font-size: clamp(2.25rem, 9vw, 3.25rem);
     line-height: 1.05;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.03em;
     text-decoration: none;
   }
 
-  /* Geniş ekranda menü düğmesi, dar ekranda bağlantı satırı gizli. */
+  /* Geniş ekranda menü düğmesi, dar ekranda hap menü gizli. */
   .dar {
     display: none;
   }
 
   @media (max-width: 48rem) {
-    .genis {
+    .genis,
+    .sag :global(.genis) {
       display: none;
     }
 
@@ -225,11 +263,24 @@ const { gezinti } = icerik
   html:not(.js) .genis {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--b4);
+    gap: var(--b3);
+  }
+
+  html:not(.js) .hap {
+    flex-wrap: wrap;
   }
 </style>
 
 <script>
+  /* Kaydırınca cam zemin. Eşik 16 piksel; ilk kaydırmada hemen gelir. */
+  const baslik = document.querySelector<HTMLElement>('.baslik')
+
+  if (baslik) {
+    const guncelle = () => baslik.classList.toggle('kaydi', window.scrollY > 16)
+    window.addEventListener('scroll', guncelle, { passive: true })
+    guncelle()
+  }
+
   /* Mobil panel. Açıkken sayfa kaydırması kilitleniyor, Escape kapatıyor,
      odak panelin içinde kalıyor. */
 

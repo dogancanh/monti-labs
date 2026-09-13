@@ -2,16 +2,14 @@
 /* Sabit zemin katmanı.
 
    Sayfanın arkasında duran tek renk alanı. Bölümler saydam olduğu için
-   görünen zemin budur. Kaydırırken etkin bölümün rengini alıyor ve
-   geçişi yapıyor; sayfa oda değiştirmiş gibi oluyor.
+   görünen zemin budur. Ana sayfada bütün bölümler mürekkep temasında,
+   bu yüzden renk hiç değişmiyor; yasal sayfalarda kağıda dönüyor.
+   Gözlemci etkin bölümün renklerini :root üstüne yazıyor ve sabit
+   başlık o renkleri kullanıyor.
 
-   Neden bölüm bazlı değil de tek katman: bölümlerin kendi zeminleri
-   olsaydı sınırda sert bir kesme olurdu ve geçiş hiç görünmezdi.
-
-   Geçiş süresi 640 ms. Tetikleme, gelen bölümün üst kenarı görüş
-   alanının en üst yüzde yirmisine girdiğinde oluyor. Böylece bölümün
-   metni ekranın ortasına gelmeden zemin yerine oturuyor; ara kareler
-   boyunca metin yanlış zeminde kalmıyor.
+   Kartlar data-tema taşımıyor (.kart-* sınıfı kullanıyorlar), yoksa
+   kağıt renkli iş kartı görüş alanına girince sayfa zemini kağıda
+   dönerdi.
 
    JavaScript kapalıyken bu katman ilk rengiyle duruyor ve bölümler
    kendi zeminlerini kendileri basıyor. Bak: temel.css içindeki
@@ -45,8 +43,8 @@
 <script>
   /* Etkin bölümü bulup renklerini :root üstüne yazar.
 
-     Aynı gözlemci, kaydırma sırasında açılan parçaları da (.acilim ve
-     .kayar) görünür yapar. İki iş için iki ayrı gözlemci kurmak yerine
+     Aynı dosya, kaydırma sırasında açılan parçaları da (.kayar)
+     görünür yapar. İki iş için iki ayrı gözlemci kurmak yerine
      tek dosyada toplandı, böylece istemci JavaScript'i küçük kalıyor. */
 
   const kok = document.documentElement
@@ -83,20 +81,20 @@
   }
 
   /* Kaydırma sırasında açılan parçalar. */
-  const acilanlar = document.querySelectorAll('.acilim, .kayar')
+  const acilanlar = document.querySelectorAll('.kayar')
 
   if (acilanlar.length > 0) {
-    const acilimGozlemcisi = new IntersectionObserver(
+    const kayarGozlemcisi = new IntersectionObserver(
       (girisler) => {
         for (const giris of girisler) {
           if (!giris.isIntersecting) continue
           giris.target.classList.add('gorundu')
-          acilimGozlemcisi.unobserve(giris.target)
+          kayarGozlemcisi.unobserve(giris.target)
         }
       },
       { rootMargin: '0px 0px -12% 0px', threshold: 0.1 },
     )
 
-    for (const parca of acilanlar) acilimGozlemcisi.observe(parca)
+    for (const parca of acilanlar) kayarGozlemcisi.observe(parca)
   }
 </script>

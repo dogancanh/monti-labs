@@ -6,7 +6,9 @@
 Astro 5, statik çıktı, sunucu yok. GitHub Pages üzerinde
 `dogancanh.github.io/monti-labs` adresinde yayınlanıyor.
 
-Tasarım yönü: `docs/superpowers/specs/2026-08-26-monti-labs-yeniden-tasarim-design.md`
+Tasarım yönü: Işık. Karar kaydı
+`docs/superpowers/specs/2026-09-13-isik-yonu.md`; önceki kobalt yönünün
+kaydı `2026-08-26-monti-labs-yeniden-tasarim-design.md` içinde duruyor.
 
 ---
 
@@ -27,32 +29,45 @@ yayına almayın.
 
 ## Tasarımın çalışma mantığı
 
-### Zemin katmanı
+### Tek zemin, ışık ve cam
 
-Sayfanın arkasında tek bir sabit renk katmanı var
-(`src/components/ZeminKatmani.astro`). Bölümler saydam; görünen zemin
-o katman.
+Ana sayfa baştan sona mürekkep zeminde. Renk iki yerden geliyor:
+zeminin altından süzülen kobalt ışık (`src/components/Isik.astro`,
+girişte ve iletişim panelinde) ve o ışığın önünde duran cam paneller
+(`.cam`, saydam kağıt ve ince kenar). Bölümler arasında zemin
+değişmiyor; ayrım iş kartlarının zeminiyle yapılıyor: kağıt, kobalt
+degrade, cam.
 
-Her bölüm bir `data-tema` özniteliği taşıyor ve o temanın renklerini
-kendi üstünde tanımlıyor (`--zemin`, `--metin`, `--ikincil`, `--vurgu`,
-`--cizgi`). Kaydırırken bir IntersectionObserver etkin bölümü buluyor
-ve renklerini `:root` üstüne yazıyor. Katman geçişi yapıyor, sayfa oda
-değiştirmiş gibi oluyor.
+Sayfanın arkasındaki sabit renk katmanı (`ZeminKatmani.astro`) ve
+`data-tema` mekanizması duruyor: yasal sayfalar kağıt temasında ve
+sabit başlık rengini etkin bölümden alıyor. Kartlar `data-tema` değil
+`.kart-*` sınıfı taşıyor, yoksa gözlemci kağıt renkli kartı bölüm sanıp
+sayfa zeminini değiştirirdi.
 
-Tetikleme, gelen bölümün üst kenarı görüş alanının en üst yüzde
-yirmisine girdiğinde. Böylece bölümün metni ekranın ortasına gelmeden
-zemin yerine oturuyor ve ara karelerde metin yanlış zeminde kalmıyor.
+Sabit başlık en üstteyken saydam, kaydırınca arkasına yarı saydam
+zemin ve bulanıklık geliyor. Kağıt renkli iş kartının üstünden geçerken
+yazının kaybolmaması için.
 
-JavaScript kapalıyken her bölüm kendi zeminini kendisi basıyor ve sabit
-başlık statik hale geliyor. Site tam olarak çalışmaya devam ediyor,
-yalnızca geçiş animasyonu olmuyor.
+### Hareket
+
+Üç döngü, hepsi dekoratif katmanda: ışığın nefesi (6 s), panellerin
+yüzmesi (5 s, üç panel farklı fazda) ve girişte ışığın imleci 30 px'e
+kadar gecikmeli izlemesi (yalnızca ince işaretçili cihazlarda). Orta
+paneldeki parçalar sayfa açılışında bir kez sırayla oturuyor, sağ
+paneldeki kod bir kez yazılıyor.
+
+Kartlar ve Duruş satırları görüş alanına girerken 16 px alttan
+beliriyor (`.kayar`); iş kartının üstüne gelince görsel 8 px yükseliyor.
+`prefers-reduced-motion` altında hepsi duruyor, son kare kalıyor.
+
+JavaScript kapalıyken bölümler kendi zeminini basıyor, başlık statik
+hale geliyor ve `.kayar` parçalar açık başlıyor.
 
 ### Tipografi
 
 Tek aile: Archivo değişken. Genişlik ekseni yalnızca başlıklarda
-açılıyor (`font-stretch: 106%` ile `118%` arası), metin normal
-genişlikte kalıyor. Tek aileyle iki ayrı ses üretmenin yolu bu.
-Mono font yok.
+açılıyor (`'wdth' 110`), metin normal genişlikte kalıyor. Tek aileyle
+iki ayrı ses üretmenin yolu bu. Mono font yok.
 
 Font `scripts/font-altkume.sh` ile iki parçaya bölünmüş:
 
@@ -74,9 +89,9 @@ Palet `src/styles/temel.css` içindeki tema bloklarında.
 `npm run kontrast` bütün metin ve zemin çiftlerini WCAG 2.1 formülüyle
 hesaplıyor ve AA altında kalan varsa derlemeyi durduruyor.
 
-Guardi ve EcceHome'un özgün marka renkleri açık zeminde metin olarak
-AA geçmiyor. Bu yüzden ikiye ayrıldılar: metin ve bağlantılar koyu
-varyantı kullanıyor, özgün renk yalnızca görsel içinde yaşıyor.
+Üç zemin var: mürekkep (sayfa ve cam kart), kobalt (kart) ve kağıt
+(kart ve yasal sayfalar). Ürünlere özel zemin rengi yok; ürün rengi
+yalnızca ekran görüntüsünün içinde yaşıyor.
 
 Palet değişirse `scripts/kontrast-dogrula.mjs` içindeki liste de
 değişmeli, yoksa doğrulama yanlış değerleri kontrol eder.
@@ -136,6 +151,11 @@ taşıyoruz, tutkulu ekip, müşteri odaklı.
 `src/content/calismalar/` altında, her ürün bir markdown dosyası.
 Yeni ürün ekleme adımları o klasördeki `OKUBENI.md` içinde.
 
+Vitrinde üç iş var: EcceHome, Montipass, NextShift. Inkstay ve Guardi
+dosyaları ve görselleri duruyor, `onayBekliyor: true` ile yayın dışı.
+Montipass ve NextShift'in ekran görseli henüz yok; kart görsel alanını
+boş cam panel olarak basıyor.
+
 ### Şirket bilgileri
 
 `src/data/site.ts`. `DEGISTIR` ile başlayan alanlar arayüzde hiç
@@ -159,8 +179,9 @@ paylaşılabiliyor, ama Google dizine almıyor.
 
 ### Form
 
-Form Web3Forms'a istemci tarafından gönderiliyor. Erişim anahtarı
-boşken form hiç basılmıyor, yerine e-posta adresi kalıyor.
+Form tek alan: e-posta adresi. Web3Forms'a istemci tarafından
+gönderiliyor. Erişim anahtarı boşken form hiç basılmıyor, yerine
+e-posta adresi kalıyor. KVKK onay kutusu duruyor.
 
 Discord bildirimi `PUBLIC_DISCORD_WEBHOOK` ortam değişkeninden
 okunuyor. Adres depoda durmuyor, `scripts/yayinla.sh` enjekte ediyor.

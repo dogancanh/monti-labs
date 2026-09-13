@@ -18,9 +18,11 @@ export const en: Icerik = {
   gezinti: {
     baglantilar: [
       { etiket: 'Work', hedef: '/#isler' },
+      { etiket: 'Where we stand', hedef: '/#durus' },
       { etiket: 'Monti', hedef: '/#monti' },
       { etiket: 'Contact', hedef: '/#iletisim' },
     ],
+    anaMenu: 'Main menu',
     menuAc: 'Menu',
     menuKapat: 'Close',
     dilDegistir: 'Change language',
@@ -28,22 +30,32 @@ export const en: Icerik = {
   },
 
   giris: {
-    baslikSatirlari: ['Built to be used,', 'not demoed.'],
-    altMetin: 'We design and build digital products for businesses. Our own included.',
-    urunlerEtiketi: 'Live now',
+    etiket: 'Monti Labs',
+    baslik: 'From idea to working product.',
+    altMetin:
+      'We design and build digital products for businesses. We show early and ship in small pieces.',
+    birincilCagri: 'Tell us about your project',
+    ikincilCagri: 'See the work',
+    paneller: {
+      tasarim: 'Design',
+      yayinda: 'Live',
+      muhendislik: 'Engineering',
+    },
   },
 
   isler: {
     kunye: 'Work',
+    not: 'Three live, all in daily use',
     sahiplik: {
       monti: 'Monti product',
       musteri: 'Client work',
     },
-    adresCagri: 'Open the site',
+    adresAciklama: 'opens the site in a new tab',
   },
 
   durus: {
     kunye: 'Where we stand',
+    baslik: 'Three promises.',
     ilkeler: [
       {
         baslik: 'We ship in small pieces.',
@@ -74,36 +86,35 @@ export const en: Icerik = {
   iletisim: {
     kunye: 'Contact',
     baslik: 'What do you want to build?',
-    epostaOncesi: 'Write to us',
     altMetin: 'A short message is enough. We reply within {sure}.',
-    formKapali: 'The form is off right now. Email works.',
-    alanlar: {
-      adSoyad: 'Name',
-      eposta: 'Email',
-      sirket: 'Company',
-      mesaj: 'Tell us a little about the project',
-    },
-    opsiyonelEtiketi: 'optional',
-    gonderButonu: 'Send',
+    epostaEtiketi: 'Your email address',
+    epostaYerTutucu: 'Your email address',
+    gonderButonu: 'Let us talk',
     gonderiliyor: 'Sending',
-    basariMesaji: 'Your message reached us. We will reply within {sure}.',
+    basariMesaji: 'We have your address. We will write within {sure}.',
     hataMesaji:
-      'The message did not go through. Check your connection and try again, or write to {eposta}.',
+      'It did not go through. Check your connection and try again, or write to {eposta}.',
+    formKapali: 'The form is off right now. Email works.',
+    dogrudanOncesi: 'or write directly to',
     kvkkOnayOncesi:
-      'By sending this form I agree that my contact details are processed so my request can be reviewed. Details in the ',
+      'I agree that my email address is processed so my request can be reviewed. Details in the ',
     kvkkOnayBaglantiEtiketi: 'privacy notice',
     kvkkOnaySonrasi: ' (Turkish).',
   },
 
   altBilgi: {
-    kisaTanim: 'Digital products for businesses.',
+    gezintiKunye: 'Footer',
     baglantilar: [
       { etiket: 'Work', hedef: '/#isler' },
       { etiket: 'Where we stand', hedef: '/#durus' },
       { etiket: 'Monti', hedef: '/#monti' },
       { etiket: 'Contact', hedef: '/#iletisim' },
     ],
-    yasalKunye: 'Legal',
+    yasal: [
+      { etiket: 'KVKK', hedef: '/kvkk' },
+      { etiket: 'Privacy', hedef: '/gizlilik' },
+      { etiket: 'Cookies', hedef: '/cerezler' },
+    ],
     telifSablonu: '© {yil} Monti Labs',
     yasalDilNotu: 'Legal texts are published in Turkish.',
   },

@@ -6,10 +6,14 @@ tanim:
 kunye:
   tr: E-ticaret platformu ve yönetim paneli
   en: Commerce platform and admin panel
+platform:
+  tr: Web
+  en: Web
 sahiplik: musteri
-tema: eccehome
+kart: kagit
+genis: true
 adres: https://eccehome.com.tr
-sira: 3
+sira: 1
 onayBekliyor: false
 gorseller:
   - src: /isler/eccehome-vitrin

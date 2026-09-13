@@ -19,9 +19,11 @@ export const tr: Icerik = {
   gezinti: {
     baglantilar: [
       { etiket: 'İşler', hedef: '/#isler' },
+      { etiket: 'Duruş', hedef: '/#durus' },
       { etiket: 'Monti', hedef: '/#monti' },
       { etiket: 'İletişim', hedef: '/#iletisim' },
     ],
+    anaMenu: 'Ana menü',
     menuAc: 'Menü',
     menuKapat: 'Kapat',
     dilDegistir: 'Dili değiştir',
@@ -29,25 +31,32 @@ export const tr: Icerik = {
   },
 
   giris: {
-    /* Satır kırımı tasarımın parçası. İki satır, ikisi de kısa.
-       Otomatik sarmaya bırakılmıyor. */
-    baslikSatirlari: ['Gösterilmek için değil,', 'kullanılmak için.'],
+    etiket: 'Monti Labs',
+    baslik: 'Fikirden çalışan ürüne.',
     altMetin:
-      'İşletmeler için dijital ürünler tasarlıyor ve geliştiriyoruz. Kendi ürünlerimizi de.',
-    urunlerEtiketi: 'Şu an yayında',
+      'İşletmeler için dijital ürün tasarlıyor ve geliştiriyoruz. Erken gösteriyoruz, küçük parçalar halinde teslim ediyoruz.',
+    birincilCagri: 'Projenizi anlatın',
+    ikincilCagri: 'İşleri gör',
+    paneller: {
+      tasarim: 'Tasarım',
+      yayinda: 'Yayında',
+      muhendislik: 'Mühendislik',
+    },
   },
 
   isler: {
     kunye: 'İşler',
+    not: 'Üçü yayında, hepsi kullanımda',
     sahiplik: {
       monti: 'Monti ürünü',
       musteri: 'Müşteri işi',
     },
-    adresCagri: 'Siteyi aç',
+    adresAciklama: 'siteyi yeni sekmede açar',
   },
 
   durus: {
     kunye: 'Duruş',
+    baslik: 'Üç söz.',
     ilkeler: [
       {
         baslik: 'Küçük parçalar halinde yayına alırız.',
@@ -78,36 +87,35 @@ export const tr: Icerik = {
   iletisim: {
     kunye: 'İletişim',
     baslik: 'Ne geliştirmek istiyorsunuz?',
-    epostaOncesi: 'Doğrudan yazın',
     altMetin: 'Kısa bir mesaj yeterli. {sure} içinde dönüş yapıyoruz.',
-    formKapali: 'Form şu an kapalı. Doğrudan e-posta gönderebilirsiniz.',
-    alanlar: {
-      adSoyad: 'Ad soyad',
-      eposta: 'E-posta',
-      sirket: 'Şirket',
-      mesaj: 'Projenizden biraz bahsedin',
-    },
-    opsiyonelEtiketi: 'isteğe bağlı',
-    gonderButonu: 'Gönder',
+    epostaEtiketi: 'E-posta adresiniz',
+    epostaYerTutucu: 'E-posta adresiniz',
+    gonderButonu: 'Görüşelim',
     gonderiliyor: 'Gönderiliyor',
-    basariMesaji: 'Mesajınız bize ulaştı. {sure} içinde dönüş yapacağız.',
+    basariMesaji: 'Adresiniz bize ulaştı. {sure} içinde yazacağız.',
     hataMesaji:
-      'Mesaj gönderilemedi. Bağlantınızı kontrol edip tekrar deneyin, ya da doğrudan {eposta} adresine yazın.',
+      'Gönderilemedi. Bağlantınızı kontrol edip tekrar deneyin, ya da doğrudan {eposta} adresine yazın.',
+    formKapali: 'Form şu an kapalı. Doğrudan e-posta gönderebilirsiniz.',
+    dogrudanOncesi: 'ya da doğrudan',
     kvkkOnayOncesi:
-      'Formu göndererek, iletişim bilgilerimin talebimin değerlendirilmesi amacıyla işlenmesini kabul ediyorum. Detaylar için ',
+      'E-posta adresimin talebimin değerlendirilmesi amacıyla işlenmesini kabul ediyorum. Detaylar için ',
     kvkkOnayBaglantiEtiketi: 'Aydınlatma Metni',
     kvkkOnaySonrasi: '.',
   },
 
   altBilgi: {
-    kisaTanim: 'İşletmeler için dijital ürünler.',
+    gezintiKunye: 'Alt bilgi',
     baglantilar: [
       { etiket: 'İşler', hedef: '/#isler' },
       { etiket: 'Duruş', hedef: '/#durus' },
       { etiket: 'Monti', hedef: '/#monti' },
       { etiket: 'İletişim', hedef: '/#iletisim' },
     ],
-    yasalKunye: 'Yasal',
+    yasal: [
+      { etiket: 'KVKK', hedef: '/kvkk' },
+      { etiket: 'Gizlilik', hedef: '/gizlilik' },
+      { etiket: 'Çerezler', hedef: '/cerezler' },
+    ],
     telifSablonu: '© {yil} Monti Labs',
   },
 
@@ -122,6 +130,6 @@ export const tr: Icerik = {
     aciklama:
       'Monti Labs, işletmeler için dijital ürünler tasarlayan ve geliştiren bir teknoloji şirketi. Kendi ürünlerini de geliştiriyor.',
     ogBaslik: 'Monti Labs',
-    ogAciklama: 'İşletmeler için dijital ürünler tasarlıyor ve geliştiriyoruz. Kendi ürünlerimizi de.',
+    ogAciklama: 'İşletmeler için dijital ürün tasarlıyor ve geliştiriyoruz. Kendi ürünlerimizi de.',
   },
 }

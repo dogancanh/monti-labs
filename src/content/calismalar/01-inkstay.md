@@ -6,11 +6,16 @@ tanim:
 kunye:
   tr: iOS uygulaması, ürün tasarımı ve geliştirme
   en: iOS app, product design and development
+platform:
+  tr: iOS
+  en: iOS
 sahiplik: monti
-tema: inkstay
+kart: cam
 adres: https://inkstay.app
 sira: 1
-onayBekliyor: false
+# Işık yönündeki vitrinde yer almıyor. Görselleri duruyor; tekrar
+# göstermek için false yapın ve sira verin.
+onayBekliyor: true
 gorseller:
   - src: /isler/inkstay-bugun
     alt:

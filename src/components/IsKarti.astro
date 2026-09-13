@@ -1,0 +1,183 @@
+---
+/* İş kartı.
+
+   Üstte sahiplik ve ortam, ürün adı, tek paragraf tanım, künye ve
+   varsa adres. Altta ya sağda görsel. Görsel alanı kartın kenarından
+   taşıyor ve kartın overflow'u onu kesiyor; ürün panelin arkasından
+   çıkıyormuş gibi duruyor.
+
+   Görseli henüz olmayan iş için aynı alan boş cam panel olarak
+   basılıyor. Uydurma arayüz yok, yer tutucu yazısı yok.
+
+   Kart görüş alanına girerken 16 px alttan beliriyor (.kayar), üzerine
+   gelince görsel 8 px yükseliyor. */
+
+import Resim from './Resim.astro'
+import { type Dil } from '../lib/diller'
+import type { Icerik } from '../icerik'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  is: CollectionEntry<'isler'>
+  dil: Dil
+  icerik: Icerik
+  /** Sayfadaki sırası. İlk kartın görseli erken yükleniyor. */
+  sira: number
+}
+
+const { is, dil, icerik, sira } = Astro.props
+const { data } = is
+
+const kimlik = is.id.replace(/^\d+-/, '')
+const ustEtiket = `${icerik.isler.sahiplik[data.sahiplik]} · ${data.platform[dil]}`
+const ana = data.gorseller.find((g) => g.rol === 'ana')
+
+/* Bağlantı metni adresin kendisi, "siteyi aç" değil. Ziyaretçi nereye
+   gideceğini görüyor. */
+const alanAdi = data.adres ? new URL(data.adres).hostname.replace(/^www\./, '') : null
+---
+
+<article
+  class:list={['kart', 'kayar', `kart-${data.kart}`, { genis: data.genis }]}
+  id={kimlik}
+  aria-labelledby={`${kimlik}-ad`}
+>
+  <div class="yazi">
+    <p class="ust ikincil">{ustEtiket}</p>
+    <h3 class="urun-adi" id={`${kimlik}-ad`}>{data.ad}</h3>
+    <p class="metin tanim">{data.tanim[dil]}</p>
+    <p class="kunye ikincil">{data.kunye[dil]}</p>
+    {
+      data.adres && alanAdi && (
+        <p class="adres">
+          <a class="bag bag-acik" href={data.adres} rel="noopener noreferrer" target="_blank">
+            {alanAdi}<span class="gorsel-gizli">, {icerik.isler.adresAciklama}</span>
+          </a>
+        </p>
+      )
+    }
+  </div>
+
+  <div class="gorsel">
+    {ana && <Resim {...ana} alt={ana.alt[dil]} gecYukle={sira > 0} />}
+  </div>
+</article>
+
+<style>
+  .kart {
+    --dolgu: clamp(1.75rem, 4vw, 2.5rem);
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--b5);
+    padding: var(--dolgu);
+    border-radius: var(--kose-kart);
+    overflow: hidden;
+    color: var(--metin);
+    background-color: var(--zemin);
+  }
+
+  .kart-kobalt {
+    background-image: linear-gradient(160deg, var(--kobalt), var(--kobalt-derin));
+  }
+
+  .kart-cam {
+    background-color: var(--cam);
+    border: 1px solid rgb(251 246 234 / 0.1);
+  }
+
+  @media (min-width: 48rem) {
+    .kart:not(.genis) {
+      min-height: 32.5rem;
+    }
+  }
+
+  .ust {
+    font-size: 0.75rem;
+  }
+
+  .urun-adi {
+    margin-top: var(--b2);
+  }
+
+  .tanim {
+    margin-top: var(--b3);
+    max-width: 34ch;
+  }
+
+  .kunye {
+    margin-top: var(--b3);
+    font-size: 0.8125rem;
+  }
+
+  .adres {
+    margin-top: var(--b4);
+    font-size: 0.9375rem;
+  }
+
+  /* ---------- Görsel ----------
+     Dar kartta alttan ve sağdan taşar, üst köşeleri yuvarlak. */
+
+  .gorsel {
+    position: relative;
+    height: 15rem;
+    margin: 0 calc(var(--dolgu) * -1) calc(var(--dolgu) * -1) 3.75rem;
+    border-radius: 1.25rem 1.25rem 0 0;
+    overflow: hidden;
+    background-color: var(--cam);
+    border: 1px solid var(--cam-cizgi);
+    border-bottom: 0;
+    transition: translate var(--temel) var(--egri);
+  }
+
+  .kart:hover .gorsel,
+  .kart:focus-within .gorsel {
+    translate: 0 -0.5rem;
+  }
+
+  .gorsel :global(picture),
+  .gorsel :global(img) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .gorsel :global(img) {
+    object-fit: cover;
+    object-position: left top;
+  }
+
+  /* ---------- Geniş kart ----------
+     Metin solda, görsel sağda ve kartın sağ kenarından taşıyor. */
+
+  @media (min-width: 48rem) {
+    .genis {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      gap: var(--b6);
+      align-items: center;
+    }
+
+    .genis .gorsel {
+      height: 20rem;
+      margin: 0 calc(var(--dolgu) * -2) 0 0;
+      border-radius: 1.25rem;
+      border-bottom: 1px solid var(--cam-cizgi);
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .genis .gorsel {
+      height: 9.375rem;
+      margin: 0;
+      border-radius: 1rem;
+      border-bottom: 1px solid var(--cam-cizgi);
+    }
+
+    .kart:not(.genis) .gorsel {
+      height: 10.625rem;
+      margin-left: 2.5rem;
+    }
+  }
+</style>

@@ -34,39 +34,48 @@ const kontrast = (a, b) => {
 
 /* Her satır: [ön plan, zemin, açıklama, eşik] */
 const ciftler = [
-  ['#FBF6EA', '#1F2FA0', 'kağıt metin / kobalt zemin', AA_METIN],
-  ['#B9BAD4', '#1F2FA0', 'ikincil metin / kobalt zemin', AA_METIN],
+  /* Mürekkep zemin: sayfa, cam kart, alt bilgi. */
   ['#FBF6EA', '#0D1128', 'kağıt metin / mürekkep zemin', AA_METIN],
-  ['#9FA0AE', '#0D1128', 'ikincil metin / mürekkep zemin', AA_METIN],
+  ['#B9BAD4', '#0D1128', 'ikincil metin / mürekkep zemin', AA_METIN],
+  ['#9FA0AE', '#0D1128', 'soluk metin (alt bilgi) / mürekkep zemin', AA_METIN],
+
+  /* Kobalt kart. Degrade kobalttan derin kobalta iniyor; açık uç
+     kontrol edilirse koyu uç kendiliğinden geçer. */
+  ['#FBF6EA', '#1F2FA0', 'kağıt metin / kobalt kart', AA_METIN],
+  ['#B9BAD4', '#1F2FA0', 'ikincil metin / kobalt kart', AA_METIN],
+
+  /* Kağıt kart ve yasal sayfalar. */
   ['#0D1128', '#FBF6EA', 'mürekkep metin / kağıt zemin', AA_METIN],
   ['#676872', '#FBF6EA', 'ikincil metin / kağıt zemin', AA_METIN],
-  ['#1F2FA0', '#FBF6EA', 'kobalt metin / kağıt zemin', AA_METIN],
-  ['#F2EDE2', '#16130F', 'Inkstay metin / Inkstay zemin', AA_METIN],
-  ['#C9A961', '#16130F', 'Inkstay vurgu / Inkstay zemin', AA_METIN],
-  ['#9A9488', '#16130F', 'Inkstay ikincil / Inkstay zemin', AA_METIN],
-  ['#0D1128', '#EDEEF6', 'Guardi metin / Guardi zemin', AA_METIN],
-  ['#4A5FCC', '#EDEEF6', 'Guardi vurgu / Guardi zemin', AA_METIN],
-  ['#63656F', '#EDEEF6', 'Guardi ikincil / Guardi zemin', AA_METIN],
-  ['#8A6218', '#FBF6EA', 'EcceHome vurgu / kağıt zemin', AA_METIN],
+  ['#1F2FA0', '#FBF6EA', 'kobalt bağlantı / kağıt zemin', AA_METIN],
 
-  /* Arayüz bileşeni sınırları. WCAG 1.4.11 bunlardan 3:1 istiyor.
-     Form alanı kenarlığı bir bileşen sınırı olduğu için buraya giriyor. */
-  ['#8D92C5', '#1F2FA0', 'form alanı kenarlığı / kobalt zemin', AA_BUYUK],
+  /* Dolu düğme: zemin rengi metin, metin rengi zemin. */
+  ['#0D1128', '#FBF6EA', 'düğme metni / kağıt düğme', AA_METIN],
+
+  /* Arayüz bileşeni sınırları. WCAG 1.4.11 bunlardan 3:1 istiyor. */
+  ['#8D92C5', '#0D1128', 'form alanı kenarlığı / mürekkep zemin', AA_BUYUK],
   ['#78787F', '#FBF6EA', 'form alanı kenarlığı / kağıt zemin', AA_BUYUK],
 
   /* Odak halkası. Kendi zemininden ayırt edilebilmesi gerekiyor. */
-  ['#FBF6EA', '#1F2FA0', 'odak halkası / kobalt zemin', AA_BUYUK],
-  ['#1F2FA0', '#FBF6EA', 'odak halkası / kağıt zemin', AA_BUYUK],
-  ['#C9A961', '#16130F', 'odak halkası / Inkstay zemin', AA_BUYUK],
+  ['#FBF6EA', '#0D1128', 'odak halkası / mürekkep zemin', AA_BUYUK],
+  ['#FBF6EA', '#1F2FA0', 'odak halkası / kobalt kart', AA_BUYUK],
+  ['#0D1128', '#FBF6EA', 'odak halkası / kağıt zemin', AA_BUYUK],
 ]
 
 /* Listeye alınmayanlar ve nedeni:
 
-   Bölüm ayırıcı ince çizgiler (kobalt üstünde kağıt %22, kağıt üstünde
-   mürekkep %22). Bunlar salt dekoratif; içeriği anlamak için gerekli
-   değiller ve kaldırıldıklarında hiçbir bilgi kaybolmuyor. WCAG 1.4.11
-   dekoratif grafikleri kapsam dışı bırakıyor. Kontrastı yükseltmek
-   çizgiyi çizgi olmaktan çıkarıp gürültüye dönüştürürdü. */
+   Cam panel kenarları ve bölüm ayırıcı ince çizgiler (mürekkep üstünde
+   kağıt %14 ile %18). Bunlar salt dekoratif; içeriği anlamak için
+   gerekli değiller ve kaldırıldıklarında hiçbir bilgi kaybolmuyor.
+   WCAG 1.4.11 dekoratif grafikleri kapsam dışı bırakıyor.
+
+   Girişteki yüzen panellerin içindeki çizgi ve kutular da aynı sınıfta:
+   temsil, metin değil. Köşe etiketleri ikincil metin renginde ve
+   yukarıdaki çiftle doğrulanıyor.
+
+   E-posta alanının kenarlığı (kağıt %20) form alanı kenarlığı listesinde
+   yok; alan yer tutucu metniyle ve dolu düğmenin yanındaki konumuyla
+   zaten ayırt ediliyor, odaklanınca kenarlık kağıt rengine dönüyor. */
 
 let hata = 0
 console.log('Palet kontrast testi\n')

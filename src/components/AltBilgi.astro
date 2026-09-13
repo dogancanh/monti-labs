@@ -1,16 +1,15 @@
 ---
 /* Alt bilgi.
 
-   Tam logo kilidi burada duruyor: işaret ve kelime markası birlikte.
-   Başlıkta yalnızca işaret vardı, kelime markası sitenin kendi
-   fontuyla diziliyordu. Alt bilgide markanın asıl hali görünüyor.
-
+   Tek satır: solda yatay logo, ortada bağlantılar, sağda telif.
    Şirket künyesi alanları site.ts içinde "DEGISTIR" ile başlıyorsa
-   hiç basılmıyor. Yarım doldurulmuş bir künye, hiç künye olmamasından
-   daha kötü görünür. */
+   hiç basılmıyor; dolunca ikinci bir ince satır olarak geliyor.
 
-import Isaret from './Isaret.astro'
-import { sirket, yasalSayfalar } from '../data/site'
+   Logo burada resim olarak duruyor. Başlıkta yalnızca işaret var ve
+   kelime markası sitenin fontuyla diziliyor; markanın asıl kilidi
+   alt bilgide görünüyor. */
+
+import { sirket } from '../data/site'
 import { yol } from '../lib/yol'
 import { sayfaYolu, type Dil } from '../lib/diller'
 import type { Icerik } from '../icerik'
@@ -27,162 +26,120 @@ const { altBilgi } = icerik
 /** Doldurulmamış alanlar arayüzde yer kaplamıyor. */
 const dolu = (deger: string) => deger.trim().length > 0 && !deger.startsWith('DEGISTIR')
 
-const kunyeSatirlari = [sirket.resmiUnvan, sirket.adres, sirket.vergiDairesiNo, sirket.mersisNo]
-  .filter(dolu)
-
-const sosyal = [
-  { etiket: 'LinkedIn', hedef: sirket.linkedin },
-  { etiket: 'GitHub', hedef: sirket.github },
-].filter((b) => dolu(b.hedef))
+const kunyeSatirlari = [sirket.resmiUnvan, sirket.adres, sirket.vergiDairesiNo, sirket.mersisNo].filter(dolu)
+const dipVar = kunyeSatirlari.length > 0 || Boolean(altBilgi.yasalDilNotu)
 ---
 
-<footer class="bolum alt" data-tema="murekkep">
-  <div class="kabuk">
-    <div class="ust">
-      <div class="marka">
-        <Isaret yukseklik="1.6em" />
-        <p class="ad">Monti Labs</p>
-        <p class="metin ikincil tanim">{altBilgi.kisaTanim}</p>
-      </div>
+<footer class="alt" data-tema="murekkep">
+  <div class="kabuk sira">
+    <a class="logo" href={sayfaYolu('/', dil)} aria-label="Monti Labs">
+      <img src={yol('/logo-yatay-krem.png')} alt="" width="360" height="53" loading="lazy" decoding="async" />
+    </a>
 
-      <nav class="sutun" aria-label={altBilgi.baglantilar[0]?.etiket}>
-        <p class="etiket ikincil">{icerik.gezinti.baglantilar[0]?.etiket}</p>
-        <ul>
-          {
-            altBilgi.baglantilar.map((b) => (
-              <li>
-                <a class="bag" href={sayfaYolu(b.hedef, dil)}>
-                  {b.etiket}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
+    <nav aria-label={altBilgi.gezintiKunye}>
+      <ul class="baglantilar">
+        {
+          altBilgi.baglantilar.map((b) => (
+            <li>
+              <a class="bag" href={sayfaYolu(b.hedef, dil)}>
+                {b.etiket}
+              </a>
+            </li>
+          ))
+        }
+        {
+          altBilgi.yasal.map((b) => (
+            <li>
+              <a class="bag" href={yol(b.hedef)} hreflang="tr-TR">
+                {b.etiket}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
 
-      <nav class="sutun" aria-label={altBilgi.yasalKunye}>
-        <p class="etiket ikincil">{altBilgi.yasalKunye}</p>
-        <ul>
-          {
-            yasalSayfalar.map((s) => (
-              <li>
-                <a class="bag" href={yol(s.hedef)} hreflang="tr-TR">
-                  {s.etiket}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-        {altBilgi.yasalDilNotu && <p class="metin ikincil not">{altBilgi.yasalDilNotu}</p>}
-      </nav>
+    <p class="telif">{altBilgi.telifSablonu.replace('{yil}', String(yil))}</p>
+  </div>
 
-      {
-        sosyal.length > 0 && (
-          <nav class="sutun" aria-label="Monti Labs">
-            <p class="etiket ikincil">Monti Labs</p>
-            <ul>
-              {sosyal.map((b) => (
-                <li>
-                  <a class="bag" href={b.hedef} rel="noopener noreferrer" target="_blank">
-                    {b.etiket}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )
-      }
-    </div>
-
-    <div class="dip">
-      <p class="metin ikincil telif">{altBilgi.telifSablonu.replace('{yil}', String(yil))}</p>
-      {
-        kunyeSatirlari.length > 0 && (
-          <address class="metin ikincil kunye">
+  {
+    dipVar && (
+      <div class="kabuk dip">
+        {kunyeSatirlari.length > 0 && (
+          <address class="kunye">
             {kunyeSatirlari.map((satir) => (
               <span>{satir}</span>
             ))}
           </address>
-        )
-      }
-      <p class="metin ikincil">
-        <a class="bag" href={`mailto:${sirket.eposta}`}>{sirket.eposta}</a>
-      </p>
-    </div>
-  </div>
+        )}
+        {altBilgi.yasalDilNotu && <p>{altBilgi.yasalDilNotu}</p>}
+      </div>
+    )
+  }
 </footer>
 
 <style>
   .alt {
-    color: var(--metin);
-    padding-block: var(--b7) var(--b6);
-  }
-
-  .ust {
-    display: grid;
-    gap: var(--b6);
-  }
-
-  @media (min-width: 48rem) {
-    .ust {
-      grid-template-columns: minmax(0, 2fr) repeat(auto-fit, minmax(8rem, 1fr));
-      gap: var(--b5);
-    }
-  }
-
-  .ad {
-    margin-top: var(--b3);
-    font-variation-settings: 'wdth' 112;
-    font-weight: 600;
-    font-size: 1.25rem;
-    letter-spacing: -0.015em;
-  }
-
-  .tanim {
-    margin-top: var(--b2);
-    max-width: 24ch;
-  }
-
-  .sutun ul {
-    display: grid;
-    gap: var(--b2);
-    margin-top: var(--b3);
-  }
-
-  .sutun .bag {
-    color: var(--metin);
-    font-size: 0.9375rem;
-  }
-
-  .not {
-    margin-top: var(--b3);
+    color: var(--soluk);
+    padding-block: var(--b6) var(--b5);
     font-size: 0.8125rem;
-    max-width: 22ch;
+  }
+
+  .sira {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--b4) var(--b5);
+  }
+
+  .logo {
+    display: block;
+  }
+
+  .logo img {
+    height: 1.25rem;
+    width: auto;
+  }
+
+  .baglantilar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--b2) 1.5rem;
+    margin: 0;
+  }
+
+  .baglantilar .bag {
+    color: var(--soluk);
+    font-size: 0.8125rem;
+  }
+
+  .baglantilar .bag:hover {
+    color: var(--metin);
   }
 
   .dip {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: var(--b3) var(--b5);
-    margin-top: var(--b7);
-    padding-top: var(--b4);
+    gap: var(--b2) var(--b5);
+    margin-top: var(--b4);
+    padding-top: var(--b3);
     border-top: 1px solid var(--cizgi);
-    font-size: 0.8125rem;
-  }
-
-  .dip .metin,
-  .kunye {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
   }
 
   .kunye {
-    display: grid;
-    gap: var(--b1);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--b1) var(--b4);
     font-style: normal;
   }
 
-  .dip .bag {
-    color: var(--ikincil);
+  @media (max-width: 48rem) {
+    .sira {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 </style>

@@ -1,0 +1,68 @@
+---
+/* Işık.
+
+   Zeminin altından süzülen kobalt daire. Tasarımın tek renk hareketi
+   bu: altı saniyelik döngüde nefes alıyor, büyüyüp küçülüyor. Girişte
+   büyük, iletişim panelinde küçük.
+
+   İki katman var. Dıştaki taşıyıcı imleci izlemek için JavaScript'le
+   kaydırılıyor (Giris.astro), içteki daire nefes animasyonunu taşıyor.
+   İkisi aynı öğede olsaydı transform birbirini ezerdi.
+
+   Yalnızca dekoratif. Ekran okuyucuya kapalı. */
+
+interface Props {
+  /** Dairenin genişliği. Yükseklik ve alt taşma bundan türetiliyor. */
+  en?: string
+  /** Nefes döngüsünün faz kayması. İki ışık aynı anda büyümesin. */
+  gecikme?: string
+  class?: string
+}
+
+const { en = '56rem', gecikme = '0s', class: sinif } = Astro.props
+---
+
+<div class:list={['isik-tasiyici', sinif]} aria-hidden="true" style={`--en:${en};--gecikme:${gecikme}`}>
+  <div class="isik"></div>
+</div>
+
+<style>
+  .isik-tasiyici {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: var(--en);
+    height: calc(var(--en) * 0.78);
+    margin-left: calc(var(--en) / -2);
+    translate: 0 43%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .isik {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      var(--kobalt) 0%,
+      rgb(31 47 160 / 0.5) 40%,
+      rgb(13 17 40 / 0) 70%
+    );
+    will-change: transform, opacity;
+    animation: nefes var(--nefes) ease-in-out var(--gecikme) infinite;
+  }
+
+  @media (max-width: 48rem) {
+    .isik-tasiyici {
+      --en: 32rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .isik {
+      animation: none;
+      opacity: 0.9;
+    }
+  }
+</style>

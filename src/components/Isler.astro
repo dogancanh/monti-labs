@@ -1,13 +1,13 @@
 ---
 /* İşler.
 
-   Üç ürün, üç bölüm, üç zemin rengi. Başlık taşımıyor: bölümün ne
-   olduğunu ürünlerin kendisi söylüyor. Ayrı bir "seçili çalışmalar"
-   başlığı koymak sayfaya bir katman daha ekler ve hiçbir şey anlatmaz.
+   Künye satırı ve iki sütunlu kart kafesi. İlk kart (yatay görseli
+   olan iş) iki sütuna yayılıyor, diğerleri yan yana. Kart zeminleri
+   ürünü ayırıyor: kağıt, kobalt, cam.
 
    Sıralama içerik dosyalarındaki sira alanından geliyor. */
 
-import UrunBolumu from './UrunBolumu.astro'
+import IsKarti from './IsKarti.astro'
 import { type Dil } from '../lib/diller'
 import type { Icerik } from '../icerik'
 import type { CollectionEntry } from 'astro:content'
@@ -21,6 +21,60 @@ interface Props {
 const { dil, icerik, isler } = Astro.props
 ---
 
-<div id="isler">
-  {isler.map((is, sira) => <UrunBolumu is={is} dil={dil} icerik={icerik} sira={sira} />)}
-</div>
+<section class="bolum isler" data-tema="murekkep" id="isler" aria-labelledby="isler-kunye">
+  <div class="kabuk">
+    <div class="ust">
+      <h2 class="etiket ikincil" id="isler-kunye">{icerik.isler.kunye}</h2>
+      <p class="not ikincil">{icerik.isler.not}</p>
+    </div>
+
+    <div class="kafes-isler">
+      {isler.map((is, sira) => <IsKarti is={is} dil={dil} icerik={icerik} sira={sira} />)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .isler {
+    padding-top: var(--bolum-arasi);
+  }
+
+  .ust {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--b4);
+    flex-wrap: wrap;
+  }
+
+  .not {
+    font-size: 0.875rem;
+  }
+
+  .kafes-isler {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--b4);
+    margin-top: var(--b5);
+  }
+
+  @media (min-width: 48rem) {
+    .kafes-isler {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    .kafes-isler :global(.genis) {
+      grid-column: span 2;
+    }
+  }
+
+  /* Kartlar art arda belirir. */
+  .kafes-isler > :global(.kart:nth-child(2)) {
+    transition-delay: 80ms;
+  }
+
+  .kafes-isler > :global(.kart:nth-child(3)) {
+    transition-delay: 160ms;
+  }
+</style>

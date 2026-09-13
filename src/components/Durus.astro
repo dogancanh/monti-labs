@@ -1,11 +1,11 @@
 ---
 /* Duruş.
 
-   Üç ilke, her biri iki cümle. Numaralı adım yok, süreç şeması yok,
-   ikon yok. Süreç şeması her ajansta aynı ve hiçbir şey söylemiyor;
-   bu üç cümle söylüyor.
+   Solda künye ve "Üç söz." başlığı, sağda üç satır. Her satır iki
+   sütun: söz ve tek cümlelik açıklama. Numaralı adım yok, süreç şeması
+   yok, ikon yok. Satırlar görüş alanına girerken sırayla beliriyor.
 
-   Üçüncü ilke ("kurduğumuz sistemi ekibinize devrederiz") markanın
+   Üçüncü söz ("kurduğumuz sistemi ekibinize devrederiz") markanın
    ajans olmadığını en net anlatan cümle. Kısaltılmamalı. */
 
 import type { Icerik } from '../icerik'
@@ -18,16 +18,19 @@ const { icerik } = Astro.props
 const { durus } = icerik
 ---
 
-<section class="bolum durus" data-tema="murekkep" id="durus" aria-labelledby="durus-kunye">
-  <div class="kabuk">
-    <h2 class="etiket ikincil kunye" id="durus-kunye">{durus.kunye}</h2>
+<section class="bolum durus" data-tema="murekkep" id="durus" aria-labelledby="durus-baslik">
+  <div class="kabuk kafes">
+    <div class="sol">
+      <p class="etiket ikincil">{durus.kunye}</p>
+      <h2 class="bolum-basligi baslik" id="durus-baslik">{durus.baslik}</h2>
+    </div>
 
     <ol class="ilkeler">
       {
-        durus.ilkeler.map((ilke) => (
-          <li class="kayar ilke">
-            <p class="bolum-basligi">{ilke.baslik}</p>
-            <p class="metin ikincil">{ilke.metin}</p>
+        durus.ilkeler.map((ilke, sira) => (
+          <li class="ilke kayar" style={`transition-delay:${sira * 100}ms`}>
+            <p class="soz">{ilke.baslik}</p>
+            <p class="metin ikincil aciklama">{ilke.metin}</p>
           </li>
         ))
       }
@@ -36,50 +39,56 @@ const { durus } = icerik
 </section>
 
 <style>
-  .kunye {
-    margin-bottom: var(--b6);
+  .sol {
+    grid-column: span 2;
+  }
+
+  .baslik {
+    margin-top: var(--b3);
   }
 
   .ilkeler {
-    display: grid;
-    gap: var(--b6);
+    grid-column: span 4;
+    display: flex;
+    flex-direction: column;
     margin: 0;
   }
 
-  /* Ölçü başlığın kendi üstünde. Kapsayıcıya ch cinsinden sınır
-     koymak yanlış sonuç veriyor: ch değeri kapsayıcının gövde
-     boyutundan hesaplanıyor ve 3rem'lik başlığı dört satıra
-     sıkıştırıyor. */
-  .ilke .bolum-basligi {
-    max-width: 17ch;
+  .ilke {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--b2) var(--b4);
+    padding-block: var(--b4);
+    border-top: 1px solid var(--cizgi);
   }
 
-  .ilke .metin {
-    margin-top: var(--b3);
-    max-width: 34ch;
+  .ilke:last-child {
+    border-bottom: 1px solid var(--cizgi);
   }
 
-  /* Üç ilke geniş ekranda merdiven gibi kayıyor. Eşit üç sütun yerine
-     bu, okuma sırasını görünür kılıyor ve boşluğu tasarıma katıyor. */
-  @media (min-width: 62rem) {
+  .soz {
+    font-variation-settings: 'wdth' 110;
+    font-weight: 600;
+    font-size: clamp(1.25rem, 1rem + 0.8vw, 1.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .aciklama {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 48rem) {
+    .ilke {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      padding-block: 1.75rem;
+    }
+  }
+
+  @media (max-width: 62rem) {
+    .sol,
     .ilkeler {
-      gap: var(--b7);
-    }
-
-    .ilke:nth-child(2) {
-      margin-inline-start: 14%;
-    }
-
-    .ilke:nth-child(3) {
-      margin-inline-start: 28%;
-    }
-
-    .ilke:nth-child(2) {
-      transition-delay: 100ms;
-    }
-
-    .ilke:nth-child(3) {
-      transition-delay: 200ms;
+      grid-column: auto;
     }
   }
 </style>

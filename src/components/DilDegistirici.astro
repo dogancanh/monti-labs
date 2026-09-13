@@ -17,12 +17,13 @@ interface Props {
   icerik: Icerik
   /** Dil önekinden arınmış sayfa yolu. Ana sayfa için '/'. */
   sayfa?: string
+  class?: string
 }
 
-const { dil, icerik, sayfa = '/' } = Astro.props
+const { dil, icerik, sayfa = '/', class: sinif } = Astro.props
 ---
 
-<nav class="dil" aria-label={icerik.gezinti.dilDegistir}>
+<nav class:list={['dil', sinif]} aria-label={icerik.gezinti.dilDegistir}>
   {
     diller.map((kod) => {
       const etkin = kod === dil
@@ -45,13 +46,12 @@ const { dil, icerik, sayfa = '/' } = Astro.props
   .dil {
     display: flex;
     align-items: center;
-    gap: var(--b2);
+    gap: var(--b1);
   }
 
   .kod {
-    font-weight: 500;
-    font-size: 0.6875rem;
-    letter-spacing: 0.16em;
+    font-weight: 400;
+    font-size: 0.875rem;
     text-decoration: none;
     color: var(--ikincil);
     transition: color var(--hizli) var(--egri);
@@ -59,7 +59,7 @@ const { dil, icerik, sayfa = '/' } = Astro.props
 
   .kod + .kod::before {
     content: '/';
-    margin-inline-end: var(--b2);
+    margin-inline-end: var(--b1);
     color: var(--ikincil);
   }
 

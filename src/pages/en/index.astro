@@ -23,7 +23,7 @@ const isler = (await getCollection('isler', ({ data }) => !data.onayBekliyor)).s
 ---
 
 <Temel dil={dil} icerik={icerik} sayfa="/">
-  <Giris dil={dil} icerik={icerik} isler={isler} />
+  <Giris dil={dil} icerik={icerik} />
   <Isler dil={dil} icerik={icerik} isler={isler} />
   <Durus icerik={icerik} />
   <Monti icerik={icerik} />

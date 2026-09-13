@@ -3,11 +3,12 @@ import { glob } from 'astro/loaders'
 
 /* İşler.
 
-   Her ürün ana sayfada tam genişlikte kendi bölümünü alıyor. Kart yok,
-   çerçeve yok. Ürünü zemin rengi ve ölçek ayırıyor.
+   Her ürün ana sayfada bir kart alıyor. Kartın zemini ürünü ayırıyor:
+   kağıt, kobalt veya cam. İlk kart iki sütuna yayılıyor.
 
-   Görseller gerçek üründen gelir. Temsilî kutu, akış şeması veya
-   uydurma arayüz kullanılmaz. Görseli olmayan ürün vitrine girmez. */
+   Görseller gerçek üründen gelir. Uydurma arayüz kullanılmaz. Görseli
+   henüz gelmemiş ürünün kartında görsel alanı boş cam panel olarak
+   duruyor; görsel eklendiğinde yerini alıyor. */
 
 /** İki dilde de yazılması zorunlu metin alanı. */
 const ciftDil = z.object({
@@ -41,6 +42,9 @@ const isler = defineCollection({
     /** Künye satırı. Örnek: "iOS uygulaması, ürün tasarımı ve geliştirme". */
     kunye: ciftDil,
 
+    /** Sahiplik etiketinin yanında görünen ortam. Örnek: "Web, Apple Wallet". */
+    platform: ciftDil,
+
     /**
      * Ürün Monti'nin kendi ürünü mü, müşteri işi mi.
      * Arayüzde tek etiketle gösteriliyor, ayrı bölüme ayrılmıyor.
@@ -48,10 +52,13 @@ const isler = defineCollection({
     sahiplik: z.enum(['monti', 'musteri']),
 
     /**
-     * Bölümün zemin teması. src/styles/temel.css içinde tanımlı
-     * tema bloklarından biri olmak zorunda.
+     * Kartın zemini. src/styles/temel.css içindeki .kart-* bloklarından
+     * biri. Kağıt açık kart, kobalt degrade kart, cam saydam kart.
      */
-    tema: z.enum(['inkstay', 'guardi', 'eccehome', 'kagit', 'murekkep']),
+    kart: z.enum(['kagit', 'kobalt', 'cam']).default('cam'),
+
+    /** Kart iki sütuna yayılsın mı. Yatay ana görseli olan iş için. */
+    genis: z.boolean().default(false),
 
     gorseller: z.array(gorsel).default([]),
 

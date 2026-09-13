@@ -1,109 +1,98 @@
 ---
 /* Giriş bölümü.
 
-   Ekranın büyük kısmı boş. Başlık ve alt metin alt hizada duruyor,
-   sayfanın en altında üç ürün adı ince bir satır halinde.
+   Ortalanmış başlık, iki düğme, altta üç yüzen cam panel ve
+   zeminin altından süzülen kobalt ışık. Ekranın alt kenarı ışığın
+   merkezini kesiyor; ışık sayfayla birlikte kayıp gidiyor ve
+   iletişim panelinde tekrar beliriyor.
 
-   Buton yok, kaydırma oku yok. Üç ürün adı hem yönlendirme hem de
-   ilk kanıt: ziyaretçi daha ilk ekranda ne yapıldığını görüyor.
+   Işık imleci 30 piksele kadar izliyor, gecikmeli. Yalnızca ince
+   işaretçili cihazlarda ve hareket azaltma kapalıyken. Dokunmatikte
+   ışık yerinde durur, nefes almaya devam eder.
 
-   Başlık satır kırımı içerik dosyasında tanımlı. Otomatik sarmaya
-   bırakılmıyor, çünkü nerede kırıldığı tasarımın parçası ve Türkçe
-   ile İngilizce farklı yerlerde kırılıyor.
+   Başlık ve metin sayfa açılışında beliriyor; CSS animasyonu,
+   JavaScript'e bağlı değil. */
 
-   Başlığın satır satır belirmesi CSS animasyonu, JavaScript'e bağlı
-   değil. İlk ekranın açılışı hiçbir betiği beklemiyor. */
-
+import Isik from './Isik.astro'
+import GirisPaneller from './GirisPaneller.astro'
 import { sayfaYolu, type Dil } from '../lib/diller'
 import type { Icerik } from '../icerik'
-import type { CollectionEntry } from 'astro:content'
 
 interface Props {
   dil: Dil
   icerik: Icerik
-  isler: CollectionEntry<'isler'>[]
 }
 
-const { dil, icerik, isler } = Astro.props
+const { dil, icerik } = Astro.props
 const { giris } = icerik
 ---
 
-<section class="giris" data-tema="kobalt" aria-labelledby="giris-baslik">
+<section class="giris" data-tema="murekkep" aria-labelledby="giris-baslik">
+  <Isik en="56rem" />
+
   <div class="kabuk ic">
-    <h1 class="goruntu" id="giris-baslik">
-      {
-        giris.baslikSatirlari.map((satir, sira) => (
-          <span class="satir">
-            <span style={`animation-delay:${sira * 80}ms`}>{satir}</span>
-          </span>
-        ))
-      }
-    </h1>
+    <p class="etiket ikincil ust">{giris.etiket}</p>
+    <h1 class="goruntu baslik" id="giris-baslik">{giris.baslik}</h1>
+    <p class="metin-buyuk ikincil alt">{giris.altMetin}</p>
 
-    <p class="metin-buyuk alt">{giris.altMetin}</p>
-
-    <div class="urunler">
-      <span class="etiket ikincil">{giris.urunlerEtiketi}</span>
-      <ul class="adlar">
-        {
-          isler.map((is) => (
-            <li>
-              <a class="bag ad" href={sayfaYolu(`/#${is.id.replace(/^\d+-/, '')}`, dil)}>
-                {is.data.ad}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
+    <div class="cagrilar">
+      <a class="dugme dugme-dolu" href={sayfaYolu('/#iletisim', dil)}>{giris.birincilCagri}</a>
+      <a class="dugme dugme-cizgili" href={sayfaYolu('/#isler', dil)}>{giris.ikincilCagri}</a>
     </div>
+  </div>
+
+  <div class="kabuk paneller">
+    <GirisPaneller etiketler={giris.paneller} />
   </div>
 </section>
 
 <style>
   .giris {
-    display: flex;
-    align-items: flex-end;
-    min-height: 100svh;
+    position: relative;
+    overflow: hidden;
     color: var(--metin);
 
     /* Sabit başlığın altında kalmaması için üstte pay var. */
-    padding-block: calc(var(--b8) + var(--b6)) var(--b7);
+    padding-top: calc(var(--b8) + var(--b4));
   }
 
   .ic {
-    width: 100%;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ust {
+    animation: giris-belir var(--temel) var(--egri) both;
+  }
+
+  .baslik {
+    margin-top: var(--b4);
+    max-width: 15ch;
+    animation: giris-belir var(--temel) var(--egri) 80ms both;
   }
 
   .alt {
+    margin-top: var(--b4);
+    animation: giris-belir var(--temel) var(--egri) 200ms both;
+  }
+
+  .cagrilar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--b3);
     margin-top: var(--b5);
-    color: var(--metin);
-    animation: giris-belir var(--temel) var(--egri) 240ms both;
+    animation: giris-belir var(--temel) var(--egri) 320ms both;
   }
 
-  .urunler {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--b3) var(--b5);
-    margin-top: var(--b7);
-    padding-top: var(--b4);
-    border-top: 1px solid var(--cizgi);
-    animation: giris-belir var(--temel) var(--egri) 360ms both;
-  }
-
-  .adlar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--b3) var(--b5);
-    margin: 0;
-  }
-
-  .ad {
-    font-variation-settings: 'wdth' 108;
-    font-weight: 500;
-    font-size: clamp(1.125rem, 2.4vw, 1.5rem);
-    letter-spacing: -0.01em;
-    color: var(--metin);
+  .paneller {
+    position: relative;
+    z-index: 1;
+    margin-top: var(--b6);
   }
 
   @keyframes giris-belir {
@@ -117,20 +106,93 @@ const { giris } = icerik
     }
   }
 
+  @media (min-width: 48rem) {
+    .giris {
+      padding-top: calc(var(--b8) + var(--b5));
+    }
+
+    .baslik {
+      margin-top: var(--b4);
+    }
+
+    .alt {
+      margin-top: var(--b4);
+    }
+
+    .cagrilar {
+      margin-top: var(--b5) ;
+    }
+
+    .paneller {
+      margin-top: var(--b7);
+    }
+  }
+
+  /* Dar ekranda ikinci düğme yok; işler zaten bir kaydırma altında. */
+  @media (max-width: 30rem) {
+    .dugme-cizgili {
+      display: none;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .ust,
+    .baslik,
     .alt,
-    .urunler {
+    .cagrilar {
       animation: none;
     }
   }
-
-  @media (min-width: 62rem) {
-    .urunler {
-      gap: var(--b3) var(--b6);
-    }
-
-    .adlar {
-      gap: var(--b3) var(--b6);
-    }
-  }
 </style>
+
+<script>
+  /* Işık imleci izler. Hedef, imlecin bölüm merkezine göre konumundan
+     hesaplanıyor ve en fazla 30 piksel. Her karede hedefe doğru yüzde
+     sekiz yaklaşıyor; gecikme hissi buradan geliyor. */
+
+  const alan = document.querySelector<HTMLElement>('.giris')
+  const isik = alan?.querySelector<HTMLElement>('.isik-tasiyici')
+
+  const inceIsaretci = window.matchMedia('(pointer: fine)').matches
+  const hareketAz = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  if (alan && isik && inceIsaretci && !hareketAz) {
+    const SINIR = 30
+    let hedefX = 0
+    let hedefY = 0
+    let x = 0
+    let y = 0
+    let calisiyor = false
+
+    const adim = () => {
+      x += (hedefX - x) * 0.08
+      y += (hedefY - y) * 0.08
+      isik.style.translate = `${x.toFixed(2)}px calc(43% + ${y.toFixed(2)}px)`
+
+      if (Math.abs(hedefX - x) > 0.1 || Math.abs(hedefY - y) > 0.1) {
+        requestAnimationFrame(adim)
+      } else {
+        calisiyor = false
+      }
+    }
+
+    const baslat = () => {
+      if (calisiyor) return
+      calisiyor = true
+      requestAnimationFrame(adim)
+    }
+
+    alan.addEventListener('pointermove', (olay) => {
+      const kutu = alan.getBoundingClientRect()
+      hedefX = ((olay.clientX - kutu.left) / kutu.width - 0.5) * 2 * SINIR
+      hedefY = ((olay.clientY - kutu.top) / kutu.height - 0.5) * 2 * SINIR
+      baslat()
+    })
+
+    alan.addEventListener('pointerleave', () => {
+      hedefX = 0
+      hedefY = 0
+      baslat()
+    })
+  }
+</script>
