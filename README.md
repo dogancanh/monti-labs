@@ -164,8 +164,14 @@ görünmez. Yayına çıkmadan önce doldurulmalı.
 
 ## Yayın
 
-`main` dalına her gönderimde `.github/workflows/` altındaki iş akışı
-siteyi derleyip GitHub Pages'e atıyor.
+Asıl adres montilabs.co, Vercel üzerinde ve `semihpehlivan/montilabs-website`
+deposuna bağlı. Yerel depoda iki uzak var: `origin` (dogancanh/monti-labs)
+ve `montilabs` (semihpehlivan/montilabs-website); `main` ikisine de
+itiliyor. Vercel yalnızca projeye erişimi olan GitHub hesabının
+commit'lerini yayına alıyor.
+
+GitHub Pages kopyası `scripts/yayinla.sh` ile gönderiliyor. Actions iş
+akışı kaldırıldı; faturalama nedeniyle çalışmıyordu.
 
 ### Arama motorları
 
