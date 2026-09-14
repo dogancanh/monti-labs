@@ -33,6 +33,7 @@ const YATAY_LOGO = join(MARKA_KLASORU, 'monti-logo-yatay-kobalt.png')
    Eski marka paketindeki #263BAA ve #FBF6EA değerleri bırakıldı. */
 const KOBALT = { r: 0x1f, g: 0x2f, b: 0xa0 }
 const KREM = { r: 0xfb, g: 0xf6, b: 0xea }
+const MUREKKEP = { r: 0x0d, g: 0x11, b: 0x28 }
 
 /**
  * Kobalt logoyu şeffaf zeminli, istenen renkte bir PNG'ye çevirir.
@@ -91,15 +92,30 @@ async function uret() {
   const OG_KENAR = 88
   const ogLogo = await logoyuBoya(560, KREM)
 
+  /* Işık yönü: mürekkep zemin, sağ alttan süzülen kobalt ışık. Sitedeki
+     giriş bölümünün paylaşım kartındaki karşılığı. */
+  const isik = Buffer.from(`
+    <svg width="${OG_G}" height="${OG_Y}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="g" cx="0.78" cy="1.05" r="0.75">
+          <stop offset="0" stop-color="#1f2fa0" stop-opacity="1"/>
+          <stop offset="0.45" stop-color="#1f2fa0" stop-opacity="0.5"/>
+          <stop offset="1" stop-color="#0d1128" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#g)"/>
+    </svg>`)
+
   await sharp({
     create: {
       width: OG_G,
       height: OG_Y,
       channels: 3,
-      background: { r: KOBALT.r, g: KOBALT.g, b: KOBALT.b },
+      background: { r: MUREKKEP.r, g: MUREKKEP.g, b: MUREKKEP.b },
     },
   })
     .composite([
+      { input: isik, left: 0, top: 0 },
       {
         input: ogLogo.veri,
         left: OG_KENAR,

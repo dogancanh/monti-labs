@@ -78,8 +78,16 @@ export const en: Icerik = {
       'Monti Labs is run by two founding partners who keep product design and engineering at the same table. We build our own products. We do the same work for other companies.',
     kurucularKunye: 'Founders',
     kurucular: [
-      { ad: 'İsmail Semih Pehlivan', unvan: 'Founding partner' },
-      { ad: 'Doğancan Hırdavatçıoğlu', unvan: 'Founding partner' },
+      {
+        ad: 'İsmail Semih Pehlivan',
+        unvan: 'Founding partner',
+        foto: '/kurucular/ismail-semih-pehlivan.webp',
+      },
+      {
+        ad: 'Doğancan Hırdavatçıoğlu',
+        unvan: 'Founding partner',
+        foto: '/kurucular/dogancan-hirdavatcioglu.webp',
+      },
     ],
   },
 

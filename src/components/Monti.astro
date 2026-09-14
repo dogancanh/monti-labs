@@ -39,7 +39,7 @@ const basHarfler = (ad: string) => {
           monti.kurucular.map((kisi, sira) => (
             <li class="kurucu cam kayar" style={`transition-delay:${120 + sira * 100}ms`}>
               {kisi.foto ? (
-                <img class="foto" src={yol(kisi.foto)} alt="" width="72" height="72" loading="lazy" decoding="async" />
+                <img class="foto" src={yol(kisi.foto)} alt="" width="144" height="144" loading="lazy" decoding="async" />
               ) : (
                 <span class="foto harf" aria-hidden="true">
                   {basHarfler(kisi.ad)}

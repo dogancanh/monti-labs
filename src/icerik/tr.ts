@@ -79,8 +79,16 @@ export const tr: Icerik = {
       'Monti Labs, ürün tasarımı ile mühendisliği aynı masada tutan iki kurucu ortak tarafından yürütülüyor. Kendi ürünlerimizi geliştiriyoruz. Aynı işi başka şirketler için de yapıyoruz.',
     kurucularKunye: 'Kurucular',
     kurucular: [
-      { ad: 'İsmail Semih Pehlivan', unvan: 'Kurucu ortak' },
-      { ad: 'Doğancan Hırdavatçıoğlu', unvan: 'Kurucu ortak' },
+      {
+        ad: 'İsmail Semih Pehlivan',
+        unvan: 'Kurucu ortak',
+        foto: '/kurucular/ismail-semih-pehlivan.webp',
+      },
+      {
+        ad: 'Doğancan Hırdavatçıoğlu',
+        unvan: 'Kurucu ortak',
+        foto: '/kurucular/dogancan-hirdavatcioglu.webp',
+      },
     ],
   },
 
